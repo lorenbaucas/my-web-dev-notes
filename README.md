@@ -73,6 +73,8 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [9.2 Cloudflare Pages](#92-cloudflare-pages)
   - [9.3 Cloudflare Domains & Rules](#93-cloudflare-domains--rules)
   - [9.4 Vite + Next.js + Cloudflare Protection & Free SSL](#94-vite--nextjs--cloudflare-protection--free-ssl)
+  - [9.5 Pointing the Client's Domain (Astro)](#95-pointing-the-clients-domain-astro)
+  - [9.6 Pointing the Client's Domain (Vite + Next.js)](#96-pointing-the-clients-domain-vite--nextjs)
 - [10. Git and GitHub](#10-git-and-github)
   - [10.1 Initial Setup (First-Time Project)](#101-initial-setup-first-time-project)
   - [10.2 Daily Workflow](#102-daily-workflow)
@@ -2198,6 +2200,8 @@ Usually the problem is one of:
 4. Every push to the connected branch (e.g. `main`) triggers an automatic deploy; other branches get preview deployments.
 5. Under **Custom domains**, attach the production domain once it's ready.
 
+Astro sites always live in your own Cloudflare Pages account, but the domain itself usually belongs to the client — see [9.5](#95-pointing-the-clients-domain-astro) for how to point it there.
+
 ### 9.3 Cloudflare Domains & Rules
 
 - **DNS**: if the domain is registered with Cloudflare (or just uses Cloudflare as DNS), add/verify the records under **DNS → Records**. Pages projects usually just need a `CNAME` pointing to the `*.pages.dev` deployment, added automatically when attaching a custom domain.
@@ -2238,6 +2242,66 @@ The free plan already includes, automatically, for any proxied domain:
 **What this replaces**
 
 Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([8.14](#814-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([8.9](#89-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([8.22](#822-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
+
+Everything above assumes the domain's DNS is already a zone inside your own Cloudflare account. When the domain actually belongs to a client, see [9.6](#96-pointing-the-clients-domain-vite--nextjs) for how to get it pointed at the server.
+
+### 9.5 Pointing the Client's Domain (Astro)
+
+This applies to Astro sites deployed on [9.2](#92-cloudflare-pages): the Pages project always lives in **your** Cloudflare account, but the domain (e.g. `clientsite.com`) belongs to the client. There are two ways to connect them, depending on how much access the client is willing to give you.
+
+**Option A — The client moves their nameservers into your Cloudflare account (best integration)**
+
+1. In your Cloudflare dashboard, go to **Add a site** and enter the client's domain. Choose the **Free** plan.
+2. Cloudflare scans existing DNS records and shows you two nameservers (e.g. `xxx.ns.cloudflare.com`).
+3. Send those nameservers to the client and have them update them at their domain registrar (GoDaddy, Namecheap, etc.).
+4. Once the nameserver change propagates (can take a few hours), the domain shows as **Active** in your Cloudflare account.
+5. Go to the Astro **Pages** project → **Custom domains** → **Set up a custom domain**, enter the client's domain, and Cloudflare attaches it automatically (it's already in your account, so no manual CNAME/TXT verification is needed).
+6. SSL is issued automatically by Cloudflare for the new custom domain.
+
+This option gives you full control (redirect rules, caching, WAF) but requires the client to hand over DNS management, which not every client wants to do.
+
+**Option B — The client keeps their own DNS (their registrar or their own Cloudflare account)**
+
+1. Go to the Astro **Pages** project → **Custom domains** → **Set up a custom domain**, and enter the client's domain (e.g. `www.clientsite.com` or the apex domain).
+2. Cloudflare shows the exact DNS record to create — normally a `CNAME` pointing to `<project-name>.pages.dev`. For an apex/root domain (`clientsite.com` with no `www`), Cloudflare Pages supports CNAME flattening, so a `CNAME` at the root also works if the client's DNS provider allows it.
+3. Send that record to the client (or whoever manages their DNS) and ask them to add it.
+4. If the client's domain is **not** on Cloudflare at all, verification is via the DNS record itself — no Cloudflare account needed on their side, and Cloudflare Pages still issues a free SSL certificate for the custom domain once the record resolves.
+5. If the client's domain **is** on their own separate Cloudflare account, they add the same `CNAME` record there; whether it's Proxied or DNS-only doesn't matter for Pages custom domains — Pages issues its own certificate either way.
+6. Wait for the **Custom domains** tab in your Pages project to show the domain as **Active**.
+
+Option B is the usual choice for client work: it needs no access to their registrar or Cloudflare account beyond asking them to paste in one DNS record.
+
+### 9.6 Pointing the Client's Domain (Vite + Next.js)
+
+This applies to the self-hosted Vite/Next.js sites from [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment), using the free SSL setup from [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl). Unlike Astro on Pages, this setup needs the domain to actually be **proxied through Cloudflare** (orange cloud) for the free Universal SSL and DDoS/bot protection to apply — a plain DNS-only record pointed at the server bypasses Cloudflare entirely.
+
+**Option A — The client moves their nameservers into your Cloudflare account**
+
+1. Add the domain to your Cloudflare account the same way as in [9.5](#95-pointing-the-clients-domain-astro), Option A (steps 1–4).
+2. Once the domain is **Active** in your account, follow [8.17](#817-dns-setup) exactly: create the `A` record pointing to the server's public IP, kept **Proxied** (orange cloud).
+3. Generate/reuse the Cloudflare **Origin Certificate** for that domain ([8.14](#814-traefik--cloudflare-origin-certificate--three-websites)) and add it to Traefik's `dynamic` config alongside the existing sites.
+4. Set **SSL/TLS → Overview** to **Full (strict)** for the zone, as in [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl).
+
+**Option B — The client keeps their own Cloudflare account**
+
+Use this when the client already has the domain on Cloudflare themselves and doesn't want to change nameservers.
+
+1. Give the client the server's public IP and ask them to create an `A` record (e.g. `app.clientsite.com` → your server IP) in **their** Cloudflare dashboard, kept **Proxied** (orange cloud). Without Proxied, they get no free SSL or protection from Cloudflare — traffic goes straight to the server over plain HTTP unless you handle certificates yourself.
+2. Ask the client to set their zone's **SSL/TLS → Overview** to **Full (strict)** — same reasoning as [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl): Flexible would leave the Cloudflare→server leg unencrypted.
+3. You still need a **Cloudflare Origin Certificate** on the server for that domain so the Cloudflare→server leg is encrypted. Since the zone lives in the client's account, either:
+   - Ask the client to generate the Origin Certificate themselves (**SSL/TLS → Origin Server → Create Certificate**, covering the subdomain you need) and send you the cert/key pair, which you drop into `certs/` and reference in Traefik's `dynamic` config exactly like the other sites in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites); or
+   - Ask them to add you as a member on their Cloudflare account (**Manage Account → Members**) with access scoped to that zone, so you can generate the certificate yourself without them needing to know what it is.
+4. Add a new router/service block in `docker-compose.yml` for the client's domain, following the pattern in [8.16](#816-why-the-three-websites-are-different) — same idea, just with the client's domain in the `Host(...)` rule instead of one of your own.
+5. Firewall-wise, nothing changes: UFW ([8.9](#89-firewall-basics-with-ufw)) already only allows `80`/`443` from Cloudflare's IP ranges regardless of which Cloudflare account is proxying the request.
+
+**Option A vs Option B**
+
+| | Option A (your account) | Option B (client's account) |
+|---|---|---|
+| Who manages DNS | You | The client |
+| Nameserver change needed | Yes | No |
+| Origin Certificate generated by | You | You or the client, depending on access |
+| Best for | Long-term/ongoing clients | Clients who want to keep control of their domain |
 
 ---
 ## 10. Git and GitHub
