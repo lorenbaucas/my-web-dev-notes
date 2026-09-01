@@ -10,45 +10,38 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [3.1 General](#31-general)
   - [3.2 Editing](#32-editing)
   - [3.3 Navigation](#33-navigation)
-- [4. Website Development — Astro + Tailwind](#4-website-development--astro--tailwind)
-  - [4.1 Project Setup](#41-project-setup)
-  - [4.2 Tailwind CSS Setup](#42-tailwind-css-setup)
-  - [4.3 Tailwind Theme, Custom Fonts & View Transitions](#43-tailwind-theme-custom-fonts--view-transitions)
-  - [4.4 Sitemap Integration](#44-sitemap-integration)
-  - [4.5 404 Page](#45-404-page)
-  - [4.6 Main Layout with Open Graph and Transitions](#46-main-layout-with-open-graph-and-transitions)
-  - [4.7 Open Graph Quick Guide](#47-open-graph-quick-guide)
-  - [4.8 Prettier Setup](#48-prettier-setup)
-  - [4.9 Windows Execution Policy Fix](#49-windows-execution-policy-fix)
-  - [4.10 Recovering from an npm Install Mistake](#410-recovering-from-an-npm-install-mistake)
-  - [4.11 Running the Dev Server](#411-running-the-dev-server)
-  - [4.12 Project Structure & Architecture](#412-project-structure--architecture)
-- [5. Shared Website Setup — Vite + React + Next.js](#5-shared-website-setup--vite--react--nextjs)
-  - [5.1 Tailwind Theme & Custom Fonts](#51-tailwind-theme--custom-fonts)
-  - [5.2 Open Graph & HTML Metadata](#52-open-graph--html-metadata)
-  - [5.3 `robots.txt`](#53-robotstxt)
-  - [5.4 404 / Not Found Page](#54-404--not-found-page)
-  - [5.5 Sitemap Integration](#55-sitemap-integration)
-  - [5.6 Prettier Setup](#56-prettier-setup)
-  - [5.7 Windows PowerShell Execution Policy / npm Recovery](#57-windows-powershell-execution-policy--npm-recovery)
-  - [5.8 Development Servers](#58-development-servers)
-  - [5.9 Common Project Structure](#59-common-project-structure)
-- [6. Website Development — Vite + React](#6-website-development--vite--react)
+- [4. Shared Website Setup](#4-shared-website-setup)
+  - [4.1 Tailwind CSS Setup](#41-tailwind-css-setup)
+  - [4.2 Tailwind Theme & Custom Fonts](#42-tailwind-theme--custom-fonts)
+  - [4.3 Open Graph & Metadata](#43-open-graph--metadata)
+  - [4.4 `robots.txt`](#44-robotstxt)
+  - [4.5 Sitemap Integration](#45-sitemap-integration)
+  - [4.6 404 / Not Found Page](#46-404--not-found-page)
+  - [4.7 Prettier Setup](#47-prettier-setup)
+  - [4.8 Windows PowerShell Execution Policy / npm Recovery](#48-windows-powershell-execution-policy--npm-recovery)
+  - [4.9 Development Server](#49-development-server)
+- [5. Astro](#5-astro)
+  - [5.1 Project Setup](#51-project-setup)
+  - [5.2 Install Dependencies](#52-install-dependencies)
+  - [5.3 Routing & Client-Side Navigation](#53-routing--client-side-navigation)
+  - [5.4 Main Layout Example](#54-main-layout-example)
+  - [5.5 Project Structure & Architecture](#55-project-structure--architecture)
+- [6. Vite](#6-vite)
   - [6.1 Scaffolding a New Project](#61-scaffolding-a-new-project)
-  - [6.2 Install Base Dependencies](#62-install-base-dependencies)
-  - [6.3 Add Tailwind CSS](#63-add-tailwind-css)
-  - [6.4 vite.config.ts Reference](#64-viteconfigts-reference)
-  - [6.5 Add React Router DOM](#65-add-react-router-dom)
-  - [6.6 Layout Route with `Outlet`](#66-layout-route-with-outlet)
-  - [6.7 Project Structure & Architecture](#67-project-structure--architecture)
-- [7. Website Development — Next.js](#7-website-development--nextjs)
+  - [6.2 Install Dependencies](#62-install-dependencies)
+  - [6.3 `vite.config.ts` Reference](#63-viteconfigts-reference)
+  - [6.4 Routing & Layouts (React Router DOM)](#64-routing--layouts-react-router-dom)
+  - [6.5 Layout Route with `Outlet`](#65-layout-route-with-outlet)
+  - [6.6 Project Structure & Architecture](#66-project-structure--architecture)
+- [7. Next.js](#7-nextjs)
   - [7.1 Create a New Project](#71-create-a-new-project)
-  - [7.2 Development](#72-development)
-  - [7.3 Production Build](#73-production-build)
-  - [7.4 Project Structure](#74-project-structure)
-  - [7.5 Metadata Example](#75-metadata-example)
+  - [7.2 Install Dependencies](#72-install-dependencies)
+  - [7.3 `next.config.ts` Reference](#73-nextconfigts-reference)
+  - [7.4 Routing & Layouts (App Router)](#74-routing--layouts-app-router)
+  - [7.5 Root Layout](#75-root-layout)
   - [7.6 Server and Client Components](#76-server-and-client-components)
-  - [7.7 Production Notes](#77-production-notes)
+  - [7.7 Production Build](#77-production-build)
+  - [7.8 Project Structure & Architecture](#78-project-structure--architecture)
 - [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment)
   - [8.1 Connect with Bitvise SSH Client](#81-connect-with-bitvise-ssh-client)
   - [8.2 Basic Linux Setup](#82-basic-linux-setup)
@@ -63,7 +56,7 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [8.11 Vite + React Dockerfile](#811-vite--react-dockerfile)
   - [8.12 Next.js Dockerfile](#812-nextjs-dockerfile)
   - [8.13 `.dockerignore`](#813-dockerignore)
-  - [8.14 Traefik + Let's Encrypt + Three Websites](#814-traefik--lets-encrypt--three-websites)
+  - [8.14 Traefik + Cloudflare Origin Certificate + Three Websites](#814-traefik--cloudflare-origin-certificate--three-websites)
   - [8.15 Understand the Important Traefik Lines](#815-understand-the-important-traefik-lines)
   - [8.16 Why the Three Websites Are Different](#816-why-the-three-websites-are-different)
   - [8.17 DNS Setup](#817-dns-setup)
@@ -79,22 +72,17 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [9.1 Google Search Console](#91-google-search-console)
   - [9.2 Cloudflare Pages](#92-cloudflare-pages)
   - [9.3 Cloudflare Domains & Rules](#93-cloudflare-domains--rules)
+  - [9.4 Vite + Next.js + Cloudflare Protection & Free SSL](#94-vite--nextjs--cloudflare-protection--free-ssl)
 - [10. Git and GitHub](#10-git-and-github)
   - [10.1 Initial Setup (First-Time Project)](#101-initial-setup-first-time-project)
   - [10.2 Daily Workflow](#102-daily-workflow)
   - [10.3 Branching](#103-branching)
   - [10.4 Other Useful Commands](#104-other-useful-commands)
-
-
-# Developer Notes
-
-Personal reference notes for setting up a web development environment, scaffolding websites with **Vite + React and Next.js**, and working with Git/GitHub. The classes, tags, colors, and fonts used in the examples below are illustrative — swap them for any generic CSS classes, framework, or design system.
-
 ## 1. Required Programs
 
 | Program | Purpose | Link |
 |---|---|---|
-| Node.js | Required JavaScript runtime for local development, builds, Vite and Next.js | [nodejs.org/en/download](https://nodejs.org/en/download) |
+| Node.js | Required JavaScript runtime for local development, builds, Astro, Vite and Next.js | [nodejs.org/en/download](https://nodejs.org/en/download) |
 | pnpm | Fast, disk-efficient package manager | [pnpm.io/installation](https://pnpm.io/installation) |
 
 Install Node.js first, then install pnpm. Node.js is required for this development setup.
@@ -173,31 +161,51 @@ Install Node.js first, then install pnpm. Node.js is required for this developme
 
 ---
 
-## 4. Website Development — Astro + Tailwind
+## 4. Shared Website Setup
 
-### 4.1 Project Setup
+These steps are identical in spirit across **Astro**, **Vite** and **Next.js** — Tailwind, Open Graph, `robots.txt`, sitemaps, the 404 page, Prettier, and the Windows/npm recovery steps. Each subsection gives the shared idea once and then a short **Astro / Vite / Next.js** breakdown for whatever changes between them. Framework-specific scaffolding, routing and project structure live in their own sections: [5. Astro](#5-astro), [6. Vite](#6-vite), [7. Next.js](#7-nextjs).
 
-```bash
-pnpm create astro@latest
-```
+### 4.1 Tailwind CSS Setup
 
-### 4.2 Tailwind CSS Setup
-
-Install Tailwind CSS via the Vite plugin (see [official Tailwind + Vite docs](https://tailwindcss.com/docs/installation/using-vite)):
+All three projects use Tailwind CSS v4. The idea is the same everywhere: install the package, register it as a build plugin, and import it once from a global stylesheet.
 
 ```bash
 pnpm add tailwindcss @tailwindcss/vite
 ```
 
-`src/styles/global.css`:
-
 ```css
 @import "tailwindcss";
 ```
 
-### 4.3 Tailwind Theme, Custom Fonts & View Transitions
+**Astro** — register the plugin inside the Vite section of `astro.config.mjs`:
 
-`global.css` can be extended with custom fonts (via Google Fonts or self-hosted), a `@theme` block to register them as Tailwind font tokens, and custom animations for Astro's View Transitions:
+```js
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+```
+
+**Vite** — register the plugin directly in `vite.config.ts` (see [6.3](#63-viteconfigts-reference) for the full file):
+
+```typescript
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  plugins: [tailwindcss()],
+});
+```
+
+**Next.js** — `pnpm create next-app@latest` asks `Tailwind CSS: Yes` and wires everything (PostCSS config included) automatically. Nothing else to install; just start writing Tailwind classes and import the global stylesheet from `app/layout.tsx`.
+
+### 4.2 Tailwind Theme & Custom Fonts
+
+The same `@theme` pattern works in all three projects to register custom fonts as Tailwind utilities:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
@@ -208,60 +216,153 @@ pnpm add tailwindcss @tailwindcss/vite
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
+```
 
+This exposes `font-sans`, `font-display` and `font-mono` as Tailwind class names, usable directly in markup in any of the three frameworks.
+
+**Astro** — additionally ships smooth page-crossfade CSS tied to its built-in client-side router (see [5.3](#53-routing--client-side-navigation)):
+
+```css
 ::view-transition-old(root) {
   animation: fade-out 0.25s ease forwards;
 }
-
 ::view-transition-new(root) {
   animation: fade-in 0.25s ease forwards;
 }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+```
 
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
+**Vite / Next.js** — the same crossfade can be added with the browser-native View Transitions API (`document.startViewTransition(...)`) around a route change; it's optional and not wired in by default the way Astro's `ClientRouter` wires it in.
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+### 4.3 Open Graph & Metadata
+
+Open Graph controls how a page looks when shared on social media, WhatsApp, Slack, etc.
+
+| Meta tag | Purpose |
+|---|---|
+| `og:title` | Title of the preview card |
+| `og:description` | Short description (~155 characters max) |
+| `og:image` | Preview image — minimum 1200×630px, publicly accessible via an absolute URL |
+| `og:url` | Canonical URL of the page |
+| `og:type` | `website` for regular pages, `article` for blog posts |
+
+Preview tools: [opengraph.xyz](https://www.opengraph.xyz/) and Meta's official sharing debugger.
+
+**Astro / Vite** — tags are written by hand as plain `<meta>` elements:
+
+```html
+<meta name="description" content="Business description" />
+<meta property="og:title" content="Business title" />
+<meta property="og:description" content="Business description" />
+<meta property="og:image" content="https://mysite.com/banner.png" />
+<meta property="og:url" content="https://mysite.com" />
+<meta property="og:type" content="website" />
+```
+
+In Astro this lives in the `<head>` of `src/layouts/Layout.astro` (see [5.4](#54-main-layout-example)); in Vite it lives in `index.html`.
+
+**Next.js** — use the Metadata API instead of hand-written tags (see [7.5](#75-root-layout) for the full example):
+
+```tsx
+export const metadata = {
+  title: 'Business title',
+  description: 'Business description',
+  openGraph: {
+    title: 'Business title',
+    description: 'Business description',
+    url: 'https://mysite.com',
+    images: [{ url: 'https://mysite.com/banner.png', width: 1200, height: 630 }],
+    type: 'website',
+  },
 }
 ```
 
-The `@theme` block exposes `--font-sans`, `--font-display`, and `--font-mono` as Tailwind utilities (`font-sans`, `font-display`, `font-mono`) usable directly in class names. The `::view-transition-*` rules define a simple crossfade for page navigations powered by `<ClientRouter />` (see [4.6](#46-main-layout-with-open-graph-and-transitions)).
+### 4.4 `robots.txt`
 
-### 4.4 Sitemap Integration
+`robots.txt` is framework-independent — it's a static file tells search engine crawlers what they can access and points them to the sitemap. The final URL is always `https://mysite.com/robots.txt`.
+
+**Normal production site:**
+
+```text
+User-agent: *
+Allow: /
+
+Sitemap: https://mysite.com/sitemap.xml
+```
+
+**Staging / private site:**
+
+```text
+User-agent: *
+Disallow: /
+```
+
+**Astro / Vite / Next.js** — all three place the same static file at:
+
+```text
+public/robots.txt
+```
+
+Next.js can alternatively generate it dynamically from `app/robots.ts` instead of a static file, if the rules need to depend on environment variables.
+
+### 4.5 Sitemap Integration
+
+A sitemap is useful for SEO and should be submitted to Google Search Console (see [9.1](#91-google-search-console)). The mechanism differs per framework:
+
+**Astro:**
 
 ```bash
 pnpm astro add sitemap
 ```
 
-`astro.config.mjs`:
-
 ```js
-// @ts-check
+// astro.config.mjs
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://mysite.com', // real client URL
   integrations: [sitemap()],
-  vite: {
-    plugins: [tailwindcss()]
-  }
 });
 ```
 
-### 4.5 404 Page
+**Vite:**
+
+```bash
+pnpm add -D vite-plugin-sitemap
+```
+
+```typescript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import Sitemap from 'vite-plugin-sitemap';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    Sitemap({ hostname: 'https://mysite.com' }),
+  ],
+});
+```
+
+**Next.js** — create `app/sitemap.ts`:
+
+```typescript
+import type { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: 'https://mysite.com', lastModified: new Date() },
+  ]
+}
+```
+
+### 4.6 404 / Not Found Page
+
+Every project needs a not-found page; the implementation differs per framework.
+
+**Astro** — file-based, drop a page at `src/pages/404.astro`:
 
 ```astro
 ---
@@ -277,11 +378,130 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 ```
 
-> The `class` names and layout structure here are just an example — swap them for any generic CSS classes or framework.
+**Vite** — with React Router, a catch-all route is enough (see [6.4](#64-routing--layouts-react-router-dom)):
 
-### 4.6 Main Layout with Open Graph and Transitions
+```tsx
+<Route path="*" element={<NotFound />} />
+```
 
-`src/layouts/Layout.astro`:
+**Next.js** — file-based, drop a file at `app/not-found.tsx`:
+
+```tsx
+export default function NotFound() {
+  return (
+    <main className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
+      <h1 className="text-6xl font-bold">404</h1>
+      <p className="text-xl">Page not found</p>
+      <a href="/" className="underline">Back to home</a>
+    </main>
+  )
+}
+```
+
+> The `class`/`className` names and layout structure above are just an example — swap them for any generic CSS classes or framework.
+
+### 4.7 Prettier Setup
+
+Install Prettier and add the standard scripts to `package.json`:
+
+```bash
+pnpm add -D prettier
+```
+
+```json
+"format": "prettier --write .",
+"format:check": "prettier --check ."
+```
+
+```bash
+pnpm install
+```
+
+**Astro** — needs one extra plugin so Prettier understands `.astro` files:
+
+```bash
+pnpm add -D prettier-plugin-astro
+```
+
+**Vite / Next.js** — no extra plugin needed for plain `.tsx`/`.ts` files.
+
+### 4.8 Windows PowerShell Execution Policy / npm Recovery
+
+This applies the same way regardless of framework.
+
+If PowerShell blocks package scripts (`pnpm create astro@latest`, `pnpm create vite@latest`, `pnpm create next-app@latest`, `pnpm install`, etc.), open a new terminal in VS Code and run:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Confirm with `Y` and re-run the command.
+
+> During project setup, the CLI may ask about ESLint or other tools — press Enter to confirm the default selection and continue.
+
+If a project was accidentally installed with `npm` and needs to be reset back to `pnpm`:
+
+```bash
+rm -rf node_modules package-lock.json
+pnpm install
+```
+
+### 4.9 Development Server
+
+The command is the same in all three projects:
+
+```bash
+pnpm dev
+```
+
+Default local URLs differ per framework — always trust whatever the terminal actually prints:
+
+```text
+Astro    → http://localhost:4321
+Vite     → http://localhost:5173
+Next.js  → http://localhost:3000
+```
+
+---
+
+## 5. Astro
+
+> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in section 8. Astro sites are deployed directly to Cloudflare Pages (see [9.2](#92-cloudflare-pages)).
+
+### 5.1 Project Setup
+
+```bash
+pnpm create astro@latest
+```
+
+The Tailwind CSS setup that follows scaffolding is covered in [4.1](#41-tailwind-css-setup); sitemap in [4.5](#45-sitemap-integration).
+
+### 5.2 Install Dependencies
+
+The Astro CLI installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
+
+```bash
+pnpm install
+```
+
+### 5.3 Routing & Client-Side Navigation
+
+Astro uses **file-based routing**: every file in `src/pages/` becomes a route (see [5.5](#55-project-structure--architecture) for the full mapping).
+
+Astro's built-in `ClientRouter` enables View Transitions for smooth navigation between pages without full reloads — no router library needed. It's imported once in the shared layout (see [5.4](#54-main-layout-example)) and paired with the CSS crossfade from [4.2](#42-tailwind-theme--custom-fonts).
+
+```astro
+---
+import { ClientRouter } from "astro:transitions";
+---
+<head>
+  <ClientRouter />
+</head>
+```
+
+### 5.4 Main Layout Example
+
+`src/layouts/Layout.astro` is the shared HTML shell: head, meta tags, Open Graph (see [4.3](#43-open-graph--metadata)), `<Navbar />` / `<Footer />`, and `<slot />` for page content — the Astro equivalent of Vite's layout route ([6.5](#65-layout-route-with-outlet)) or Next.js's root layout ([7.5](#75-root-layout)).
 
 ```astro
 ---
@@ -309,7 +529,7 @@ import Footer from "../components/Footer.astro";
 
     <ClientRouter />
   </head>
-  <body class="min-h-screen flex flex-col bg-[#faf9f7] text-[#1e1c1a] font-[Poppins,sans-serif]">
+  <body class="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
     <Navbar />
     <main class="flex-1">
       <slot />
@@ -319,73 +539,7 @@ import Footer from "../components/Footer.astro";
 </html>
 ```
 
-`ClientRouter` enables Astro's View Transitions for smooth navigation without full page reloads.
-
-### 4.7 Open Graph Quick Guide
-
-Open Graph controls how the site looks when shared on social media, WhatsApp, Slack, etc.
-
-| Meta tag | Purpose |
-|---|---|
-| `og:title` | Title of the preview card |
-| `og:description` | Short description (~155 characters max) |
-| `og:image` | Preview image — minimum 1200×630px, publicly accessible |
-| `og:url` | Canonical URL of the page |
-| `og:type` | `website` for regular pages, `article` for blog posts |
-
-The `og:image` must be uploaded to the server and accessible via an absolute URL — relative paths do not work. Tools to preview: [opengraph.xyz](https://www.opengraph.xyz/) and Meta's official sharing debugger.
-
-### 4.8 Prettier Setup
-
-```bash
-pnpm add -D prettier
-pnpm add -D prettier-plugin-astro
-```
-
-`package.json` scripts:
-
-```json
-"format": "prettier --write .",
-"format:check": "prettier --check ."
-```
-
-```bash
-pnpm install
-```
-
-### 4.9 Windows Execution Policy Fix
-
-If `pnpm create astro@latest` or `pnpm install` throws a script execution error in PowerShell, open a new terminal in VS Code and run:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-Confirm with `Y` and re-run the command.
-
-> During Astro's setup, the CLI may ask about ESLint or other tools — press Enter to confirm the default selection and continue.
-
-### 4.10 Recovering from an npm Install Mistake
-
-If the project was installed with `npm` by mistake and needs to be reset:
-
-```bash
-# Remove node_modules and lockfiles
-rm -rf node_modules package-lock.json
-
-# Reinstall with pnpm
-pnpm install
-```
-
-### 4.11 Running the Dev Server
-
-```bash
-pnpm dev
-```
-
-### 4.12 Project Structure & Architecture
-
-Typical folder layout for an Astro-based site (adaptable to any generic web project):
+### 5.5 Project Structure & Architecture
 
 ```
 /
@@ -414,22 +568,11 @@ Typical folder layout for an Astro-based site (adaptable to any generic web proj
 └── tsconfig.json
 ```
 
-**`public/`** — Static assets served as-is, without processing. Anything here is copied directly to the final build output at the same path.
-
-- `favicon.svg` / `icon.png` — Site icon(s) referenced in the `<head>` of the layout.
-- `images/` — Static images that don't need build-time optimization (e.g. Open Graph banner, logos).
-- `robots.txt` — Tells search engine crawlers which pages they can access, and points them to the sitemap.
-
-```
-User-agent: *
-Allow: /
-
-Sitemap: https://mysite.com/sitemap-index.xml
-```
+**`public/`** — Static assets served as-is, without processing. Anything here is copied directly to the final build output at the same path (favicon, images, `robots.txt` — see [4.4](#44-robotstxt)).
 
 **`src/components/`** — Reusable UI pieces used across multiple pages (e.g. `Hero.astro`, `Navbar.astro`, `Footer.astro`). Each component encapsulates its own markup, styles, and logic.
 
-**`src/layouts/`** — Page wrappers that define the shared HTML shell (head, meta tags, Open Graph, `<Navbar />` / `<Footer />`, `<slot />` for page content). See [4.6](#46-main-layout-with-open-graph-and-transitions). Most projects only need one `Layout.astro`, but additional layouts can be added for different page types (e.g. a blog post layout).
+**`src/layouts/`** — Page wrappers that define the shared HTML shell (see [5.4](#54-main-layout-example)). Most projects only need one `Layout.astro`, but additional layouts can be added for different page types (e.g. a blog post layout).
 
 **`src/pages/`** — File-based routing: each file becomes a route.
 
@@ -437,270 +580,13 @@ Sitemap: https://mysite.com/sitemap-index.xml
 - `terms-of-service.astro` → `/terms-of-service`
 - `privacy-policy.astro` → `/privacy-policy`
 - `contact.astro` → `/contact`
-- `404.astro` → custom not-found page (see [4.5](#45-404-page))
+- `404.astro` → custom not-found page (see [4.6](#46-404--not-found-page))
 
-**`src/styles/`** — Global stylesheets. `global.css` is where Tailwind is imported (see [4.2](#42-tailwind-css-setup)) and where fonts/theme tokens live (see [4.3](#43-tailwind-theme-custom-fonts--view-transitions)).
-
----
+**`src/styles/`** — Global stylesheets. `global.css` is where Tailwind is imported (see [4.1](#41-tailwind-css-setup)) and where fonts/theme tokens live (see [4.2](#42-tailwind-theme--custom-fonts)).
 
 ---
 
-> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in this README. Astro sites are deployed directly to Cloudflare Pages.
-
-## 5. Shared Website Setup — Vite + React + Next.js
-
-These are the parts that are common or useful across both Vite + React and Next.js projects. Framework-specific configuration stays in sections 5 and 6.
-
-### 5.1 Tailwind Theme & Custom Fonts
-
-The same Tailwind theme pattern can be used in both projects:
-
-```css
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-@import "tailwindcss";
-
-@theme {
-  --font-sans: 'Poppins', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-}
-```
-
-The `@theme` block exposes `font-sans`, `font-display`, and `font-mono` as Tailwind utility names.
-
-### 5.2 Open Graph & HTML Metadata
-
-Open Graph controls how the website looks when shared on social media, WhatsApp, Slack and similar platforms.
-
-| Meta tag | Purpose |
-|---|---|
-| `og:title` | Title of the preview card |
-| `og:description` | Short description |
-| `og:image` | Preview image — preferably 1200×630px or larger |
-| `og:url` | Canonical URL |
-| `og:type` | `website` for normal pages |
-
-Generic example:
-
-```html
-<meta name="description" content="Business description" />
-<meta property="og:title" content="Business title" />
-<meta property="og:description" content="Business description" />
-<meta property="og:image" content="https://mysite.com/banner.png" />
-<meta property="og:url" content="https://mysite.com" />
-<meta property="og:type" content="website" />
-```
-
-For Vite + React, these tags normally live in `index.html`. For Next.js, use the Metadata API in `app/layout.tsx` or route-level metadata.
-
-The image should be publicly reachable through an absolute HTTPS URL.
-
-### 5.3 `robots.txt`
-
-`robots.txt` is framework-independent. The final URL is always:
-
-```text
-https://mysite.com/robots.txt
-```
-
-For Vite, place it in:
-
-```text
-public/robots.txt
-```
-
-For Next.js, the same `public/robots.txt` approach works for a static file.
-
-**Normal production site:**
-
-```text
-User-agent: *
-Allow: /
-
-Sitemap: https://mysite.com/sitemap.xml
-```
-
-**Staging / private site:**
-
-```text
-User-agent: *
-Disallow: /
-```
-
-Replace the sitemap URL with the actual sitemap URL for the project.
-
-### 5.4 404 / Not Found Page
-
-Both frameworks need a not-found page, but the implementation is different.
-
-**Vite + React:** with React Router, a catch-all route is enough:
-
-```tsx
-<Route path="*" element={<NotFound />} />
-```
-
-**Next.js App Router:** create:
-
-```text
-app/not-found.tsx
-```
-
-Example:
-
-```tsx
-export default function NotFound() {
-  return (
-    <main className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-      <h1 className="text-6xl font-bold">404</h1>
-      <p className="text-xl">Page not found</p>
-      <a href="/" className="underline">
-        Back to home
-      </a>
-    </main>
-  )
-}
-```
-
-### 5.5 Sitemap Integration
-
-A sitemap is useful for SEO and should normally be submitted to Google Search Console.
-
-**Vite + React:**
-
-```bash
-pnpm add -D vite-plugin-sitemap
-```
-
-```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import Sitemap from 'vite-plugin-sitemap'
-
-export default defineConfig({
-  plugins: [
-    react(),
-    Sitemap({
-      hostname: 'https://mysite.com',
-    }),
-  ],
-})
-```
-
-**Next.js App Router:** create:
-
-```text
-app/sitemap.ts
-```
-
-Example:
-
-```typescript
-import type { MetadataRoute } from 'next'
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: 'https://mysite.com',
-      lastModified: new Date(),
-    },
-  ]
-}
-```
-
-### 5.6 Prettier Setup
-
-Install Prettier:
-
-```bash
-pnpm add -D prettier
-```
-
-Add these scripts to `package.json`:
-
-```json
-"format": "prettier --write .",
-"format:check": "prettier --check ."
-```
-
-Then install dependencies normally:
-
-```bash
-pnpm install
-```
-
-### 5.7 Windows PowerShell Execution Policy / npm Recovery
-
-If PowerShell blocks package scripts such as `pnpm install`, run:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-If a project was accidentally installed with npm and you want to reset it back to pnpm:
-
-```bash
-rm -rf node_modules package-lock.json
-pnpm install
-```
-
-### 5.8 Development Servers
-
-Vite:
-
-```bash
-pnpm dev
-```
-
-Next.js:
-
-```bash
-pnpm dev
-```
-
-Typical defaults are:
-
-```text
-Vite     → http://localhost:5173
-Next.js  → http://localhost:3000
-```
-
-Always use the exact URL printed by the terminal.
-
-### 5.9 Common Project Structure
-
-Both projects normally have:
-
-```text
-public/          # Favicon, images, robots.txt and other public files
-components/      # Reusable React components
-```
-
-Vite + React commonly adds:
-
-```text
-src/
-  components/
-  pages/
-  layouts/
-  App.tsx
-  main.tsx
-```
-
-Next.js commonly uses:
-
-```text
-app/
-  layout.tsx
-  page.tsx
-  not-found.tsx
-  sitemap.ts
-```
-
-The routing system is the main structural difference: Vite usually relies on React Router or another router, while Next.js provides routing through the framework itself.
-
----
-
-## 6. Website Development — Vite + React
+## 6. Vite
 
 ### 6.1 Scaffolding a New Project
 
@@ -709,25 +595,15 @@ pnpm create vite@latest project-name --template react-ts
 cd project-name
 ```
 
-### 6.2 Install Base Dependencies
+### 6.2 Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### 6.3 Add Tailwind CSS
+The Tailwind CSS setup that follows is covered in [4.1](#41-tailwind-css-setup); sitemap in [4.5](#45-sitemap-integration).
 
-```bash
-pnpm add tailwindcss @tailwindcss/vite
-```
-
-In `src/index.css` (or `src/styles/global.css`):
-
-```css
-@import "tailwindcss";
-```
-
-### 6.4 vite.config.ts Reference
+### 6.3 `vite.config.ts` Reference
 
 Basic version (React + Tailwind):
 
@@ -762,7 +638,9 @@ export default defineConfig({
 })
 ```
 
-### 6.5 Add React Router DOM
+### 6.4 Routing & Layouts (React Router DOM)
+
+Unlike Astro or Next.js, Vite has no built-in router — routes are declared explicitly with `react-router-dom`.
 
 ```bash
 pnpm add react-router-dom
@@ -829,9 +707,9 @@ createRoot(document.getElementById('root')!).render(
 
 The two-file split is still the more common convention once routes multiply or `App.tsx` starts holding shared state/providers, since it keeps the DOM-mounting boilerplate separate from anything route- or app-logic related — but for a two-route project, either works.
 
-### 6.6 Layout Route with `Outlet`
+### 6.5 Layout Route with `Outlet`
 
-For a shared shell (navbar + footer on every page, similar to the framework's `Layout.the framework`), use a layout route with React Router's `<Outlet />`, which renders whichever child route matched:
+For a shared shell (navbar + footer on every page — the Vite equivalent of Astro's `Layout.astro` or Next.js's root layout), use a layout route with React Router's `<Outlet />`, which renders whichever child route matched:
 
 `src/layouts/MainLayout.tsx`:
 
@@ -842,7 +720,7 @@ import Footer from '../components/Footer'
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans selection:bg-zinc-800 selection:text-white antialiased flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
       <Navbar />
       <main className="flex-1">
         <Outlet />
@@ -894,16 +772,15 @@ createRoot(document.getElementById('root')!).render(
 
 > If `<BrowserRouter>` isn't wrapped around `<App />` in `main.tsx` (as in this last example), make sure it's added inside `App.tsx` itself, or swap to `createBrowserRouter` + `<RouterProvider />` for data-loading features (loaders, actions) — see the [React Router docs](https://reactrouter.com/en/main).
 
-### 6.7 Project Structure & Architecture
-
-Typical folder layout for a Vite + React site:
+### 6.6 Project Structure & Architecture
 
 ```
 /
 ├── public/
 │   ├── favicon.svg
 │   ├── icon.png
-│   └── images/
+│   ├── images/
+│   └── robots.txt
 ├── src/
 │   ├── components/
 │   │   ├── Hero.tsx
@@ -927,11 +804,11 @@ Typical folder layout for a Vite + React site:
 └── tsconfig.json
 ```
 
-**`public/`** — Static assets served as-is; same role as described in [4.3 `robots.txt`](#44-robotstxt).
+**`public/`** — Static assets served as-is; same role as described in [4.4 `robots.txt`](#44-robotstxt).
 
 **`src/components/`** — Reusable UI pieces (`Hero.tsx`, `Navbar.tsx`, `Footer.tsx`) shared across pages.
 
-**`src/layouts/`** — Shared page shells rendered via a layout route with `<Outlet />` (see [7.6](#57-layout-route-with-outlet)), equivalent to a shared application shell.
+**`src/layouts/`** — Shared page shells rendered via a layout route with `<Outlet />` (see [6.5](#65-layout-route-with-outlet)), equivalent to Astro's `Layout.astro` or Next.js's root layout.
 
 **`src/pages/`** — One component per route, registered manually in `App.tsx` when using React Router:
 
@@ -942,21 +819,21 @@ Typical folder layout for a Vite + React site:
 - `PrivacyPolicy.tsx` → `/privacy-policy`
 - `NotFound.tsx` → catch-all `*` route
 
-**`src/global.css`** (or `index.css`) — Where Tailwind is imported and font/theme tokens are defined (see [5.1](#42-tailwind-theme--custom-fonts)).
+**`src/global.css`** (or `index.css`) — Where Tailwind is imported and font/theme tokens are defined (see [4.2](#42-tailwind-theme--custom-fonts)).
 
-**`index.html`** — The single HTML entry point; holds the `<head>` meta tags and Open Graph tags (see [5.2](#43-open-graph--html-metadata)), and the `#root` mount point for React.
+**`index.html`** — The single HTML entry point; holds the `<head>` meta tags and Open Graph tags (see [4.3](#43-open-graph--metadata)), and the `#root` mount point for React.
 
 ---
-## 7. Website Development — Next.js
 
-Next.js is the second deployment target in this README. Unlike a normal Vite static build, a standard Next.js application runs a Node.js server in production.
+## 7. Next.js
+
+Next.js is the third framework covered here. Unlike a static Astro or Vite build, a standard Next.js application runs a Node.js server in production (see [7.7](#77-production-build)).
 
 ### 7.1 Create a New Project
 
 ```bash
 pnpm create next-app@latest my-next-site
 cd my-next-site
-pnpm install
 ```
 
 A typical setup for this README is:
@@ -966,61 +843,63 @@ A typical setup for this README is:
 - Tailwind CSS: `Yes`
 - App Router: `Yes`
 
-### 7.2 Development
+### 7.2 Install Dependencies
+
+`create-next-app` installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
 
 ```bash
-pnpm dev
+pnpm install
 ```
 
-Usually:
+### 7.3 `next.config.ts` Reference
+
+Basic version — an empty config is valid since Tailwind is already wired in through PostCSS by `create-next-app` (see [4.1](#41-tailwind-css-setup)):
+
+```typescript
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {}
+
+export default nextConfig
+```
+
+Extended version, enabling the [React Compiler](https://react.dev/learn/react-compiler) and typed routes — the Next.js equivalent of Vite's extended `vite.config.ts` in [6.3](#63-viteconfigts-reference):
+
+```typescript
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  experimental: {
+    reactCompiler: true,
+    typedRoutes: true,
+  },
+}
+
+export default nextConfig
+```
+
+### 7.4 Routing & Layouts (App Router)
+
+Like Astro, Next.js uses **file-based routing** — no router library needed, unlike Vite's `react-router-dom` ([6.4](#64-routing--layouts-react-router-dom)). Every folder under `app/` maps to a URL segment, and a `page.tsx` inside it is what actually renders:
 
 ```text
-http://localhost:3000
+app/page.tsx            → /
+app/about/page.tsx      → /about
+app/contact/page.tsx    → /contact
+app/not-found.tsx       → custom 404 (see 4.6)
 ```
 
-### 7.3 Production Build
+Layouts nest automatically: any `layout.tsx` wraps every route below it, so the shared shell (navbar + footer) only needs to be defined once at the root — see [7.5](#75-root-layout) for the equivalent of Astro's `<slot />` or Vite's `<Outlet />`. Nested folders can add their own `layout.tsx` to wrap just that subsection of the site (e.g. a `blog/layout.tsx` shared by every post).
 
-The normal production commands are:
+### 7.5 Root Layout
 
-```bash
-pnpm build
-pnpm start
-```
-
-`pnpm build` creates the optimized production output.
-
-`pnpm start` runs the production Next.js server, normally on port `3000`.
-
-### 7.4 Project Structure
-
-A typical App Router project can look like:
-
-```text
-/
-├── public/
-│   ├── favicon.ico
-│   ├── images/
-│   └── robots.txt
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   ├── not-found.tsx
-│   └── sitemap.ts
-├── components/
-├── lib/
-├── package.json
-├── next.config.ts
-└── tsconfig.json
-```
-
-`app/page.tsx` is the homepage, `app/layout.tsx` is the root layout, `app/not-found.tsx` handles 404 pages and `app/sitemap.ts` can generate the sitemap.
-
-### 7.5 Metadata Example
-
-Use the Next.js Metadata API rather than manually maintaining a large HTML head:
+`app/layout.tsx` is the shared HTML shell — the Next.js equivalent of Astro's `Layout.astro` ([5.4](#54-main-layout-example)) or Vite's `MainLayout.tsx` + `<Outlet />` ([6.5](#65-layout-route-with-outlet)). Instead of `<slot />` or `<Outlet />`, it receives page content as the `children` prop:
 
 ```tsx
 import type { Metadata } from 'next'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Business title',
@@ -1029,22 +908,29 @@ export const metadata: Metadata = {
     title: 'Business title',
     description: 'Business description',
     url: 'https://mysite.com',
-    siteName: 'Business title',
-    images: [
-      {
-        url: 'https://mysite.com/banner.png',
-        width: 1200,
-        height: 630,
-      },
-    ],
+    images: [{ url: 'https://mysite.com/banner.png', width: 1200, height: 630 }],
     type: 'website',
   },
 }
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
+    </html>
+  )
+}
 ```
+
+The Metadata API above is the Next.js equivalent of the hand-written Open Graph `<meta>` tags used in Astro/Vite (see [4.3](#43-open-graph--metadata)).
 
 ### 7.6 Server and Client Components
 
-App Router components are Server Components by default.
+App Router components are Server Components by default — this has no direct equivalent in Vite, and is closer in spirit to Astro components (which are also server-rendered by default, with interactive "islands" opted into separately).
 
 Add `'use client'` only when a component needs browser-side state, event handlers, effects or other client-only behavior:
 
@@ -1066,9 +952,16 @@ export default function Counter() {
 
 This is important for deployment: server-side code stays inside the Node.js container, while client components are sent to the browser.
 
-### 7.7 Production Notes
+### 7.7 Production Build
 
-For the Docker deployment in section 7:
+```bash
+pnpm build
+pnpm start
+```
+
+`pnpm build` creates the optimized production output. `pnpm start` runs the production Next.js server, normally on port `3000`.
+
+For the Docker deployment in [section 8](#8-linux-server--docker-deployment):
 
 - A normal Next.js application should run `next start`.
 - Do not treat a normal Next.js application as a `dist/` static site.
@@ -1077,7 +970,39 @@ For the Docker deployment in section 7:
 
 > Next.js can also be configured for static export, but that is a different deployment model. This README treats Next.js as a normal Node.js application running in Docker.
 
----
+### 7.8 Project Structure & Architecture
+
+```
+/
+├── public/
+│   ├── favicon.ico
+│   ├── images/
+│   └── robots.txt
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── not-found.tsx
+│   ├── sitemap.ts
+│   ├── about/
+│   │   └── page.tsx
+│   └── contact/
+│       └── page.tsx
+├── components/
+│   ├── Navbar.tsx
+│   └── Footer.tsx
+├── lib/
+├── package.json
+├── next.config.ts
+└── tsconfig.json
+```
+
+**`public/`** — Static assets served as-is; same role as described in [4.4 `robots.txt`](#44-robotstxt).
+
+**`app/`** — File-based routing (see [7.4](#74-routing--layouts-app-router)). `app/page.tsx` is the homepage, `app/layout.tsx` is the root layout (see [7.5](#75-root-layout)), `app/not-found.tsx` handles 404 pages (see [4.6](#46-404--not-found-page)) and `app/sitemap.ts` generates the sitemap (see [4.5](#45-sitemap-integration)). Each subfolder with its own `page.tsx` becomes a route, equivalent to a file under Astro's `src/pages/` or a route entry in Vite's `App.tsx`.
+
+**`components/`** — Reusable UI pieces (`Navbar.tsx`, `Footer.tsx`) shared across pages, equivalent to `src/components/` in Astro or Vite.
+
+**`lib/`** — Shared utilities, helpers, and non-component logic (data fetching, formatting, etc.).
 
 ## 8. Linux Server & Docker Deployment
 
@@ -1241,7 +1166,7 @@ Install Docker and Compose v2:
 sudo apt install -y docker.io docker-compose-v2
 ```
 
-Ubuntu provides `docker-compose-v2` for the modern `docker compose` command. citeturn568230search0turn568230search2
+Ubuntu provides `docker-compose-v2` for the modern `docker compose` command.
 
 Start Docker now and also enable it at boot:
 
@@ -1367,7 +1292,7 @@ You remove the ZIP after extraction to avoid storing two copies of the same depl
 
 ### 8.9 Firewall Basics with UFW
 
-The server needs SSH, HTTP and HTTPS.
+The server needs SSH, HTTP and HTTPS. Since every domain will always sit behind Cloudflare (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), it's worth restricting `80`/`443` to Cloudflare's own IP ranges instead of the whole Internet — that way nobody can bypass Cloudflare's protection by hitting the server's IP directly.
 
 First allow SSH:
 
@@ -1375,16 +1300,18 @@ First allow SSH:
 sudo ufw allow OpenSSH
 ```
 
-Then allow HTTP:
+Then allow HTTP and HTTPS **only from Cloudflare's IP ranges**:
 
 ```bash
-sudo ufw allow 80/tcp
-```
+for ip in $(curl -s https://www.cloudflare.com/ips-v4); do
+  sudo ufw allow from "$ip" to any port 80 proto tcp
+  sudo ufw allow from "$ip" to any port 443 proto tcp
+done
 
-Then HTTPS:
-
-```bash
-sudo ufw allow 443/tcp
+for ip in $(curl -s https://www.cloudflare.com/ips-v6); do
+  sudo ufw allow from "$ip" to any port 80 proto tcp
+  sudo ufw allow from "$ip" to any port 443 proto tcp
+done
 ```
 
 Enable the firewall:
@@ -1399,17 +1326,11 @@ Check it:
 sudo ufw status verbose
 ```
 
-The intended open services are approximately:
-
-```text
-22/tcp   SSH
-80/tcp   HTTP
-443/tcp  HTTPS
-```
-
 **Important:** allow SSH before enabling UFW. Otherwise you can lock yourself out.
 
 Do not open application ports such as `3000` to the Internet. Traefik reaches the websites through Docker networking.
+
+> If a site is ever used without Cloudflare in front of it, allow `80/tcp` and `443/tcp` from anywhere instead (`sudo ufw allow 80/tcp` / `sudo ufw allow 443/tcp`) — but that also means the Origin Certificate from [8.14](#814-traefik--cloudflare-origin-certificate--three-websites) won't be trusted by regular browsers, since it's only trusted by Cloudflare.
 
 ### 8.10 Create the Server Structure
 
@@ -1420,15 +1341,14 @@ sudo mkdir -p /opt/web
 cd /opt/web
 ```
 
-Create the Let's Encrypt storage:
+Create the folder for the Cloudflare Origin Certificate (generated in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)):
 
 ```bash
-sudo mkdir -p /opt/web/letsencrypt
-sudo touch /opt/web/letsencrypt/acme.json
-sudo chmod 600 /opt/web/letsencrypt/acme.json
+sudo mkdir -p /opt/web/certs
+sudo chmod 700 /opt/web/certs
 ```
 
-The `acme.json` file stores Traefik's ACME account and certificate information. Keeping it restricted to the owner is an important baseline.
+Unlike Let's Encrypt, this certificate isn't renewed automatically — it's a file you generate once in the Cloudflare dashboard and it stays valid for up to 15 years, so there's no ACME account or challenge state to persist here.
 
 Create the website folders:
 
@@ -1455,8 +1375,11 @@ Final structure:
 ```text
 /opt/web/
 ├── docker-compose.yml
-├── letsencrypt/
-│   └── acme.json
+├── certs/
+│   ├── cert.pem
+│   └── key.pem
+├── dynamic/
+│   └── tls.yml
 ├── web1/
 │   ├── Dockerfile
 │   └── ...Vite project...
@@ -1588,7 +1511,7 @@ In particular:
 - `dist` and `.next` are generated build output.
 - `.env` files should not automatically be baked into images.
 
-### 8.14 Traefik + Let's Encrypt + Three Websites
+### 8.14 Traefik + Cloudflare Origin Certificate + Three Websites
 
 Traefik is the only reverse proxy in this architecture.
 
@@ -1598,11 +1521,30 @@ It will:
 2. Detect the Docker containers that have Traefik labels.
 3. Match each domain to the correct container.
 4. Redirect HTTP to HTTPS.
-5. Request and renew Let's Encrypt certificates.
+5. Present a TLS certificate to whoever connects on `443`.
 
-Traefik's Docker provider reads container labels. Using `exposedbydefault=false` means containers are ignored unless they explicitly opt in with `traefik.enable=true`. citeturn451080search6turn451080search5
+Traefik's Docker provider reads container labels. Using `exposedbydefault=false` means containers are ignored unless they explicitly opt in with `traefik.enable=true`.
 
-This example uses the Let's Encrypt **HTTP-01** challenge. The domain must point to the server and HTTP/80 must be reachable from the Internet for validation. HTTPS/443 is also required for normal secure traffic. citeturn451080search2
+Since every domain here is always proxied through Cloudflare (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), Cloudflare's free Universal SSL already handles the certificate that public visitors see — Traefik doesn't need to request or renew a Let's Encrypt certificate for that. What Traefik still needs is a certificate for the **Cloudflare → origin** leg of the connection, so that "Full (strict)" mode can verify it. That's what a free **Cloudflare Origin Certificate** is for: generate it once in the Cloudflare dashboard (**SSL/TLS → Origin Server → Create Certificate**), list all three hostnames as SANs (`site1.example.com`, `site2.example.com`, `site3.example.com`), and it stays valid for up to 15 years — no ACME challenge, no renewal automation needed.
+
+Save the two files it gives you:
+
+```bash
+sudo nano /opt/web/certs/cert.pem   # paste the "Origin Certificate"
+sudo nano /opt/web/certs/key.pem    # paste the "Private Key"
+sudo chmod 600 /opt/web/certs/cert.pem /opt/web/certs/key.pem
+```
+
+Then tell Traefik to use them via a small dynamic config file:
+
+`/opt/web/dynamic/tls.yml`:
+
+```yaml
+tls:
+  certificates:
+    - certFile: /certs/cert.pem
+      keyFile: /certs/key.pem
+```
 
 Create `/opt/web/docker-compose.yml`:
 
@@ -1619,17 +1561,14 @@ services:
       - --providers.docker=true
       - --providers.docker.network=web
       - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/dynamic
+      - --providers.file.watch=true
 
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
 
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-      - --certificatesresolvers.letsencrypt.acme.email=YOUR_EMAIL@example.com
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
 
       - --log.level=INFO
 
@@ -1639,7 +1578,8 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./letsencrypt:/letsencrypt
+      - ./certs:/certs:ro
+      - ./dynamic:/dynamic:ro
 
     networks:
       - web
@@ -1658,7 +1598,6 @@ services:
       - traefik.http.routers.web1.rule=Host(`site1.example.com`)
       - traefik.http.routers.web1.entrypoints=websecure
       - traefik.http.routers.web1.tls=true
-      - traefik.http.routers.web1.tls.certresolver=letsencrypt
       - traefik.http.services.web1.loadbalancer.server.port=80
 
   web2:
@@ -1675,7 +1614,6 @@ services:
       - traefik.http.routers.web2.rule=Host(`site2.example.com`)
       - traefik.http.routers.web2.entrypoints=websecure
       - traefik.http.routers.web2.tls=true
-      - traefik.http.routers.web2.tls.certresolver=letsencrypt
       - traefik.http.services.web2.loadbalancer.server.port=3000
 
   web3:
@@ -1692,13 +1630,14 @@ services:
       - traefik.http.routers.web3.rule=Host(`site3.example.com`)
       - traefik.http.routers.web3.entrypoints=websecure
       - traefik.http.routers.web3.tls=true
-      - traefik.http.routers.web3.tls.certresolver=letsencrypt
       - traefik.http.services.web3.loadbalancer.server.port=80
 
 networks:
   web:
     external: true
 ```
+
+> The `tls.certresolver` label from the old Let's Encrypt setup is gone — with a single certificate loaded through the file provider, Traefik just serves it by default, so `traefik.http.routers.webX.tls=true` is all each router needs.
 
 ### 8.15 Understand the Important Traefik Lines
 
@@ -1753,21 +1692,14 @@ into:
 https://site1.example.com
 ```
 
-**Let's Encrypt**
+**Origin certificate**
 
 ```text
---certificatesresolvers.letsencrypt.acme.httpchallenge=true
+./certs:/certs:ro
+./dynamic:/dynamic:ro
 ```
 
-Traefik uses the HTTP-01 challenge to obtain certificates.
-
-**Persistent certificates**
-
-```text
-./letsencrypt:/letsencrypt
-```
-
-Without persistent storage, recreating the Traefik container would lose the ACME data.
+These mount the Cloudflare Origin Certificate and the file-provider config that loads it (see [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)). No ACME resolver, no HTTP-01 challenge, and nothing to renew — the certificate is generated once in the Cloudflare dashboard and is valid for up to 15 years.
 
 **Docker socket**
 
@@ -1829,37 +1761,37 @@ Everything else stays almost identical.
 
 ### 8.17 DNS Setup
 
-Before HTTPS can work, the domains must point to the server.
+Before HTTPS can work, the domains must point to the server through Cloudflare.
 
-Example:
+In the Cloudflare dashboard, under **DNS → Records**, create:
 
 ```text
-site1.example.com → SERVER_PUBLIC_IP
-site2.example.com → SERVER_PUBLIC_IP
-site3.example.com → SERVER_PUBLIC_IP
+site1.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
+site2.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
+site3.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
 ```
 
-Use `A` records for IPv4 addresses.
+Use `A` records for IPv4 addresses, and keep the proxy status **Proxied** (orange cloud), not **DNS only** (grey cloud). Proxied is what actually puts Cloudflare in front of the site — it hides the server's real IP, applies the free protection described in [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl), and terminates the public-facing SSL. A grey-cloud record just points visitors straight at the server, bypassing all of that.
 
 The important rule is:
 
 ```text
-Domain → server running Traefik → ports 80/443
+Domain → Cloudflare (proxy + SSL) → server running Traefik → ports 80/443
 ```
 
-You can verify resolution from a computer with:
+Because the record is proxied, a plain `nslookup` or `curl` from your computer now resolves to a Cloudflare IP, not the server's — that's expected and confirms the proxy is active:
 
 ```bash
 nslookup site1.example.com
 ```
 
-or:
+To check that the server itself is reachable and Traefik is answering, run this from the server:
 
 ```bash
-curl -I http://site1.example.com
+curl -I http://localhost
 ```
 
-Do not move on to HTTPS troubleshooting until the domain reaches the correct server.
+Do not move on to HTTPS troubleshooting until the record shows as proxied in Cloudflare and the server responds locally.
 
 ### 8.18 First Deployment
 
@@ -1981,21 +1913,44 @@ rm file.zip
 
 ### 8.20 Update Only One Website
 
-Suppose only `web2` changed.
+Suppose only `web2` changed. `docker-compose.yml` and `certs/` live one level above `web2/`, so none of this touches them.
 
-Replace the project files in:
+Back up anything that only exists on the server and isn't in your new zip (usually the `Dockerfile`, if you created it directly on the server instead of keeping it in your project — see [8.11](#811-vite--react-dockerfile)/[8.12](#812-nextjs-dockerfile) — and any `.env` file):
 
-```text
-/opt/web/web2
+```bash
+cp web2/Dockerfile /opt/web2-Dockerfile.bak
+cp web2/.env /opt/web2-env.bak   # only if it exists
 ```
 
-Then run:
+Upload the new zip via Bitvise SFTP, then replace the project folder:
+
+```bash
+cd /opt/web
+rm -rf web2
+unzip /opt/web2-update.zip -d web2
+rm /opt/web2-update.zip
+```
+
+Restore whatever you backed up (skip this if your zip already included it):
+
+```bash
+cp /opt/web2-Dockerfile.bak web2/Dockerfile
+cp /opt/web2-env.bak web2/.env
+```
+
+Rebuild and restart just that container:
 
 ```bash
 docker compose up --build -d web2
 ```
 
-Only `web2` is rebuilt/recreated. Traefik continues running and the other websites are not rebuilt.
+Only `web2` is rebuilt/recreated. Traefik and the other websites keep running without interruption.
+
+Check it started cleanly:
+
+```bash
+docker compose logs -f web2
+```
 
 This is the normal workflow once several websites share the same server.
 
@@ -2086,7 +2041,7 @@ Check SSH specifically:
 sudo fail2ban-client status sshd
 ```
 
-Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys.
+Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys. It's only needed here for SSH — SSH isn't proxied through Cloudflare, so Cloudflare's DDoS/bot protection never sees it. The websites themselves don't need a `[traefik]`/HTTP jail: that surface already sits behind Cloudflare's free protection (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), and UFW ([8.9](#89-firewall-basics-with-ufw)) already blocks anyone trying to hit ports `80`/`443` directly instead of through Cloudflare.
 
 ### 8.23 Basic SSH Hardening
 
@@ -2152,16 +2107,17 @@ docker compose logs -f web2
 docker compose logs -f web3
 ```
 
-**Let's Encrypt certificate is not issued**
+**Browser shows a Cloudflare SSL error (521/526) or "not secure"**
 
 Check in this order:
 
-1. DNS points to the correct server.
-2. UFW allows port `80`.
-3. The server is reachable from the Internet on port `80`.
-4. The `Host(...)` rule exactly matches the domain.
-5. `/opt/web/letsencrypt/acme.json` exists.
-6. Traefik logs show the ACME process.
+1. The DNS record is **Proxied** (orange cloud), not DNS only — see [8.17](#817-dns-setup).
+2. SSL/TLS mode in Cloudflare is set to **Full (strict)**, not Flexible ([9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)).
+3. `/opt/web/certs/cert.pem` and `key.pem` exist and hold the Origin Certificate/Key generated in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites), not placeholders.
+4. The Origin Certificate's SANs include the exact domain being requested.
+5. UFW allows `80`/`443` from Cloudflare's IP ranges ([8.9](#89-firewall-basics-with-ufw)).
+6. The `Host(...)` rule exactly matches the domain.
+7. Traefik logs show the certificate being loaded from the file provider, with no errors reading `/certs`.
 
 **Next.js connection error**
 
@@ -2208,13 +2164,13 @@ Usually the problem is one of:
 [ ] UFW allows SSH, HTTP and HTTPS
 [ ] Traefik is the only public entrypoint
 [ ] Docker network "web" exists
-[ ] acme.json exists with restricted permissions
-[ ] DNS records point to the server
+[ ] Cloudflare Origin Certificate generated and saved to certs/cert.pem + key.pem
+[ ] DNS records point to the server and are set to Proxied (orange cloud)
+[ ] SSL/TLS mode in Cloudflare is Full (strict)
 [ ] Vite Dockerfile builds correctly
 [ ] Next.js Dockerfile builds correctly
 [ ] Traefik routes use the correct domains
-[ ] Let's Encrypt certificates are issued
-[ ] Fail2ban is running
+[ ] Fail2ban is running (SSH jail)
 [ ] SSH key login has been tested
 [ ] Root SSH login is disabled
 [ ] Password SSH login is disabled after key verification
@@ -2249,6 +2205,40 @@ Usually the problem is one of:
 - **Redirect rules**: under **Rules → Redirect Rules**, common basics are forcing `www` → apex (or the reverse) and forcing `https`.
 - **Page Rules / Cache Rules**: useful for basics like always redirecting `http://` to `https://`, or setting cache behavior for static assets under `/images/*` or `/assets/*`.
 
+### 9.4 Vite + Next.js + Cloudflare Protection & Free SSL
+
+This section applies to the self-hosted Vite/Next.js sites from [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment) — the Docker + Traefik setup running on your own VPS, as opposed to [9.2](#92-cloudflare-pages) which is for Cloudflare Pages. On the free plan, Cloudflare in front of that server gives you both protection and SSL with nothing extra to buy or renew.
+
+**1. Add the site and proxy the DNS record**
+
+In the Cloudflare dashboard, add the domain and create the `A` record described in [8.17](#817-dns-setup), keeping it **Proxied** (orange cloud). This is what actually routes traffic through Cloudflare instead of straight to the server, and it's a prerequisite for everything below.
+
+**2. Set the SSL/TLS encryption mode to Full (strict)**
+
+Under **SSL/TLS → Overview**, choose **Full (strict)**. This encrypts both legs of the connection: browser → Cloudflare (Cloudflare's free Universal SSL certificate, issued and renewed automatically) and Cloudflare → your server (the Cloudflare Origin Certificate from [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)). Avoid **Flexible** — it only encrypts the first leg, leaving Cloudflare-to-server traffic in plain HTTP.
+
+**3. Turn on "Always Use HTTPS"**
+
+Under **SSL/TLS → Edge Certificates**, enable **Always Use HTTPS** so any `http://` request gets redirected. This is redundant with Traefik's own HTTP→HTTPS redirect ([8.15](#815-understand-the-important-traefik-lines)), but costs nothing to leave on and catches requests before they even reach the server.
+
+**4. Protection that's on by default (nothing to configure)**
+
+The free plan already includes, automatically, for any proxied domain:
+
+- Unmetered DDoS protection at the network edge.
+- The server's real IP is hidden — only Cloudflare's IPs are ever visible to visitors, which is what [8.9](#89-firewall-basics-with-ufw)'s UFW rule (allowing `80`/`443` only from Cloudflare's ranges) is there to enforce.
+- A CDN cache for static assets, reducing load on the server.
+
+**5. Optional extra protection (free plan)**
+
+- **Bot Fight Mode** (**Security → Bots**) — challenges known bad bots.
+- **Under Attack Mode** (**Security → Settings**) — puts up a JS challenge page for every visitor; use temporarily during an active attack, not by default, since it adds friction for real visitors.
+- Up to 5 free custom **WAF rules** (**Security → WAF**) if you want to block or challenge specific patterns (e.g. a known bad path or country).
+
+**What this replaces**
+
+Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([8.14](#814-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([8.9](#89-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([8.22](#822-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
+
 ---
 ## 10. Git and GitHub
 
@@ -2256,42 +2246,102 @@ Usually the problem is one of:
 
 Use these commands when starting a brand-new project locally and connecting it to a GitHub repository.
 
-| Command | Description |
-|---|---|
-| `git init` | Initializes a new, empty Git repository in the local project folder |
-| `git add .` | Stages all modified and new files, preparing them to be saved |
-| `git commit -m "initial commit"` | Saves staged changes locally with a descriptive message |
-| `git branch -M main` | Renames the default local branch to `main` |
-| `git remote add origin <repository-URL>` | Links the local repository to the remote repository on GitHub |
-| `git push -u origin main` | Uploads local commits to the `main` branch on GitHub for the first time |
+```bash
+git init
+```
+Initializes a new, empty Git repository in the local project folder.
+
+```bash
+git add .
+```
+Stages all modified and new files, preparing them to be saved.
+
+```bash
+git commit -m "initial commit"
+```
+Saves staged changes locally with a descriptive message.
+
+```bash
+git branch -M main
+```
+Renames the default local branch to `main`.
+
+```bash
+git remote add origin <repository-URL>
+```
+Links the local repository to the remote repository on GitHub.
+
+```bash
+git push -u origin main
+```
+Uploads local commits to the `main` branch on GitHub for the first time.
 
 ### 10.2 Daily Workflow
 
 Use these steps every time files are edited and need to be pushed to GitHub.
 
-| Command | Description |
-|---|---|
-| `git status` | Shows which files have been modified or added (safe to run anytime) |
-| `git add .` | Stages the latest changes |
-| `git commit -m "describe your changes here"` | Saves changes locally with a message explaining what was done |
-| `git push` | Uploads newly saved local commits to GitHub |
+```bash
+git status
+```
+Shows which files have been modified or added (safe to run anytime).
+
+```bash
+git add .
+```
+Stages the latest changes.
+
+```bash
+git commit -m "describe your changes here"
+```
+Saves changes locally with a message explaining what was done.
+
+```bash
+git push
+```
+Uploads newly saved local commits to GitHub.
 
 ### 10.3 Branching
 
 Branches allow working on new features safely without breaking the live site.
 
-| Command | Description |
-|---|---|
-| `git branch` | Lists all local branches and shows the current one |
-| `git branch <branch-name>` | Creates a new branch |
-| `git checkout <branch-name>` (or `git switch <branch-name>`) | Switches to the specified branch |
-| `git checkout -b <branch-name>` (or `git switch -c <branch-name>`) | Creates a new branch and switches to it immediately |
-| `git merge <branch-name>` | Merges changes from the specified branch into the current branch |
+```bash
+git branch
+```
+Lists all local branches and shows the current one.
+
+```bash
+git branch <branch-name>
+```
+Creates a new branch.
+
+```bash
+git checkout <branch-name>
+```
+Switches to the specified branch (or `git switch <branch-name>`).
+
+```bash
+git checkout -b <branch-name>
+```
+Creates a new branch and switches to it immediately (or `git switch -c <branch-name>`).
+
+```bash
+git merge <branch-name>
+```
+Merges changes from the specified branch into the current branch.
 
 ### 10.4 Other Useful Commands
 
-| Command | Description |
-|---|---|
-| `git pull` | Downloads and integrates the latest changes from GitHub into the local project (essential when working with others) |
-| `git clone <repository-URL>` | Downloads an existing GitHub repository onto the local machine |
-| `git log` | Displays the history of all commits made in the repository |
+```bash
+git pull
+```
+Downloads and integrates the latest changes from GitHub into the local project (essential when working with others).
+
+```bash
+git clone <repository-URL>
+```
+Downloads an existing GitHub repository onto the local machine.
+
+```bash
+git log
+```
+Displays the history of all commits made in the repository.
