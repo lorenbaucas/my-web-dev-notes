@@ -20,6 +20,8 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [4.7 Prettier Setup](#47-prettier-setup)
   - [4.8 Windows PowerShell Execution Policy / npm Recovery](#48-windows-powershell-execution-policy--npm-recovery)
   - [4.9 Development Server](#49-development-server)
+  - [4.10 `.env` Example](#410-env-example)
+  - [4.11 `.gitignore` Example](#411-gitignore-example)
 - [5. Astro](#5-astro)
   - [5.1 Project Setup](#51-project-setup)
   - [5.2 Install Dependencies](#52-install-dependencies)
@@ -80,6 +82,11 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [10.2 Daily Workflow](#102-daily-workflow)
   - [10.3 Branching](#103-branching)
   - [10.4 Other Useful Commands](#104-other-useful-commands)
+  - [10.5 Undoing Things: `reset`, `restore`, `revert`](#105-undoing-things-reset-restore-revert)
+  - [10.6 `rebase` vs `merge`](#106-rebase-vs-merge)
+  - [10.7 Force Push and Other Dangerous Commands](#107-force-push-and-other-dangerous-commands)
+  - [10.8 Real Branching Flow: Feature Branch → Main](#108-real-branching-flow-feature-branch--main)
+- [11. Common HTTP Status Codes](#11-common-http-status-codes)
 ## 1. Required Programs
 
 | Program | Purpose | Link |
@@ -463,6 +470,105 @@ Astro    → http://localhost:4321
 Vite     → http://localhost:5173
 Next.js  → http://localhost:3000
 ```
+
+### 4.10 `.env` Example
+
+Environment variables keep secrets (API keys, database URLs, tokens) out of the codebase. The `.env` file is never committed — it's excluded via [`.gitignore`](#411-gitignore-example) — only `.env.example` (with placeholder values, no real secrets) gets committed as a reference for other developers.
+
+**Astro** — variables must be prefixed with `PUBLIC_` to be exposed to client-side code; anything without that prefix is only available server-side:
+
+```bash
+# .env
+PUBLIC_SITE_URL=https://mysite.com
+PUBLIC_GA_ID=G-XXXXXXXXXX
+
+# Server-only (not exposed to the browser)
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+```
+
+Accessed via `import.meta.env.PUBLIC_SITE_URL` (or `import.meta.env.DATABASE_URL` server-side, e.g. inside an API route or `.astro` frontmatter).
+
+**Vite** — same `PUBLIC`-style convention but with the `VITE_` prefix; anything without it is stripped from the client bundle entirely for security:
+
+```bash
+# .env
+VITE_API_URL=https://api.mysite.com
+VITE_GA_ID=G-XXXXXXXXXX
+```
+
+Accessed via `import.meta.env.VITE_API_URL`. Since Vite/React apps are fully client-side, never put real secrets (DB passwords, private API keys) here — anything with the `VITE_` prefix ends up in the shipped JS bundle and is visible to anyone.
+
+**Next.js** — the `NEXT_PUBLIC_` prefix exposes a variable to the browser; without it, the variable only works in Server Components, API routes, and `next.config.ts`:
+
+```bash
+# .env.local
+NEXT_PUBLIC_SITE_URL=https://mysite.com
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+
+# Server-only (not exposed to the browser)
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+NEXTAUTH_SECRET=replace-with-a-random-string
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+```
+
+Accessed via `process.env.NEXT_PUBLIC_SITE_URL` (client or server) or `process.env.DATABASE_URL` (server-only). Next.js conventionally uses `.env.local` for local secrets — it's ignored by Git by default in the standard Next.js `.gitignore`, on top of `.env*`.
+
+> These variable names, prefixes and values are illustrative — swap them for whatever real services and keys the project actually needs.
+
+### 4.11 `.gitignore` Example
+
+A single generic `.gitignore` covers Astro, Vite and Next.js, since the underlying tooling (Node.js, pnpm, TypeScript, editors, OS files) is the same across all three:
+
+```gitignore
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.output/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Framework-specific caches
+.astro/
+.vite/
+.turbo/
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Editor / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing / coverage
+coverage/
+
+# Misc
+*.local
+```
+
+> `.env` is deliberately ignored while `.env.example` is not — commit `.env.example` with placeholder values so the pattern from [4.10](#410-env-example) is documented for anyone who clones the repo. `!.vscode/extensions.json` is a negation pattern: it re-includes that one file even though `.vscode/*` ignores the folder, which is handy for sharing the extension list from [2. VS Code Extensions](#2-vs-code-extensions) with the team.
 
 ---
 
@@ -2409,3 +2515,226 @@ Downloads an existing GitHub repository onto the local machine.
 git log
 ```
 Displays the history of all commits made in the repository.
+
+### 10.5 Undoing Things: `reset`, `restore`, `revert`
+
+These three commands all "undo" something, but they act on different things and at different levels of danger.
+
+```bash
+git restore <file>
+```
+Discards uncommitted local changes to a file, reverting it back to the last committed version. Safe for the file itself, but **the discarded changes are gone**.
+
+```bash
+git restore --staged <file>
+```
+Unstages a file (removes it from the staging area) without touching its actual content — the opposite of `git add <file>`.
+
+```bash
+git reset --soft <commit>
+```
+Moves the current branch pointer back to `<commit>`, keeping all changes staged. Useful for squashing the last few commits into one before committing again.
+
+```bash
+git reset --mixed <commit>
+```
+Same as `--soft`, but also unstages the changes (they stay in the working directory as uncommitted edits). This is the **default mode** if no flag is passed.
+
+```bash
+git reset --hard <commit>
+```
+Moves the branch pointer back to `<commit>` **and discards all changes** (staged and unstaged) to match that commit exactly. Destructive — anything not committed elsewhere (e.g. pushed, or on another branch) is lost permanently.
+
+```bash
+git revert <commit>
+```
+Creates a **new commit** that undoes the changes from `<commit>`, without rewriting history. Safe to use on commits that have already been pushed/shared, since `reset --hard` on shared history causes conflicts for collaborators.
+
+> Rule of thumb: use `revert` on commits that are already pushed and shared with others; use `reset` freely on local commits nobody else has pulled yet.
+
+### 10.6 `rebase` vs `merge`
+
+Both combine work from one branch into another, but they produce different history.
+
+```bash
+git merge <branch-name>
+```
+Combines `<branch-name>` into the current branch by creating a new **merge commit** with two parents. Preserves the exact history of both branches — nothing is rewritten — but the log ends up with extra merge commits and parallel-looking history.
+
+```bash
+git rebase <branch-name>
+```
+Replays the current branch's commits **on top of** `<branch-name>`, rewriting them with new commit hashes. Produces a clean, linear history with no merge commits — but because it rewrites commits, it should only be done on local/unpushed commits, or on a feature branch nobody else is also working on.
+
+```bash
+git rebase --continue
+```
+After manually resolving a conflict during a rebase (editing the conflicted file and running `git add <file>`), continues replaying the remaining commits.
+
+```bash
+git rebase --abort
+```
+Cancels an in-progress rebase and returns the branch to the state it was in before the rebase started.
+
+| | `merge` | `rebase` |
+|---|---|---|
+| History | Preserves branch history, adds a merge commit | Linear, rewrites commit hashes |
+| Safe on shared/pushed branches | Yes | No (unless nobody else has pulled those commits) |
+| Typical use | Merging a finished feature branch into `main` | Cleaning up / updating a feature branch before opening a PR |
+
+### 10.7 Force Push and Other Dangerous Commands
+
+```bash
+git push --force
+```
+Overwrites the remote branch's history with the local branch's history, discarding any remote commits that aren't in the local branch. Dangerous on shared branches (like `main`) since it can permanently erase a teammate's pushed work.
+
+```bash
+git push --force-with-lease
+```
+Same idea, but refuses to overwrite the remote branch if someone else has pushed new commits since the last fetch. This is the **safer default** for force-pushing a personal feature branch (e.g. after a rebase) — prefer this over plain `--force`.
+
+```bash
+git stash
+```
+Temporarily shelves uncommitted changes (staged and unstaged) so the working directory is clean, e.g. to switch branches without committing half-finished work.
+
+```bash
+git stash pop
+```
+Re-applies the most recently stashed changes and removes them from the stash list.
+
+```bash
+git cherry-pick <commit>
+```
+Applies a single specific commit from another branch onto the current branch, without merging the whole branch.
+
+> As a general rule: never force-push to `main` or any branch other people are actively pulling from. Force-push is for cleaning up **your own** feature branch before it's merged.
+
+### 10.8 Real Branching Flow: Feature Branch → Main
+
+A realistic day-to-day flow for working on a feature without breaking `main`, including the forks in the road that commonly come up.
+
+**Step 1 — Start from an up-to-date `main`:**
+
+```bash
+git checkout main
+git pull
+```
+
+**Step 2 — Create the feature branch:**
+
+```bash
+git checkout -b feature/login-form
+```
+
+**Step 3 — Work normally, committing as you go:**
+
+```bash
+git add .
+git commit -m "add login form UI"
+# ...more edits...
+git add .
+git commit -m "wire up form validation"
+```
+
+**Step 4 — Before opening a PR, update the branch with the latest `main`.** Two options here, depending on whether the branch is still private (only local, or on a fork nobody else pulled from) or already shared with someone else:
+
+- **If nobody else has pulled your branch** → rebase for a clean, linear history:
+
+  ```bash
+  git checkout main
+  git pull
+  git checkout feature/login-form
+  git rebase main
+  ```
+
+  - **If a conflict appears** → Git pauses and marks the conflicted file(s). Open them, resolve the `<<<<<<<` / `=======` / `>>>>>>>` markers by hand, then:
+
+    ```bash
+    git add <resolved-file>
+    git rebase --continue
+    ```
+
+    Repeat for each conflicting commit until the rebase finishes. If it gets too messy, back out entirely with `git rebase --abort` and try `merge` instead (next bullet).
+
+  - **If no conflict appears** → the rebase finishes immediately, and the branch now sits cleanly on top of the latest `main`.
+
+  Since rebase rewrote the branch's commit hashes, pushing it again requires:
+
+  ```bash
+  git push --force-with-lease
+  ```
+
+- **If someone else is also working on that branch** → merge `main` into it instead, since rebasing would rewrite commits they may have already pulled:
+
+  ```bash
+  git checkout feature/login-form
+  git merge main
+  ```
+
+  - **If a conflict appears** → resolve the marked files by hand, then:
+
+    ```bash
+    git add <resolved-file>
+    git commit
+    ```
+
+    (a merge conflict is resolved with a normal commit, not `--continue`).
+
+  - **If no conflict appears** → Git creates the merge commit automatically, no extra step needed.
+
+  A regular push works fine here, no `--force` needed:
+
+  ```bash
+  git push
+  ```
+
+**Step 5 — Merge the feature branch into `main`.** Again, two common paths:
+
+- **Merging locally** (small personal projects, no PR review process):
+
+  ```bash
+  git checkout main
+  git pull
+  git merge feature/login-form
+  git push
+  ```
+
+- **Merging via a Pull Request** (team projects, GitHub) — push the feature branch, open a PR on GitHub from `feature/login-form` into `main`, get it reviewed, then merge using GitHub's UI (Merge commit, Squash and merge, or Rebase and merge — pick whichever the team's convention is). Afterwards, sync locally:
+
+  ```bash
+  git checkout main
+  git pull
+  ```
+
+**Step 6 — Clean up the finished branch:**
+
+```bash
+git branch -d feature/login-form          # delete local branch (only works if fully merged)
+git push origin --delete feature/login-form  # delete remote branch
+```
+
+> If `git branch -d` refuses because the branch isn't fully merged (e.g. it was squash-merged on GitHub, so Git doesn't recognize the commits as merged), force the local delete with `git branch -D feature/login-form` once the PR is confirmed merged on GitHub.
+
+---
+
+## 11. Common HTTP Status Codes
+
+Useful when debugging API requests (fetch calls, form submissions, backend responses) across any of the three frameworks.
+
+| Code | Name | Meaning |
+|---|---|---|
+| `200` | OK | Request succeeded |
+| `201` | Created | Request succeeded and a new resource was created |
+| `204` | No Content | Request succeeded, no content is returned (common for DELETE) |
+| `400` | Bad Request | The request is malformed or missing required data |
+| `401` | Unauthorized | Authentication is missing or invalid |
+| `403` | Forbidden | Authenticated, but not allowed to access this resource |
+| `404` | Not Found | The requested resource doesn't exist |
+| `409` | Conflict | The request conflicts with the current state of the resource (e.g. duplicate entry) |
+| `422` | Unprocessable Entity | The request is well-formed but fails validation |
+| `429` | Too Many Requests | Rate limit exceeded — slow down and retry later |
+| `500` | Internal Server Error | Generic server-side failure |
+| `502` | Bad Gateway | An upstream server (e.g. reverse proxy, Traefik) got an invalid response |
+| `503` | Service Unavailable | The server is temporarily overloaded or down for maintenance |
