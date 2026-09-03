@@ -44,49 +44,71 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [7.6 Server and Client Components](#76-server-and-client-components)
   - [7.7 Production Build](#77-production-build)
   - [7.8 Project Structure & Architecture](#78-project-structure--architecture)
-- [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment)
-  - [8.1 Connect with Bitvise SSH Client](#81-connect-with-bitvise-ssh-client)
-  - [8.2 Basic Linux Setup](#82-basic-linux-setup)
-  - [8.3 Install Only the Basic Utilities Needed Here](#83-install-only-the-basic-utilities-needed-here)
-  - [8.4 Node.js: Required by the Projects](#84-nodejs-required-by-the-projects)
-  - [8.5 Install Docker and Docker Compose](#85-install-docker-and-docker-compose)
-  - [8.6 Allow Your User to Run Docker Without `sudo`](#86-allow-your-user-to-run-docker-without-sudo)
-  - [8.7 First Docker Test](#87-first-docker-test)
-  - [8.8 Basic Linux Commands for Deployments](#88-basic-linux-commands-for-deployments)
-  - [8.9 Firewall Basics with UFW](#89-firewall-basics-with-ufw)
-  - [8.10 Create the Server Structure](#810-create-the-server-structure)
-  - [8.11 Vite + React Dockerfile](#811-vite--react-dockerfile)
-  - [8.12 Next.js Dockerfile](#812-nextjs-dockerfile)
-  - [8.13 `.dockerignore`](#813-dockerignore)
-  - [8.14 Traefik + Cloudflare Origin Certificate + Three Websites](#814-traefik--cloudflare-origin-certificate--three-websites)
-  - [8.15 Understand the Important Traefik Lines](#815-understand-the-important-traefik-lines)
-  - [8.16 Why the Three Websites Are Different](#816-why-the-three-websites-are-different)
-  - [8.17 DNS Setup](#817-dns-setup)
-  - [8.18 First Deployment](#818-first-deployment)
-  - [8.19 Useful Deployment Commands](#819-useful-deployment-commands)
-  - [8.20 Update Only One Website](#820-update-only-one-website)
-  - [8.21 Docker Disk Cleanup](#821-docker-disk-cleanup)
-  - [8.22 Fail2ban Basic Configuration](#822-fail2ban-basic-configuration)
-  - [8.23 Basic SSH Hardening](#823-basic-ssh-hardening)
-  - [8.24 Troubleshooting](#824-troubleshooting)
-  - [8.25 Final Production Checklist](#825-final-production-checklist)
-- [9. Deployment](#9-deployment)
-  - [9.1 Google Search Console](#91-google-search-console)
-  - [9.2 Cloudflare Pages](#92-cloudflare-pages)
-  - [9.3 Cloudflare Domains & Rules](#93-cloudflare-domains--rules)
-  - [9.4 Vite + Next.js + Cloudflare Protection & Free SSL](#94-vite--nextjs--cloudflare-protection--free-ssl)
-  - [9.5 Pointing the Client's Domain (Astro)](#95-pointing-the-clients-domain-astro)
-  - [9.6 Pointing the Client's Domain (Vite + Next.js)](#96-pointing-the-clients-domain-vite--nextjs)
-- [10. Git and GitHub](#10-git-and-github)
-  - [10.1 Initial Setup (First-Time Project)](#101-initial-setup-first-time-project)
-  - [10.2 Daily Workflow](#102-daily-workflow)
-  - [10.3 Branching](#103-branching)
-  - [10.4 Other Useful Commands](#104-other-useful-commands)
-  - [10.5 Undoing Things: `reset`, `restore`, `revert`](#105-undoing-things-reset-restore-revert)
-  - [10.6 `rebase` vs `merge`](#106-rebase-vs-merge)
-  - [10.7 Force Push and Other Dangerous Commands](#107-force-push-and-other-dangerous-commands)
-  - [10.8 Real Branching Flow: Feature Branch → Main](#108-real-branching-flow-feature-branch--main)
-- [11. Common HTTP Status Codes](#11-common-http-status-codes)
+- [8. Database & Backend: Prisma + PostgreSQL](#8-database--backend-prisma--postgresql)
+  - [8.1 Overview: Which Framework Needs a Separate Backend](#81-overview-which-framework-needs-a-separate-backend)
+  - [8.2 Backend Project Structure](#82-backend-project-structure)
+  - [8.3 Install Dependencies](#83-install-dependencies)
+  - [8.4 `.env` Example](#84-env-example)
+  - [8.5 Configuration Files: `tsconfig.json` and `prisma.config.ts`](#85-configuration-files-tsconfigjson-and-prismaconfigts)
+  - [8.6 PostgreSQL: Starting the Database](#86-postgresql-starting-the-database)
+  - [8.7 Prisma From Scratch: Default `schema.prisma`](#87-prisma-from-scratch-default-schemaprisma)
+  - [8.8 Add a Simple `User` Model](#88-add-a-simple-user-model)
+  - [8.9 Create and Apply the First Migration](#89-create-and-apply-the-first-migration)
+  - [8.10 Modifying an Existing Schema: Update `User` and Add a New Table](#810-modifying-an-existing-schema-update-user-and-add-a-new-table)
+  - [8.11 Simple Backend Entry Point (`src/index.ts`): Login Example](#811-simple-backend-entry-point-srcindexts-login-example)
+  - [8.12 Seed Example](#812-seed-example)
+  - [8.13 Prisma Studio](#813-prisma-studio)
+  - [8.14 Day-to-Day Workflow and Reference Commands](#814-day-to-day-workflow-and-reference-commands)
+  - [8.15 Common Prisma and PostgreSQL Errors](#815-common-prisma-and-postgresql-errors)
+- [9. Full-Stack Project Structure (Frontend + Monorepo)](#9-full-stack-project-structure-frontend--monorepo)
+  - [9.1 Monorepo Overview: pnpm Workspaces](#91-monorepo-overview-pnpm-workspaces)
+  - [9.2 Root `package.json`: Explaining `concurrently`](#92-root-packagejson-explaining-concurrently)
+  - [9.3 Root `docker-compose.yml` (Shared Postgres)](#93-root-docker-composeyml-shared-postgres)
+  - [9.4 Frontend Structure](#94-frontend-structure)
+  - [9.5 Final Project Structure](#95-final-project-structure)
+- [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment)
+  - [10.1 Connect with Bitvise SSH Client](#101-connect-with-bitvise-ssh-client)
+  - [10.2 Basic Linux Setup](#102-basic-linux-setup)
+  - [10.3 Install Only the Basic Utilities Needed Here](#103-install-only-the-basic-utilities-needed-here)
+  - [10.4 Node.js: Required by the Projects](#104-nodejs-required-by-the-projects)
+  - [10.5 Install Docker and Docker Compose](#105-install-docker-and-docker-compose)
+  - [10.6 Allow Your User to Run Docker Without `sudo`](#106-allow-your-user-to-run-docker-without-sudo)
+  - [10.7 First Docker Test](#107-first-docker-test)
+  - [10.8 Basic Linux Commands for Deployments](#108-basic-linux-commands-for-deployments)
+  - [10.9 Firewall Basics with UFW](#109-firewall-basics-with-ufw)
+  - [10.10 Create the Server Structure](#1010-create-the-server-structure)
+  - [10.11 Vite + React Dockerfile](#1011-vite--react-dockerfile)
+  - [10.12 Next.js Dockerfile](#1012-nextjs-dockerfile)
+  - [10.13 `.dockerignore`](#1013-dockerignore)
+  - [10.14 Traefik + Cloudflare Origin Certificate + Three Websites](#1014-traefik--cloudflare-origin-certificate--three-websites)
+  - [10.15 Understand the Important Traefik Lines](#1015-understand-the-important-traefik-lines)
+  - [10.16 Why the Three Websites Are Different](#1016-why-the-three-websites-are-different)
+  - [10.17 DNS Setup](#1017-dns-setup)
+  - [10.18 First Deployment](#1018-first-deployment)
+  - [10.19 Useful Deployment Commands](#1019-useful-deployment-commands)
+  - [10.20 Update Only One Website](#1020-update-only-one-website)
+  - [10.21 Docker Disk Cleanup](#1021-docker-disk-cleanup)
+  - [10.22 Fail2ban Basic Configuration](#1022-fail2ban-basic-configuration)
+  - [10.23 Basic SSH Hardening](#1023-basic-ssh-hardening)
+  - [10.24 Troubleshooting](#1024-troubleshooting)
+  - [10.25 Final Production Checklist](#1025-final-production-checklist)
+- [11. Deployment](#11-deployment)
+  - [11.1 Google Search Console](#111-google-search-console)
+  - [11.2 Cloudflare Pages](#112-cloudflare-pages)
+  - [11.3 Cloudflare Domains & Rules](#113-cloudflare-domains--rules)
+  - [11.4 Vite + Next.js + Cloudflare Protection & Free SSL](#114-vite--nextjs--cloudflare-protection--free-ssl)
+  - [11.5 Pointing the Client's Domain (Astro)](#115-pointing-the-clients-domain-astro)
+  - [11.6 Pointing the Client's Domain (Vite + Next.js)](#116-pointing-the-clients-domain-vite--nextjs)
+- [12. Git and GitHub](#12-git-and-github)
+  - [12.1 Initial Setup (First-Time Project)](#121-initial-setup-first-time-project)
+  - [12.2 Daily Workflow](#122-daily-workflow)
+  - [12.3 Branching](#123-branching)
+  - [12.4 Other Useful Commands](#124-other-useful-commands)
+  - [12.5 Undoing Things: `reset`, `restore`, `revert`](#125-undoing-things-reset-restore-revert)
+  - [12.6 `rebase` vs `merge`](#126-rebase-vs-merge)
+  - [12.7 Force Push and Other Dangerous Commands](#127-force-push-and-other-dangerous-commands)
+  - [12.8 Real Branching Flow: Feature Branch → Main](#128-real-branching-flow-feature-branch--main)
+- [13. Common HTTP Status Codes](#13-common-http-status-codes)
 ## 1. Required Programs
 
 | Program | Purpose | Link |
@@ -317,7 +339,7 @@ Next.js can alternatively generate it dynamically from `app/robots.ts` instead o
 
 ### 4.5 Sitemap Integration
 
-A sitemap is useful for SEO and should be submitted to Google Search Console (see [9.1](#91-google-search-console)). The mechanism differs per framework:
+A sitemap is useful for SEO and should be submitted to Google Search Console (see [11.1](#111-google-search-console)). The mechanism differs per framework:
 
 **Astro:**
 
@@ -574,7 +596,7 @@ coverage/
 
 ## 5. Astro
 
-> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in section 8. Astro sites are deployed directly to Cloudflare Pages (see [9.2](#92-cloudflare-pages)).
+> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in section 10. Astro sites are deployed directly to Cloudflare Pages (see [11.2](#112-cloudflare-pages)).
 
 ### 5.1 Project Setup
 
@@ -1069,7 +1091,7 @@ pnpm start
 
 `pnpm build` creates the optimized production output. `pnpm start` runs the production Next.js server, normally on port `3000`.
 
-For the Docker deployment in [section 8](#8-linux-server--docker-deployment):
+For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 
 - A normal Next.js application should run `next start`.
 - Do not treat a normal Next.js application as a `dist/` static site.
@@ -1112,7 +1134,664 @@ For the Docker deployment in [section 8](#8-linux-server--docker-deployment):
 
 **`lib/`** — Shared utilities, helpers, and non-component logic (data fetching, formatting, etc.).
 
-## 8. Linux Server & Docker Deployment
+---
+
+## 8. Database & Backend: Prisma + PostgreSQL
+
+Stack: **Express + TypeScript + Prisma + PostgreSQL (Docker)**. This section covers setting up that backend from zero — schema, migrations, `.env`, a minimal login endpoint, and a seed script.
+
+### 8.1 Overview: Which Framework Needs a Separate Backend
+
+Between the frameworks in this README, only **Vite + React** and **Next.js** ever talk to a database.
+
+| Framework | Where the backend lives | Needs a separate backend? |
+|---|---|---|
+| **Next.js** | Directly inside API Routes / Route Handlers / Server Actions | No — Next.js *is* the backend |
+| **Vite + React** | Never in the frontend bundle | **Yes** — Vite is a pure client-side SPA, so it needs a standalone Node/Express API server that the React app calls over `fetch` |
+
+Everything below builds that standalone Express + Prisma backend — the same one a Vite frontend calls over `fetch`, or that a Next.js project could adapt into its own Route Handlers. See [9. Full-Stack Project Structure (Frontend + Monorepo)](#9-full-stack-project-structure-frontend--monorepo) for how it sits alongside the frontend and the shared `docker-compose.yml`.
+
+### 8.2 Backend Project Structure
+
+```
+backend/
+├── prisma/
+│   ├── migrations/
+│   ├── schema.prisma
+│   └── seed.ts
+├── src/
+│   └── index.ts
+├── .env
+├── package.json
+├── prisma.config.ts
+└── tsconfig.json
+```
+
+### 8.3 Install Dependencies
+
+```bash
+pnpm install
+```
+
+**Production dependencies:**
+
+- `@prisma/client` — the generated Prisma client
+- `@prisma/adapter-pg` — Prisma's driver adapter for PostgreSQL, used together with `pg` instead of connecting through the older built-in engine
+- `pg` — the actual PostgreSQL driver
+- `express`, `cors`, `dotenv` — HTTP server, cross-origin requests, environment variables
+- `bcrypt` — password hashing
+- `cookie-parser` — reads the session cookie on incoming requests
+
+**Development dependencies:**
+
+- `prisma` — the Prisma CLI (`pnpm prisma ...`)
+- `tsx` — runs TypeScript directly, with `--watch` for hot reload in dev
+- `typescript` and the matching `@types/*` packages
+
+```json
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.5",
+    "@types/pg": "^8.23.1",
+    "prisma": "^7.10.0",
+    "tsx": "^4.23.13"
+  }
+}
+```
+
+### 8.4 `.env` Example
+
+```env
+DATABASE_URL="postgresql://postgres:root@localhost:5432/mydb?schema=public"
+PORT=3001
+```
+
+> Add `.env` to `.gitignore` ([4.11](#411-gitignore-example)) — never commit it. These credentials match the shared `postgres` service in the root `docker-compose.yml` from [9.3](#93-root-docker-composeyml-shared-postgres).
+
+### 8.5 Configuration Files: `tsconfig.json` and `prisma.config.ts`
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2025",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"]
+}
+```
+
+```typescript
+// prisma.config.ts
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
+  },
+  datasource: {
+    url: env("DATABASE_URL"),
+  },
+});
+```
+
+`prisma.config.ts` is the Prisma CLI's configuration file: it tells `prisma migrate`/`prisma studio`/`prisma db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use — separate from how the running server itself connects (see [8.11](#811-simple-backend-entry-point-srcindexts-login-example)).
+
+### 8.6 PostgreSQL: Starting the Database
+
+A quick standalone container is enough to work on the backend in isolation:
+
+```bash
+docker run --name backend-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=root \
+  -e POSTGRES_DB=mydb \
+  -p 5432:5432 \
+  -v postgres_data:/var/lib/postgresql \
+  -d postgres:18
+```
+
+> In the full-stack monorepo from [9. Full-Stack Project Structure](#9-full-stack-project-structure-frontend--monorepo), this same container is defined once in the root `docker-compose.yml` ([9.3](#93-root-docker-composeyml-shared-postgres)) and shared by both apps — `docker compose up -d` from the repo root replaces the command above.
+
+### 8.7 Prisma From Scratch: Default `schema.prisma`
+
+```bash
+pnpm dlx prisma init
+```
+
+This scaffolds `prisma/schema.prisma` with nothing but the two required blocks — no models yet:
+
+```prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+It also creates a placeholder `.env` — replace its `DATABASE_URL` with the real one from [8.4](#84-env-example).
+
+### 8.8 Add a Simple `User` Model
+
+```prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+```
+
+`password` here always means the **hash**, never the plain text — see the `bcrypt.hash()` call in [8.11](#811-simple-backend-entry-point-srcindexts-login-example).
+
+### 8.9 Create and Apply the First Migration
+
+```bash
+pnpm prisma migrate dev --name init
+```
+
+This:
+
+1. Compares the schema against the current database
+2. Generates the SQL in `prisma/migrations/`
+3. Applies the migration
+4. Regenerates the Prisma Client
+
+```bash
+pnpm prisma generate
+```
+
+Regenerates the client without migrating — needed after pulling someone else's migration, or after editing the schema without creating one.
+
+```bash
+pnpm prisma migrate deploy
+```
+
+Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script, never `migrate dev`.
+
+### 8.10 Modifying an Existing Schema: Update `User` and Add a New Table
+
+This is the general case the previous two steps build up to: the schema already exists and now needs to grow. Say logins should now persist a session, and `User` should have an optional name:
+
+```prisma
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  createdAt DateTime  @default(now())
+  sessions  Session[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+}
+```
+
+Then create and apply a new migration exactly the same way as [8.9](#89-create-and-apply-the-first-migration), just with a new descriptive name:
+
+```bash
+pnpm prisma migrate dev --name add-name-and-sessions
+```
+
+That's the general rule for growing a schema over time — it never changes: edit `schema.prisma` (add fields, add models, add relations), then run `migrate dev` again with a new `--name`. Prisma diffs the current database against the schema and figures out the SQL on its own; nothing needs to be written by hand.
+
+### 8.11 Simple Backend Entry Point (`src/index.ts`): Login Example
+
+A minimal Express server using the schema above — register is left out for brevity, but `/login` and `/me` show the full pattern: hash comparison, a `Session` row, and an `httpOnly` cookie.
+
+```typescript
+// src/index.ts
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
+import cookieParser from "cookie-parser";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+const app = express();
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
+app.use(cookieParser());
+
+const PORT = process.env.PORT || 3001;
+const COOKIE_NAME = "session_token";
+
+// POST /login — checks the password and opens a session
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  const valid = user && (await bcrypt.compare(password, user.password));
+
+  if (!valid) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24h
+
+  await prisma.session.create({ data: { token, userId: user.id, expiresAt } });
+
+  res.cookie(COOKIE_NAME, token, { httpOnly: true, expires: expiresAt });
+  res.json({ id: user.id, email: user.email, name: user.name });
+});
+
+// GET /me — returns the logged-in user based on the session cookie
+app.get("/me", async (req, res) => {
+  const token = req.cookies[COOKIE_NAME];
+  const session =
+    token && (await prisma.session.findUnique({ where: { token }, include: { user: true } }));
+
+  if (!session || session.expiresAt < new Date()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  res.json({ id: session.user.id, email: session.user.email, name: session.user.name });
+});
+
+app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
+```
+
+`cors({ origin: true, credentials: true })` and `credentials: "include"` on the frontend's requests ([9.4](#94-frontend-structure)) are both required here — without them the browser won't send the `session_token` cookie back on later requests, since the frontend and the API are different origins.
+
+### 8.12 Seed Example
+
+```typescript
+// prisma/seed.ts
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcrypt";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+async function main() {
+  await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      email: "admin@example.com",
+      password: await bcrypt.hash("admin123", 10),
+      name: "Admin",
+    },
+  });
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
+```
+
+```bash
+pnpm prisma db seed
+```
+
+No extra wiring needed — the seed command is already pointed at this file by `prisma.config.ts` ([8.5](#85-configuration-files-tsconfigjson-and-prismaconfigts)).
+
+### 8.13 Prisma Studio
+
+```bash
+pnpm prisma studio
+```
+
+Opens a visual database browser at `http://localhost:5555` — view, create, edit and delete rows in any table without writing SQL.
+
+### 8.14 Day-to-Day Workflow and Reference Commands
+
+```bash
+# 1. Start the database (from the monorepo root — see 9.3)
+docker compose up -d
+
+# 2. Start the backend in dev mode
+pnpm dev
+
+# --- whenever the schema changes ---
+
+# 3. Create a migration
+pnpm prisma migrate dev --name <descriptive_name>
+
+# 4. (optional) inspect data visually
+pnpm prisma studio
+
+# --- end of the day ---
+
+# 5. Stop the database
+docker compose down
+```
+
+Quick reference:
+
+```bash
+# Docker
+docker compose up -d              # start Postgres
+docker compose down               # stop Postgres (keeps data)
+docker compose down -v            # stop + wipe all data (volume included)
+docker compose logs -f postgres   # follow Postgres logs
+
+# Prisma
+pnpm prisma migrate dev --name <name>   # new migration
+pnpm prisma migrate deploy              # apply existing migrations
+pnpm prisma generate                    # regenerate the client
+pnpm prisma studio                      # visual data browser
+pnpm prisma db seed                     # run the seed script
+
+# Dev server
+pnpm dev                          # start with hot reload
+```
+
+### 8.15 Common Prisma and PostgreSQL Errors
+
+| Problem | Likely cause | Fix |
+|---|---|---|
+| `Connection refused` when migrating | The container isn't running | `docker compose up -d` |
+| `Error: P1001` (can't reach database) | Wrong `DATABASE_URL` | Check user, password, host and port |
+| Prisma Client out of date | Schema changed without regenerating | `pnpm prisma generate` |
+| Migrations in conflict | Local schema doesn't match the database | `pnpm prisma migrate reset` (⚠️ wipes data) |
+| Port `5432` already in use | Another PostgreSQL instance is running | Change the port in `docker-compose.yml` to e.g. `5433:5432` and update `DATABASE_URL` |
+| `401 Unauthorized` on every request | Missing/expired `session_token` cookie, or the frontend isn't sending `credentials: "include"` | Log in again; check `api.ts` ([9.4](#94-frontend-structure)) — see also [13. Common HTTP Status Codes](#13-common-http-status-codes) |
+
+---
+
+## 9. Full-Stack Project Structure (Frontend + Monorepo)
+
+Ties the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql) together with a Vite + React frontend, using a `pnpm` monorepo so both apps — and the one shared PostgreSQL container — start together with a single command.
+
+### 9.1 Monorepo Overview: pnpm Workspaces
+
+Two packages, `frontend` and `backend`, declared as a workspace at the repo root:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "frontend"
+  - "backend"
+```
+
+This is what makes `pnpm --filter frontend ...` and `pnpm --filter backend ...` work from the root — each `--filter` targets the matching package by the `name` field in its own `package.json` (`"frontend"`, `"backend"`), exactly like the standalone `backend/package.json` from [8.3](#83-install-dependencies).
+
+### 9.2 Root `package.json`: Explaining `concurrently`
+
+```json
+{
+  "name": "service-manager-monorepo",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev": "docker compose up -d && concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:stop": "docker compose down",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "db:seed": "pnpm --filter backend exec prisma db seed",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3"
+  }
+}
+```
+
+Running `pnpm --filter backend dev` and `pnpm --filter frontend dev` normally each block their own terminal — running both at once would mean two separate terminal windows. **`concurrently`** runs several npm/pnpm scripts inside a single terminal instead, streaming both processes' output (color-coded per script) at the same time, and stops all of them together on a single `Ctrl+C`. That's what turns `pnpm dev` into one command that starts Postgres, then starts the backend and frontend dev servers together, instead of three manual steps in three terminals.
+
+A couple of other scripts worth calling out:
+
+- `pnpm -r build` / `pnpm -r lint` — the `-r` (`--recursive`) flag runs that script in **every** workspace package that defines it (so this runs both `frontend`'s and `backend`'s `build`/`lint` scripts in one call).
+- `pnpm --filter backend exec prisma db seed` — runs the command inside the `backend` package specifically, equivalent to `cd backend && pnpm exec prisma db seed`.
+
+### 9.3 Root `docker-compose.yml` (Shared Postgres)
+
+```yaml
+services:
+  postgres:
+    image: postgres:18
+    container_name: sm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+```
+
+One Postgres container, used by the backend's `DATABASE_URL` from [8.4](#84-env-example). Nothing frontend-specific is needed here, since the frontend never talks to the database directly — see [8.1](#81-overview-which-framework-needs-a-separate-backend).
+
+### 9.4 Frontend Structure
+
+```
+frontend/
+├── public/
+└── src/
+    ├── components/
+    ├── context/
+    │   └── AuthContext.tsx
+    ├── layouts/
+    ├── pages/
+    ├── api.ts
+    ├── App.tsx
+    ├── global.css
+    └── main.tsx
+```
+
+This is the same Vite + React layout from [6.6 Project Structure & Architecture](#66-project-structure--architecture), with two additions specific to talking to the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql): `api.ts` and `context/AuthContext.tsx`.
+
+**`api.ts`** — a small fetch wrapper that always points at the backend and always sends the session cookie:
+
+```typescript
+// src/api.ts
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+
+export async function api(path: string, options: RequestInit = {}) {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    credentials: "include", // sends/receives the session_token cookie
+    headers: { "Content-Type": "application/json", ...options.headers },
+  });
+
+  if (!res.ok) throw new Error((await res.json()).error ?? "Request failed");
+  return res.json();
+}
+```
+
+**`context/AuthContext.tsx`** — holds the logged-in user and exposes `login`/`logout`, matching the backend's `/login` and `/me` routes from [8.11](#811-simple-backend-entry-point-srcindexts-login-example):
+
+```typescript
+// src/context/AuthContext.tsx
+import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../api";
+
+type User = { id: number; email: string; name: string | null };
+type AuthContextValue = {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+};
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    api("/me")
+      .then(setUser)
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  async function login(email: string, password: string) {
+    setUser(await api("/login", { method: "POST", body: JSON.stringify({ email, password }) }));
+  }
+
+  function logout() {
+    setUser(null); // pair with a POST /logout route on the backend that clears the cookie
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside an AuthProvider");
+  return ctx;
+}
+```
+
+**`App.tsx`** — wraps the router in `AuthProvider` and gates the private routes behind a `ProtectedRoute` that reads `useAuth()`:
+
+```typescript
+// src/App.tsx
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return null;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+}
+
+function AppRoutes() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}
+```
+
+> `main.tsx` and `global.css` don't change for this — they're the same entry point and Tailwind setup already covered in [4.1](#41-tailwind-css-setup) and [6.1](#61-scaffolding-a-new-project).
+
+### 9.5 Final Project Structure
+
+```
+service-manager-monorepo/
+├── backend/
+│   ├── prisma/
+│   │   ├── migrations/
+│   │   ├── schema.prisma
+│   │   └── seed.ts
+│   ├── src/
+│   │   └── index.ts
+│   ├── .env
+│   ├── package.json
+│   ├── prisma.config.ts
+│   └── tsconfig.json
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       ├── context/
+│       │   └── AuthContext.tsx
+│       ├── layouts/
+│       ├── pages/
+│       ├── api.ts
+│       ├── App.tsx
+│       ├── global.css
+│       └── main.tsx
+├── docker-compose.yml
+├── package.json
+└── pnpm-workspace.yaml
+```
+
+`pnpm install` at the root installs both packages' dependencies; `pnpm dev` (from [9.2](#92-root-packagejson-explaining-concurrently)) starts Postgres and both dev servers together.
+
+---
+
+## 10. Linux Server & Docker Deployment
 
 This section is the complete server setup for **Vite + React and Next.js websites running with Docker and Traefik**.
 
@@ -1142,7 +1821,7 @@ The key rule is:
 
 This keeps the setup simple. You do not need one reverse proxy per website.
 
-### 8.1 Connect with Bitvise SSH Client
+### 10.1 Connect with Bitvise SSH Client
 
 On Windows, [Bitvise SSH Client](https://www.bitvise.com/ssh-client) can be used for both terminal access and SFTP file transfer.
 
@@ -1163,7 +1842,7 @@ After connecting:
 
 You do not need a separate FTP server just to upload a project.
 
-### 8.2 Basic Linux Setup
+### 10.2 Basic Linux Setup
 
 Start with the package list:
 
@@ -1199,7 +1878,7 @@ free -h
 
 They show the operating system, disk usage and RAM usage.
 
-### 8.3 Install Only the Basic Utilities Needed Here
+### 10.3 Install Only the Basic Utilities Needed Here
 
 ```bash
 sudo apt install -y unzip curl git nano htop ufw fail2ban
@@ -1219,7 +1898,7 @@ What each package does:
 
 For this Docker-only setup, that is enough. There is no need to install a separate web server.
 
-### 8.4 Node.js: Required by the Projects
+### 10.4 Node.js: Required by the Projects
 
 **Node.js is required for this development stack.** Vite, Next.js and pnpm all use Node.js.
 
@@ -1258,7 +1937,7 @@ npm -v
 
 For the Docker deployment in this README, you can skip those host commands.
 
-### 8.5 Install Docker and Docker Compose
+### 10.5 Install Docker and Docker Compose
 
 We will keep the installation direct and simple.
 
@@ -1308,7 +1987,7 @@ docker compose
 
 Do not use the old standalone `docker-compose` command in this README.
 
-### 8.6 Allow Your User to Run Docker Without `sudo`
+### 10.6 Allow Your User to Run Docker Without `sudo`
 
 Add your current Linux user to the Docker group:
 
@@ -1339,7 +2018,7 @@ If the command works without `sudo`, the setup is ready.
 
 > Docker access is powerful enough to control the host system. Only give trusted users access to it.
 
-### 8.7 First Docker Test
+### 10.7 First Docker Test
 
 Before creating any website container, test Docker itself:
 
@@ -1357,7 +2036,7 @@ What happens:
 
 This is the fastest way to know whether Docker is working.
 
-### 8.8 Basic Linux Commands for Deployments
+### 10.8 Basic Linux Commands for Deployments
 
 You will use these commands constantly:
 
@@ -1398,9 +2077,9 @@ rm file.zip
 
 You remove the ZIP after extraction to avoid storing two copies of the same deployment.
 
-### 8.9 Firewall Basics with UFW
+### 10.9 Firewall Basics with UFW
 
-The server needs SSH, HTTP and HTTPS. Since every domain will always sit behind Cloudflare (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), it's worth restricting `80`/`443` to Cloudflare's own IP ranges instead of the whole Internet — that way nobody can bypass Cloudflare's protection by hitting the server's IP directly.
+The server needs SSH, HTTP and HTTPS. Since every domain will always sit behind Cloudflare (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), it's worth restricting `80`/`443` to Cloudflare's own IP ranges instead of the whole Internet — that way nobody can bypass Cloudflare's protection by hitting the server's IP directly.
 
 First allow SSH:
 
@@ -1438,9 +2117,9 @@ sudo ufw status verbose
 
 Do not open application ports such as `3000` to the Internet. Traefik reaches the websites through Docker networking.
 
-> If a site is ever used without Cloudflare in front of it, allow `80/tcp` and `443/tcp` from anywhere instead (`sudo ufw allow 80/tcp` / `sudo ufw allow 443/tcp`) — but that also means the Origin Certificate from [8.14](#814-traefik--cloudflare-origin-certificate--three-websites) won't be trusted by regular browsers, since it's only trusted by Cloudflare.
+> If a site is ever used without Cloudflare in front of it, allow `80/tcp` and `443/tcp` from anywhere instead (`sudo ufw allow 80/tcp` / `sudo ufw allow 443/tcp`) — but that also means the Origin Certificate from [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites) won't be trusted by regular browsers, since it's only trusted by Cloudflare.
 
-### 8.10 Create the Server Structure
+### 10.10 Create the Server Structure
 
 Create the main folder:
 
@@ -1449,7 +2128,7 @@ sudo mkdir -p /opt/web
 cd /opt/web
 ```
 
-Create the folder for the Cloudflare Origin Certificate (generated in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)):
+Create the folder for the Cloudflare Origin Certificate (generated in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)):
 
 ```bash
 sudo mkdir -p /opt/web/certs
@@ -1499,7 +2178,7 @@ Final structure:
     └── ...Vite project...
 ```
 
-### 8.11 Vite + React Dockerfile
+### 10.11 Vite + React Dockerfile
 
 A normal Vite production build creates a static `dist/` directory.
 
@@ -1548,7 +2227,7 @@ Why each part exists:
 
 The public server still does **not** expose port 80 for this container. Traefik will connect to it internally.
 
-### 8.12 Next.js Dockerfile
+### 10.12 Next.js Dockerfile
 
 A normal Next.js production application is different from a Vite static site.
 
@@ -1594,7 +2273,7 @@ Next.js      → internal container port 3000
 
 Both remain private behind Traefik.
 
-### 8.13 `.dockerignore`
+### 10.13 `.dockerignore`
 
 Use a `.dockerignore` in every project:
 
@@ -1619,7 +2298,7 @@ In particular:
 - `dist` and `.next` are generated build output.
 - `.env` files should not automatically be baked into images.
 
-### 8.14 Traefik + Cloudflare Origin Certificate + Three Websites
+### 10.14 Traefik + Cloudflare Origin Certificate + Three Websites
 
 Traefik is the only reverse proxy in this architecture.
 
@@ -1633,7 +2312,7 @@ It will:
 
 Traefik's Docker provider reads container labels. Using `exposedbydefault=false` means containers are ignored unless they explicitly opt in with `traefik.enable=true`.
 
-Since every domain here is always proxied through Cloudflare (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), Cloudflare's free Universal SSL already handles the certificate that public visitors see — Traefik doesn't need to request or renew a Let's Encrypt certificate for that. What Traefik still needs is a certificate for the **Cloudflare → origin** leg of the connection, so that "Full (strict)" mode can verify it. That's what a free **Cloudflare Origin Certificate** is for: generate it once in the Cloudflare dashboard (**SSL/TLS → Origin Server → Create Certificate**), list all three hostnames as SANs (`site1.example.com`, `site2.example.com`, `site3.example.com`), and it stays valid for up to 15 years — no ACME challenge, no renewal automation needed.
+Since every domain here is always proxied through Cloudflare (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), Cloudflare's free Universal SSL already handles the certificate that public visitors see — Traefik doesn't need to request or renew a Let's Encrypt certificate for that. What Traefik still needs is a certificate for the **Cloudflare → origin** leg of the connection, so that "Full (strict)" mode can verify it. That's what a free **Cloudflare Origin Certificate** is for: generate it once in the Cloudflare dashboard (**SSL/TLS → Origin Server → Create Certificate**), list all three hostnames as SANs (`site1.example.com`, `site2.example.com`, `site3.example.com`), and it stays valid for up to 15 years — no ACME challenge, no renewal automation needed.
 
 Save the two files it gives you:
 
@@ -1747,7 +2426,7 @@ networks:
 
 > The `tls.certresolver` label from the old Let's Encrypt setup is gone — with a single certificate loaded through the file provider, Traefik just serves it by default, so `traefik.http.routers.webX.tls=true` is all each router needs.
 
-### 8.15 Understand the Important Traefik Lines
+### 10.15 Understand the Important Traefik Lines
 
 **Docker provider**
 
@@ -1807,7 +2486,7 @@ https://site1.example.com
 ./dynamic:/dynamic:ro
 ```
 
-These mount the Cloudflare Origin Certificate and the file-provider config that loads it (see [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)). No ACME resolver, no HTTP-01 challenge, and nothing to renew — the certificate is generated once in the Cloudflare dashboard and is valid for up to 15 years.
+These mount the Cloudflare Origin Certificate and the file-provider config that loads it (see [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)). No ACME resolver, no HTTP-01 challenge, and nothing to renew — the certificate is generated once in the Cloudflare dashboard and is valid for up to 15 years.
 
 **Docker socket**
 
@@ -1833,7 +2512,7 @@ traefik.http.services.web1.loadbalancer.server.port=80
 
 This is the port inside the Docker network, not a public host port.
 
-### 8.16 Why the Three Websites Are Different
+### 10.16 Why the Three Websites Are Different
 
 The Compose structure is intentionally repetitive. Only a few values change.
 
@@ -1867,7 +2546,7 @@ loadbalancer.server.port=3000
 
 Everything else stays almost identical.
 
-### 8.17 DNS Setup
+### 10.17 DNS Setup
 
 Before HTTPS can work, the domains must point to the server through Cloudflare.
 
@@ -1879,7 +2558,7 @@ site2.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
 site3.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
 ```
 
-Use `A` records for IPv4 addresses, and keep the proxy status **Proxied** (orange cloud), not **DNS only** (grey cloud). Proxied is what actually puts Cloudflare in front of the site — it hides the server's real IP, applies the free protection described in [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl), and terminates the public-facing SSL. A grey-cloud record just points visitors straight at the server, bypassing all of that.
+Use `A` records for IPv4 addresses, and keep the proxy status **Proxied** (orange cloud), not **DNS only** (grey cloud). Proxied is what actually puts Cloudflare in front of the site — it hides the server's real IP, applies the free protection described in [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl), and terminates the public-facing SSL. A grey-cloud record just points visitors straight at the server, bypassing all of that.
 
 The important rule is:
 
@@ -1901,7 +2580,7 @@ curl -I http://localhost
 
 Do not move on to HTTPS troubleshooting until the record shows as proxied in Cloudflare and the server responds locally.
 
-### 8.18 First Deployment
+### 10.18 First Deployment
 
 Upload your ZIP with Bitvise SFTP.
 
@@ -1969,7 +2648,7 @@ Check Traefik logs:
 docker compose logs -f traefik
 ```
 
-### 8.19 Useful Deployment Commands
+### 10.19 Useful Deployment Commands
 
 These are the commands you will use most often:
 
@@ -2019,11 +2698,11 @@ rm file.zip
 # rm -rf <folder>   # WARNING: permanently deletes everything inside
 ```
 
-### 8.20 Update Only One Website
+### 10.20 Update Only One Website
 
 Suppose only `web2` changed. `docker-compose.yml` and `certs/` live one level above `web2/`, so none of this touches them.
 
-Back up anything that only exists on the server and isn't in your new zip (usually the `Dockerfile`, if you created it directly on the server instead of keeping it in your project — see [8.11](#811-vite--react-dockerfile)/[8.12](#812-nextjs-dockerfile) — and any `.env` file):
+Back up anything that only exists on the server and isn't in your new zip (usually the `Dockerfile`, if you created it directly on the server instead of keeping it in your project — see [10.11](#1011-vite--react-dockerfile)/[10.12](#1012-nextjs-dockerfile) — and any `.env` file):
 
 ```bash
 cp web2/Dockerfile /opt/web2-Dockerfile.bak
@@ -2062,7 +2741,7 @@ docker compose logs -f web2
 
 This is the normal workflow once several websites share the same server.
 
-### 8.21 Docker Disk Cleanup
+### 10.21 Docker Disk Cleanup
 
 Check Docker's disk usage:
 
@@ -2090,7 +2769,7 @@ Also check the server disk:
 df -h
 ```
 
-### 8.22 Fail2ban Basic Configuration
+### 10.22 Fail2ban Basic Configuration
 
 Fail2ban is mainly useful here for protecting SSH from repeated login attempts.
 
@@ -2149,9 +2828,9 @@ Check SSH specifically:
 sudo fail2ban-client status sshd
 ```
 
-Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys. It's only needed here for SSH — SSH isn't proxied through Cloudflare, so Cloudflare's DDoS/bot protection never sees it. The websites themselves don't need a `[traefik]`/HTTP jail: that surface already sits behind Cloudflare's free protection (see [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)), and UFW ([8.9](#89-firewall-basics-with-ufw)) already blocks anyone trying to hit ports `80`/`443` directly instead of through Cloudflare.
+Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys. It's only needed here for SSH — SSH isn't proxied through Cloudflare, so Cloudflare's DDoS/bot protection never sees it. The websites themselves don't need a `[traefik]`/HTTP jail: that surface already sits behind Cloudflare's free protection (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), and UFW ([10.9](#109-firewall-basics-with-ufw)) already blocks anyone trying to hit ports `80`/`443` directly instead of through Cloudflare.
 
-### 8.23 Basic SSH Hardening
+### 10.23 Basic SSH Hardening
 
 SSH is the main administrative door to the server.
 
@@ -2191,7 +2870,7 @@ If there is no error, restart SSH:
 sudo systemctl restart ssh
 ```
 
-### 8.24 Troubleshooting
+### 10.24 Troubleshooting
 
 **Website does not open**
 
@@ -2219,11 +2898,11 @@ docker compose logs -f web3
 
 Check in this order:
 
-1. The DNS record is **Proxied** (orange cloud), not DNS only — see [8.17](#817-dns-setup).
-2. SSL/TLS mode in Cloudflare is set to **Full (strict)**, not Flexible ([9.4](#94-vite--nextjs--cloudflare-protection--free-ssl)).
-3. `/opt/web/certs/cert.pem` and `key.pem` exist and hold the Origin Certificate/Key generated in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites), not placeholders.
+1. The DNS record is **Proxied** (orange cloud), not DNS only — see [10.17](#1017-dns-setup).
+2. SSL/TLS mode in Cloudflare is set to **Full (strict)**, not Flexible ([11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)).
+3. `/opt/web/certs/cert.pem` and `key.pem` exist and hold the Origin Certificate/Key generated in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites), not placeholders.
 4. The Origin Certificate's SANs include the exact domain being requested.
-5. UFW allows `80`/`443` from Cloudflare's IP ranges ([8.9](#89-firewall-basics-with-ufw)).
+5. UFW allows `80`/`443` from Cloudflare's IP ranges ([10.9](#109-firewall-basics-with-ufw)).
 6. The `Host(...)` rule exactly matches the domain.
 7. Traefik logs show the certificate being loaded from the file provider, with no errors reading `/certs`.
 
@@ -2261,7 +2940,7 @@ Usually the problem is one of:
 - The second container is not running.
 - The internal port is wrong.
 
-### 8.25 Final Production Checklist
+### 10.25 Final Production Checklist
 
 ```text
 [ ] Server packages updated
@@ -2286,16 +2965,16 @@ Usually the problem is one of:
 ```
 
 ---
-## 9. Deployment
+## 11. Deployment
 
-### 9.1 Google Search Console
+### 11.1 Google Search Console
 
 1. Go to [Google Search Console](https://search.google.com/search-console) and add a new property using the site's domain or URL prefix.
 2. Verify ownership — via DNS TXT record (domain property) or an HTML file/meta tag (URL-prefix property), depending on the method chosen.
 3. Once verified, submit the sitemap under **Sitemaps** using the sitemap URL generated by the project (e.g. `https://mysite.com/sitemap-index.xml` for Vite + React, or the sitemap URL generated by the project).
 4. Use the **URL Inspection** tool to request indexing for key pages after the first deploy.
 
-### 9.2 Cloudflare Pages
+### 11.2 Cloudflare Pages
 
 1. In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → Create → Pages**, and connect the GitHub repository.
 2. Configure the build settings:
@@ -2306,37 +2985,37 @@ Usually the problem is one of:
 4. Every push to the connected branch (e.g. `main`) triggers an automatic deploy; other branches get preview deployments.
 5. Under **Custom domains**, attach the production domain once it's ready.
 
-Astro sites always live in your own Cloudflare Pages account, but the domain itself usually belongs to the client — see [9.5](#95-pointing-the-clients-domain-astro) for how to point it there.
+Astro sites always live in your own Cloudflare Pages account, but the domain itself usually belongs to the client — see [11.5](#115-pointing-the-clients-domain-astro) for how to point it there.
 
-### 9.3 Cloudflare Domains & Rules
+### 11.3 Cloudflare Domains & Rules
 
 - **DNS**: if the domain is registered with Cloudflare (or just uses Cloudflare as DNS), add/verify the records under **DNS → Records**. Pages projects usually just need a `CNAME` pointing to the `*.pages.dev` deployment, added automatically when attaching a custom domain.
 - **SSL/TLS**: keep the encryption mode set to **Full** or **Full (strict)** for Pages projects.
 - **Redirect rules**: under **Rules → Redirect Rules**, common basics are forcing `www` → apex (or the reverse) and forcing `https`.
 - **Page Rules / Cache Rules**: useful for basics like always redirecting `http://` to `https://`, or setting cache behavior for static assets under `/images/*` or `/assets/*`.
 
-### 9.4 Vite + Next.js + Cloudflare Protection & Free SSL
+### 11.4 Vite + Next.js + Cloudflare Protection & Free SSL
 
-This section applies to the self-hosted Vite/Next.js sites from [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment) — the Docker + Traefik setup running on your own VPS, as opposed to [9.2](#92-cloudflare-pages) which is for Cloudflare Pages. On the free plan, Cloudflare in front of that server gives you both protection and SSL with nothing extra to buy or renew.
+This section applies to the self-hosted Vite/Next.js sites from [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment) — the Docker + Traefik setup running on your own VPS, as opposed to [11.2](#112-cloudflare-pages) which is for Cloudflare Pages. On the free plan, Cloudflare in front of that server gives you both protection and SSL with nothing extra to buy or renew.
 
 **1. Add the site and proxy the DNS record**
 
-In the Cloudflare dashboard, add the domain and create the `A` record described in [8.17](#817-dns-setup), keeping it **Proxied** (orange cloud). This is what actually routes traffic through Cloudflare instead of straight to the server, and it's a prerequisite for everything below.
+In the Cloudflare dashboard, add the domain and create the `A` record described in [10.17](#1017-dns-setup), keeping it **Proxied** (orange cloud). This is what actually routes traffic through Cloudflare instead of straight to the server, and it's a prerequisite for everything below.
 
 **2. Set the SSL/TLS encryption mode to Full (strict)**
 
-Under **SSL/TLS → Overview**, choose **Full (strict)**. This encrypts both legs of the connection: browser → Cloudflare (Cloudflare's free Universal SSL certificate, issued and renewed automatically) and Cloudflare → your server (the Cloudflare Origin Certificate from [8.14](#814-traefik--cloudflare-origin-certificate--three-websites)). Avoid **Flexible** — it only encrypts the first leg, leaving Cloudflare-to-server traffic in plain HTTP.
+Under **SSL/TLS → Overview**, choose **Full (strict)**. This encrypts both legs of the connection: browser → Cloudflare (Cloudflare's free Universal SSL certificate, issued and renewed automatically) and Cloudflare → your server (the Cloudflare Origin Certificate from [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)). Avoid **Flexible** — it only encrypts the first leg, leaving Cloudflare-to-server traffic in plain HTTP.
 
 **3. Turn on "Always Use HTTPS"**
 
-Under **SSL/TLS → Edge Certificates**, enable **Always Use HTTPS** so any `http://` request gets redirected. This is redundant with Traefik's own HTTP→HTTPS redirect ([8.15](#815-understand-the-important-traefik-lines)), but costs nothing to leave on and catches requests before they even reach the server.
+Under **SSL/TLS → Edge Certificates**, enable **Always Use HTTPS** so any `http://` request gets redirected. This is redundant with Traefik's own HTTP→HTTPS redirect ([10.15](#1015-understand-the-important-traefik-lines)), but costs nothing to leave on and catches requests before they even reach the server.
 
 **4. Protection that's on by default (nothing to configure)**
 
 The free plan already includes, automatically, for any proxied domain:
 
 - Unmetered DDoS protection at the network edge.
-- The server's real IP is hidden — only Cloudflare's IPs are ever visible to visitors, which is what [8.9](#89-firewall-basics-with-ufw)'s UFW rule (allowing `80`/`443` only from Cloudflare's ranges) is there to enforce.
+- The server's real IP is hidden — only Cloudflare's IPs are ever visible to visitors, which is what [10.9](#109-firewall-basics-with-ufw)'s UFW rule (allowing `80`/`443` only from Cloudflare's ranges) is there to enforce.
 - A CDN cache for static assets, reducing load on the server.
 
 **5. Optional extra protection (free plan)**
@@ -2347,13 +3026,13 @@ The free plan already includes, automatically, for any proxied domain:
 
 **What this replaces**
 
-Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([8.14](#814-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([8.9](#89-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([8.22](#822-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
+Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([10.9](#109-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([10.22](#1022-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
 
-Everything above assumes the domain's DNS is already a zone inside your own Cloudflare account. When the domain actually belongs to a client, see [9.6](#96-pointing-the-clients-domain-vite--nextjs) for how to get it pointed at the server.
+Everything above assumes the domain's DNS is already a zone inside your own Cloudflare account. When the domain actually belongs to a client, see [11.6](#116-pointing-the-clients-domain-vite--nextjs) for how to get it pointed at the server.
 
-### 9.5 Pointing the Client's Domain (Astro)
+### 11.5 Pointing the Client's Domain (Astro)
 
-This applies to Astro sites deployed on [9.2](#92-cloudflare-pages): the Pages project always lives in **your** Cloudflare account, but the domain (e.g. `clientsite.com`) belongs to the client. There are two ways to connect them, depending on how much access the client is willing to give you.
+This applies to Astro sites deployed on [11.2](#112-cloudflare-pages): the Pages project always lives in **your** Cloudflare account, but the domain (e.g. `clientsite.com`) belongs to the client. There are two ways to connect them, depending on how much access the client is willing to give you.
 
 **Option A — The client moves their nameservers into your Cloudflare account (best integration)**
 
@@ -2377,28 +3056,28 @@ This option gives you full control (redirect rules, caching, WAF) but requires t
 
 Option B is the usual choice for client work: it needs no access to their registrar or Cloudflare account beyond asking them to paste in one DNS record.
 
-### 9.6 Pointing the Client's Domain (Vite + Next.js)
+### 11.6 Pointing the Client's Domain (Vite + Next.js)
 
-This applies to the self-hosted Vite/Next.js sites from [8. Linux Server & Docker Deployment](#8-linux-server--docker-deployment), using the free SSL setup from [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl). Unlike Astro on Pages, this setup needs the domain to actually be **proxied through Cloudflare** (orange cloud) for the free Universal SSL and DDoS/bot protection to apply — a plain DNS-only record pointed at the server bypasses Cloudflare entirely.
+This applies to the self-hosted Vite/Next.js sites from [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment), using the free SSL setup from [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl). Unlike Astro on Pages, this setup needs the domain to actually be **proxied through Cloudflare** (orange cloud) for the free Universal SSL and DDoS/bot protection to apply — a plain DNS-only record pointed at the server bypasses Cloudflare entirely.
 
 **Option A — The client moves their nameservers into your Cloudflare account**
 
-1. Add the domain to your Cloudflare account the same way as in [9.5](#95-pointing-the-clients-domain-astro), Option A (steps 1–4).
-2. Once the domain is **Active** in your account, follow [8.17](#817-dns-setup) exactly: create the `A` record pointing to the server's public IP, kept **Proxied** (orange cloud).
-3. Generate/reuse the Cloudflare **Origin Certificate** for that domain ([8.14](#814-traefik--cloudflare-origin-certificate--three-websites)) and add it to Traefik's `dynamic` config alongside the existing sites.
-4. Set **SSL/TLS → Overview** to **Full (strict)** for the zone, as in [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl).
+1. Add the domain to your Cloudflare account the same way as in [11.5](#115-pointing-the-clients-domain-astro), Option A (steps 1–4).
+2. Once the domain is **Active** in your account, follow [10.17](#1017-dns-setup) exactly: create the `A` record pointing to the server's public IP, kept **Proxied** (orange cloud).
+3. Generate/reuse the Cloudflare **Origin Certificate** for that domain ([10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)) and add it to Traefik's `dynamic` config alongside the existing sites.
+4. Set **SSL/TLS → Overview** to **Full (strict)** for the zone, as in [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl).
 
 **Option B — The client keeps their own Cloudflare account**
 
 Use this when the client already has the domain on Cloudflare themselves and doesn't want to change nameservers.
 
 1. Give the client the server's public IP and ask them to create an `A` record (e.g. `app.clientsite.com` → your server IP) in **their** Cloudflare dashboard, kept **Proxied** (orange cloud). Without Proxied, they get no free SSL or protection from Cloudflare — traffic goes straight to the server over plain HTTP unless you handle certificates yourself.
-2. Ask the client to set their zone's **SSL/TLS → Overview** to **Full (strict)** — same reasoning as [9.4](#94-vite--nextjs--cloudflare-protection--free-ssl): Flexible would leave the Cloudflare→server leg unencrypted.
+2. Ask the client to set their zone's **SSL/TLS → Overview** to **Full (strict)** — same reasoning as [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl): Flexible would leave the Cloudflare→server leg unencrypted.
 3. You still need a **Cloudflare Origin Certificate** on the server for that domain so the Cloudflare→server leg is encrypted. Since the zone lives in the client's account, either:
-   - Ask the client to generate the Origin Certificate themselves (**SSL/TLS → Origin Server → Create Certificate**, covering the subdomain you need) and send you the cert/key pair, which you drop into `certs/` and reference in Traefik's `dynamic` config exactly like the other sites in [8.14](#814-traefik--cloudflare-origin-certificate--three-websites); or
+   - Ask the client to generate the Origin Certificate themselves (**SSL/TLS → Origin Server → Create Certificate**, covering the subdomain you need) and send you the cert/key pair, which you drop into `certs/` and reference in Traefik's `dynamic` config exactly like the other sites in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites); or
    - Ask them to add you as a member on their Cloudflare account (**Manage Account → Members**) with access scoped to that zone, so you can generate the certificate yourself without them needing to know what it is.
-4. Add a new router/service block in `docker-compose.yml` for the client's domain, following the pattern in [8.16](#816-why-the-three-websites-are-different) — same idea, just with the client's domain in the `Host(...)` rule instead of one of your own.
-5. Firewall-wise, nothing changes: UFW ([8.9](#89-firewall-basics-with-ufw)) already only allows `80`/`443` from Cloudflare's IP ranges regardless of which Cloudflare account is proxying the request.
+4. Add a new router/service block in `docker-compose.yml` for the client's domain, following the pattern in [10.16](#1016-why-the-three-websites-are-different) — same idea, just with the client's domain in the `Host(...)` rule instead of one of your own.
+5. Firewall-wise, nothing changes: UFW ([10.9](#109-firewall-basics-with-ufw)) already only allows `80`/`443` from Cloudflare's IP ranges regardless of which Cloudflare account is proxying the request.
 
 **Option A vs Option B**
 
@@ -2410,9 +3089,9 @@ Use this when the client already has the domain on Cloudflare themselves and doe
 | Best for | Long-term/ongoing clients | Clients who want to keep control of their domain |
 
 ---
-## 10. Git and GitHub
+## 12. Git and GitHub
 
-### 10.1 Initial Setup (First-Time Project)
+### 12.1 Initial Setup (First-Time Project)
 
 Use these commands when starting a brand-new project locally and connecting it to a GitHub repository.
 
@@ -2446,7 +3125,7 @@ git push -u origin main
 ```
 Uploads local commits to the `main` branch on GitHub for the first time.
 
-### 10.2 Daily Workflow
+### 12.2 Daily Workflow
 
 Use these steps every time files are edited and need to be pushed to GitHub.
 
@@ -2470,7 +3149,7 @@ git push
 ```
 Uploads newly saved local commits to GitHub.
 
-### 10.3 Branching
+### 12.3 Branching
 
 Branches allow working on new features safely without breaking the live site.
 
@@ -2499,7 +3178,7 @@ git merge <branch-name>
 ```
 Merges changes from the specified branch into the current branch.
 
-### 10.4 Other Useful Commands
+### 12.4 Other Useful Commands
 
 ```bash
 git pull
@@ -2516,7 +3195,7 @@ git log
 ```
 Displays the history of all commits made in the repository.
 
-### 10.5 Undoing Things: `reset`, `restore`, `revert`
+### 12.5 Undoing Things: `reset`, `restore`, `revert`
 
 These three commands all "undo" something, but they act on different things and at different levels of danger.
 
@@ -2552,7 +3231,7 @@ Creates a **new commit** that undoes the changes from `<commit>`, without rewrit
 
 > Rule of thumb: use `revert` on commits that are already pushed and shared with others; use `reset` freely on local commits nobody else has pulled yet.
 
-### 10.6 `rebase` vs `merge`
+### 12.6 `rebase` vs `merge`
 
 Both combine work from one branch into another, but they produce different history.
 
@@ -2582,7 +3261,7 @@ Cancels an in-progress rebase and returns the branch to the state it was in befo
 | Safe on shared/pushed branches | Yes | No (unless nobody else has pulled those commits) |
 | Typical use | Merging a finished feature branch into `main` | Cleaning up / updating a feature branch before opening a PR |
 
-### 10.7 Force Push and Other Dangerous Commands
+### 12.7 Force Push and Other Dangerous Commands
 
 ```bash
 git push --force
@@ -2611,7 +3290,7 @@ Applies a single specific commit from another branch onto the current branch, wi
 
 > As a general rule: never force-push to `main` or any branch other people are actively pulling from. Force-push is for cleaning up **your own** feature branch before it's merged.
 
-### 10.8 Real Branching Flow: Feature Branch → Main
+### 12.8 Real Branching Flow: Feature Branch → Main
 
 A realistic day-to-day flow for working on a feature without breaking `main`, including the forks in the road that commonly come up.
 
@@ -2719,7 +3398,7 @@ git push origin --delete feature/login-form  # delete remote branch
 
 ---
 
-## 11. Common HTTP Status Codes
+## 13. Common HTTP Status Codes
 
 Useful when debugging API requests (fetch calls, form submissions, backend responses) across any of the three frameworks.
 
