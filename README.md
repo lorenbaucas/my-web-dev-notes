@@ -113,6 +113,7 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [12.6 `rebase` vs `merge`](#126-rebase-vs-merge)
   - [12.7 Force Push and Other Dangerous Commands](#127-force-push-and-other-dangerous-commands)
   - [12.8 Real Branching Flow: Feature Branch → Main](#128-real-branching-flow-feature-branch--main)
+  - [12.9 GitHub Actions: CI/CD Workflows](#129-github-actions-cicd-workflows)
 - [13. Common HTTP Status Codes](#13-common-http-status-codes)
 ## 1. Required Programs
 
@@ -1995,7 +1996,7 @@ jobs:
 
 What each part does:
 
-- `on: push: branches: [main]` — this workflow only runs on pushes to `main`. Change it if the default branch is `master`, or add more branches if needed.
+- `on: push: branches: [main]` — this workflow only runs on pushes to `main`.
 - `appleboy/ssh-action` — a community GitHub Action that opens an SSH connection using the three secrets above and runs `script:` on the remote host, exactly as if it were typed by hand over SSH.
 - `cd ~/service-manager-backend` — must match the actual path where the repo was cloned on the VPS.
 - `git pull` — fetches the commit that was just pushed.
@@ -3615,6 +3616,110 @@ git push origin --delete feature/login-form  # delete remote branch
 ```
 
 > If `git branch -d` refuses because the branch isn't fully merged (e.g. it was squash-merged on GitHub, so Git doesn't recognize the commits as merged), force the local delete with `git branch -D feature/login-form` once the PR is confirmed merged on GitHub.
+
+### 12.9 GitHub Actions: CI/CD Workflows
+
+GitHub Actions runs workflow files automatically on events like `push` or `pull_request` — no external CI service needed. Each workflow lives in `.github/workflows/<name>.yml`, in the repo it applies to (with full separation, [9.9](#99-final-project-structure-three-independent-repos), each repo needs its own copy of whichever of these apply to it).
+
+**Deploy on push (backend only)** — connects to the VPS over SSH and rebuilds the container, replacing the manual `git pull` + `docker compose up -d --build` from [9](#9-full-separation-independent-backend-frontends-and-deployment):
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy backend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/service-manager-backend
+            git pull
+            docker compose up -d --build backend
+```
+
+`SSH_HOST`, `SSH_USERNAME` and `SSH_PRIVATE_KEY` are repository secrets (**Settings → Secrets and variables → Actions**) — never hardcode credentials directly in a workflow file, since it's committed and visible to anyone with read access to the repo. The private key should be a dedicated deploy key (`ssh-keygen -t ed25519 -f ~/.ssh/deploy_key`), added to `~/.ssh/authorized_keys` on the server, so it can be revoked independently of anyone's personal key.
+
+**Dependency security audit** — runs on every push and on PRs targeting `main`, flagging known vulnerabilities in installed packages:
+
+```yaml
+# .github/workflows/audit.yml
+name: Security Audit
+
+on:
+  push:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11
+
+      - name: Run Security Audit
+        # Runs pnpm audit. To check production dependencies only, use: pnpm audit --prod
+        run: pnpm audit
+```
+
+**Code style check** — fails the workflow (and shows a red X on the PR) if any file isn't formatted with Prettier:
+
+```yaml
+# .github/workflows/prettier.yml
+name: Code Style (Prettier)
+
+on:
+  push:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Code Style
+        run: pnpm run format:check
+```
+
+Requires a `format:check` script in `package.json` (e.g. `"format:check": "prettier --check ."`) — the same command run locally before committing.
+
+`audit.yml` and `prettier.yml` are generic enough to copy as-is into any repo that has a `package.json` and a lockfile; `deploy.yml` is specific to whichever repo actually deploys by SSH (the backend, in the full-separation setup from [9](#9-full-separation-independent-backend-frontends-and-deployment) — the frontends deploy via Cloudflare Pages instead, which redeploys on push without needing a workflow file at all).
 
 ---
 
