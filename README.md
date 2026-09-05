@@ -60,12 +60,16 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [8.13 Prisma Studio](#813-prisma-studio)
   - [8.14 Day-to-Day Workflow and Reference Commands](#814-day-to-day-workflow-and-reference-commands)
   - [8.15 Common Prisma and PostgreSQL Errors](#815-common-prisma-and-postgresql-errors)
-- [9. Full-Stack Project Structure (Frontend + Monorepo)](#9-full-stack-project-structure-frontend--monorepo)
-  - [9.1 Monorepo Overview: pnpm Workspaces](#91-monorepo-overview-pnpm-workspaces)
-  - [9.2 Root `package.json`: Explaining `concurrently`](#92-root-packagejson-explaining-concurrently)
-  - [9.3 Root `docker-compose.yml` (Shared Postgres)](#93-root-docker-composeyml-shared-postgres)
-  - [9.4 Frontend Structure](#94-frontend-structure)
-  - [9.5 Final Project Structure](#95-final-project-structure)
+- [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment)
+  - [9.1 Why Full Separation Instead of a Monorepo](#91-why-full-separation-instead-of-a-monorepo)
+  - [9.2 Backend Repo: `docker-compose.yml` (Postgres and API)](#92-backend-repo-docker-composeyml-postgres-and-api)
+  - [9.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)](#93-backend-dockerfile-pnpm-node-24-multi-stage)
+  - [9.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)](#94-pnpm-workspaceyaml-allowing-build-scripts-pnpm-10-or-newer)
+  - [9.5 CORS and Cookies Across Different Domains](#95-cors-and-cookies-across-different-domains)
+  - [9.6 Each Frontend as Its Own Repo (Cloudflare Pages)](#96-each-frontend-as-its-own-repo-cloudflare-pages)
+  - [9.7 HTTPS in Front of the Backend (Caddy)](#97-https-in-front-of-the-backend-caddy)
+  - [9.8 Local Development Without Docker for the Backend](#98-local-development-without-docker-for-the-backend)
+  - [9.9 Final Project Structure (Three Independent Repos)](#99-final-project-structure-three-independent-repos)
 - [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment)
   - [10.1 Connect with Bitvise SSH Client](#101-connect-with-bitvise-ssh-client)
   - [10.2 Basic Linux Setup](#102-basic-linux-setup)
@@ -1149,7 +1153,7 @@ Between the frameworks in this README, only **Vite + React** and **Next.js** eve
 | **Next.js** | Directly inside API Routes / Route Handlers / Server Actions | No — Next.js *is* the backend |
 | **Vite + React** | Never in the frontend bundle | **Yes** — Vite is a pure client-side SPA, so it needs a standalone Node/Express API server that the React app calls over `fetch` |
 
-Everything below builds that standalone Express + Prisma backend — the same one a Vite frontend calls over `fetch`, or that a Next.js project could adapt into its own Route Handlers. See [9. Full-Stack Project Structure (Frontend + Monorepo)](#9-full-stack-project-structure-frontend--monorepo) for how it sits alongside the frontend and the shared `docker-compose.yml`.
+Everything below builds that standalone Express + Prisma backend — the same one one or more Vite frontends call over `fetch`, or that a Next.js project could adapt into its own Route Handlers. See [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment) for how this backend is deployed completely on its own, with each frontend living in its own separate repo.
 
 ### 8.2 Backend Project Structure
 
@@ -1161,11 +1165,19 @@ backend/
 │   └── seed.ts
 ├── src/
 │   └── index.ts
-├── .env
+├── .dockerignore
+├── .env               (never committed)
+├── .env.example
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
 ├── package.json
+├── pnpm-workspace.yaml
 ├── prisma.config.ts
 └── tsconfig.json
 ```
+
+This backend is its own repository — it isn't a package inside a monorepo. `docker-compose.yml` and `Dockerfile` ship *with the backend*, since it deploys entirely on its own to a VPS (see [9](#9-full-separation-independent-backend-frontends-and-deployment)).
 
 ### 8.3 Install Dependencies
 
@@ -1184,9 +1196,9 @@ pnpm install
 
 **Development dependencies:**
 
-- `prisma` — the Prisma CLI (`pnpm prisma ...`)
+- `prisma` — the Prisma CLI (`pnpm exec prisma ...`)
 - `tsx` — runs TypeScript directly, with `--watch` for hot reload in dev
-- `typescript` and the matching `@types/*` packages
+- `typescript` and the matching `@types/*` packages — **must be listed explicitly** here. In a monorepo it's easy to get away with a single `typescript` at the workspace root and never notice each package needs it too; in a standalone repo, skipping it means `tsc`/`tsc -b` fails with `tsc: not found` the moment you try to build.
 
 ```json
 {
@@ -1194,9 +1206,10 @@ pnpm install
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "docker compose up -d postgres && prisma generate && prisma db push && tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
@@ -1216,21 +1229,40 @@ pnpm install
     "@types/node": "^25.9.5",
     "@types/pg": "^8.23.1",
     "prisma": "^7.10.0",
-    "tsx": "^4.23.13"
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3"
   }
 }
 ```
 
+`dev` starts the local Postgres container (from the backend's own `docker-compose.yml`, [9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), regenerates the client, pushes the schema, and starts the server watching for changes — one command instead of four manual steps.
+
 ### 8.4 `.env` Example
 
+Commit an `.env.example` with placeholder values and comments; never commit the real `.env`.
+
 ```env
-DATABASE_URL="postgresql://postgres:root@localhost:5432/mydb?schema=public"
+# .env.example — copy to .env and fill in real values
+
+DB_PASSWORD=change-this
+
+# Only used if you run the backend outside docker-compose (e.g. local pnpm dev);
+# must match DB_PASSWORD above.
+DATABASE_URL="postgresql://postgres:change-this@localhost:5432/mydb?schema=public"
+
 PORT=3001
+NODE_ENV=development
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change-this-too
+
+# Comma-separated, no spaces, exact frontend origins (with https://, no trailing slash).
+ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-> Add `.env` to `.gitignore` ([4.11](#411-gitignore-example)) — never commit it. These credentials match the shared `postgres` service in the root `docker-compose.yml` from [9.3](#93-root-docker-composeyml-shared-postgres).
+> Add `.env` to `.gitignore` ([4.11](#411-gitignore-example)) — never commit it.
 
-### 8.5 Configuration Files: `tsconfig.json` and `prisma.config.ts`
+### 8.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`
 
 ```json
 // tsconfig.json
@@ -1250,6 +1282,8 @@ PORT=3001
 }
 ```
 
+`target` controls which JS syntax is emitted; `module`/`moduleResolution` set to `NodeNext` follow Node's own rules for CommonJS vs ESM based on whether `package.json` has `"type": "module"` — since this `package.json` doesn't, `tsc` compiles to CommonJS, matching `node dist/index.js` in the `start` script.
+
 ```typescript
 // prisma.config.ts
 import "dotenv/config";
@@ -1267,11 +1301,28 @@ export default defineConfig({
 });
 ```
 
-`prisma.config.ts` is the Prisma CLI's configuration file: it tells `prisma migrate`/`prisma studio`/`prisma db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use — separate from how the running server itself connects (see [8.11](#811-simple-backend-entry-point-srcindexts-login-example)).
+`prisma.config.ts` is the Prisma CLI's configuration file: it tells `prisma migrate`/`prisma studio`/`prisma db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use. Because it reads `DATABASE_URL` from the environment, **any command that touches this file — including `prisma generate` — needs `DATABASE_URL` set**, even just to generate the client with no real database available yet. This matters most inside a Docker build stage, where `.env` isn't loaded automatically (see [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)):
+
+```bash
+DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate
+```
+
+Any placeholder connection string works here — `generate` only reads the schema, it never actually connects.
+
+```yaml
+# pnpm-workspace.yaml
+allowBuilds:
+  '@prisma/engines': true
+  bcrypt: true
+  esbuild: true
+  prisma: true
+```
+
+Since pnpm 10, `pnpm install` **ignores lifecycle/build scripts by default** for supply-chain safety — packages that ship native binaries or run `postinstall` (Prisma's engines, `bcrypt`'s native bindings, `esbuild`) silently fail to finish setting themselves up, and pnpm prints `[ERR_PNPM_IGNORED_BUILDS]`. `allowBuilds` in `pnpm-workspace.yaml` explicitly trusts these specific packages to run their install scripts. This file is required even for a single, non-monorepo package — `pnpm-workspace.yaml` is simply where pnpm looks for this setting regardless of whether you actually have multiple workspace packages.
 
 ### 8.6 PostgreSQL: Starting the Database
 
-A quick standalone container is enough to work on the backend in isolation:
+For working on the backend in isolation, without even a `docker-compose.yml` yet:
 
 ```bash
 docker run --name backend-postgres \
@@ -1283,7 +1334,7 @@ docker run --name backend-postgres \
   -d postgres:18
 ```
 
-> In the full-stack monorepo from [9. Full-Stack Project Structure](#9-full-stack-project-structure-frontend--monorepo), this same container is defined once in the root `docker-compose.yml` ([9.3](#93-root-docker-composeyml-shared-postgres)) and shared by both apps — `docker compose up -d` from the repo root replaces the command above.
+In practice this is quickly replaced by the backend's own `docker-compose.yml` ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), which defines the same container declaratively alongside the API service itself — `docker compose up -d postgres` (used by the `dev` script in [8.3](#83-install-dependencies)) or `docker compose up -d --build` (full stack, production) replace the manual `docker run` above.
 
 ### 8.7 Prisma From Scratch: Default `schema.prisma`
 
@@ -1324,32 +1375,42 @@ model User {
 
 ### 8.9 Create and Apply the First Migration
 
+Two different ways to push a schema change to the database, depending on the stage of the work:
+
 ```bash
-pnpm prisma migrate dev --name init
+pnpm exec prisma db push
 ```
 
-This:
+Pushes the current `schema.prisma` straight to the database **without creating a migration file**. Fast to iterate with while a model is still changing shape every few minutes — this is what the `dev` script in [8.3](#83-install-dependencies) uses. The trade-off: there's no history, so it's not meant for anything beyond local development, and switching back to `migrate dev`/`migrate deploy` later requires the schema and database to already be in sync.
+
+```bash
+pnpm exec prisma migrate dev --name init
+```
+
+The versioned alternative. This:
 
 1. Compares the schema against the current database
 2. Generates the SQL in `prisma/migrations/`
 3. Applies the migration
 4. Regenerates the Prisma Client
 
+Use this once a model is stable enough to commit a real migration history for it — every teammate and every environment then replays the exact same SQL.
+
 ```bash
-pnpm prisma generate
+pnpm exec prisma generate
 ```
 
 Regenerates the client without migrating — needed after pulling someone else's migration, or after editing the schema without creating one.
 
 ```bash
-pnpm prisma migrate deploy
+pnpm exec prisma migrate deploy
 ```
 
-Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script, never `migrate dev`.
+Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script (or a Docker container's startup command, see [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)), never `migrate dev` and never `db push`.
 
 ### 8.10 Modifying an Existing Schema: Update `User` and Add a New Table
 
-This is the general case the previous two steps build up to: the schema already exists and now needs to grow. Say logins should now persist a session, and `User` should have an optional name:
+This is the general case the previous step builds up to: the schema already exists and now needs to grow. Say logins should now persist a session, and `User` should have an optional name:
 
 ```prisma
 model User {
@@ -1370,17 +1431,17 @@ model Session {
 }
 ```
 
-Then create and apply a new migration exactly the same way as [8.9](#89-create-and-apply-the-first-migration), just with a new descriptive name:
+Then either `db push` (while still iterating) or a new named migration ([8.9](#89-create-and-apply-the-first-migration)) once it's stable:
 
 ```bash
-pnpm prisma migrate dev --name add-name-and-sessions
+pnpm exec prisma migrate dev --name add-name-and-sessions
 ```
 
-That's the general rule for growing a schema over time — it never changes: edit `schema.prisma` (add fields, add models, add relations), then run `migrate dev` again with a new `--name`. Prisma diffs the current database against the schema and figures out the SQL on its own; nothing needs to be written by hand.
+That's the general rule for growing a schema over time — it never changes: edit `schema.prisma` (add fields, add models, add relations), then push or migrate again. Prisma diffs the current database against the schema and figures out the SQL on its own; nothing needs to be written by hand.
 
 ### 8.11 Simple Backend Entry Point (`src/index.ts`): Login Example
 
-A minimal Express server using the schema above — register is left out for brevity, but `/login` and `/me` show the full pattern: hash comparison, a `Session` row, and an `httpOnly` cookie.
+A minimal Express server using the schema above — register is left out for brevity, but `/login` and `/me` show the full pattern: hash comparison, a `Session` row, and an `httpOnly` cookie configured for **cross-domain** use, since the frontend (Cloudflare Pages) and this API (a VPS) live on different domains in production — see [9.5](#95-cors-and-cookies-across-different-domains) for the full explanation.
 
 ```typescript
 // src/index.ts
@@ -1397,12 +1458,43 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
-app.use(cors({ origin: true, credentials: true }));
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+// Explicit origin allowlist instead of `origin: true` (which reflects any
+// origin) — safer once this is reachable from the public internet.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3001;
 const COOKIE_NAME = "session_token";
+
+// SameSite=None + Secure is required for the browser to send this cookie on
+// cross-site requests (frontend and API on different domains); Secure means
+// this only works over HTTPS, which is why the API needs a real TLS
+// certificate in production ([9.7](#97-https-in-front-of-the-backend-caddy)).
+// In local dev (same-origin via Vite's proxy) "lax" without Secure still works.
+const cookieOptions = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: (IS_PRODUCTION ? "none" : "lax") as "none" | "lax",
+};
 
 // POST /login — checks the password and opens a session
 app.post("/login", async (req, res) => {
@@ -1420,7 +1512,7 @@ app.post("/login", async (req, res) => {
 
   await prisma.session.create({ data: { token, userId: user.id, expiresAt } });
 
-  res.cookie(COOKIE_NAME, token, { httpOnly: true, expires: expiresAt });
+  res.cookie(COOKIE_NAME, token, { ...cookieOptions, expires: expiresAt });
   res.json({ id: user.id, email: user.email, name: user.name });
 });
 
@@ -1439,8 +1531,6 @@ app.get("/me", async (req, res) => {
 
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
 ```
-
-`cors({ origin: true, credentials: true })` and `credentials: "include"` on the frontend's requests ([9.4](#94-frontend-structure)) are both required here — without them the browser won't send the `session_token` cookie back on later requests, since the frontend and the API are different origins.
 
 ### 8.12 Seed Example
 
@@ -1475,15 +1565,15 @@ main()
 ```
 
 ```bash
-pnpm prisma db seed
+pnpm db:seed
 ```
 
-No extra wiring needed — the seed command is already pointed at this file by `prisma.config.ts` ([8.5](#85-configuration-files-tsconfigjson-and-prismaconfigts)).
+No extra wiring needed — the seed command is already pointed at this file by `prisma.config.ts` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)). One easy-to-miss requirement: the Prisma Client must already be generated before seeding — on a fresh `pnpm install` (or after wiping `node_modules`), run `pnpm exec prisma generate` once before `pnpm db:seed`, or it fails with `Cannot find module '.prisma/client/default'`.
 
 ### 8.13 Prisma Studio
 
 ```bash
-pnpm prisma studio
+pnpm exec prisma studio
 ```
 
 Opens a visual database browser at `http://localhost:5555` — view, create, edit and delete rows in any table without writing SQL.
@@ -1491,19 +1581,22 @@ Opens a visual database browser at `http://localhost:5555` — view, create, edi
 ### 8.14 Day-to-Day Workflow and Reference Commands
 
 ```bash
-# 1. Start the database (from the monorepo root — see 9.3)
-docker compose up -d
+# 1. Start the database (this backend's own docker-compose.yml — see 9.2)
+docker compose up -d postgres
 
-# 2. Start the backend in dev mode
+# 2. Start the backend in dev mode (generate + push + watch, see 8.3)
 pnpm dev
 
 # --- whenever the schema changes ---
 
-# 3. Create a migration
-pnpm prisma migrate dev --name <descriptive_name>
+# 3a. Quick iteration, no migration history yet
+pnpm exec prisma db push
+
+# 3b. Once the model is stable, a real versioned migration
+pnpm exec prisma migrate dev --name <descriptive_name>
 
 # 4. (optional) inspect data visually
-pnpm prisma studio
+pnpm exec prisma studio
 
 # --- end of the day ---
 
@@ -1515,98 +1608,74 @@ Quick reference:
 
 ```bash
 # Docker
-docker compose up -d              # start Postgres
-docker compose down               # stop Postgres (keeps data)
-docker compose down -v            # stop + wipe all data (volume included)
-docker compose logs -f postgres   # follow Postgres logs
+docker compose up -d postgres      # start only Postgres (local dev)
+docker compose up -d --build       # build + start Postgres AND the backend (full stack, prod-style)
+docker compose down                # stop everything (keeps data)
+docker compose down -v             # stop + wipe all data (volume included) — needed if a stored
+                                    # password stops matching .env, see 8.15
+docker compose logs -f backend     # follow the backend's logs
 
 # Prisma
-pnpm prisma migrate dev --name <name>   # new migration
-pnpm prisma migrate deploy              # apply existing migrations
-pnpm prisma generate                    # regenerate the client
-pnpm prisma studio                      # visual data browser
-pnpm prisma db seed                     # run the seed script
+pnpm exec prisma db push                # push schema, no migration file (fast local iteration)
+pnpm exec prisma migrate dev --name <name>   # new versioned migration
+pnpm exec prisma migrate deploy         # apply existing migrations (production/CI, no prompts)
+pnpm exec prisma generate               # regenerate the client
+pnpm exec prisma studio                 # visual data browser
+pnpm db:seed                            # run the seed script
 
 # Dev server
-pnpm dev                          # start with hot reload
+pnpm dev                          # docker compose up -d postgres + generate + push + hot reload
 ```
 
 ### 8.15 Common Prisma and PostgreSQL Errors
 
 | Problem | Likely cause | Fix |
 |---|---|---|
-| `Connection refused` when migrating | The container isn't running | `docker compose up -d` |
+| `Connection refused` when migrating | The container isn't running | `docker compose up -d postgres` |
+| `Error: P1000` (authentication failed) on a container that starts fine | The `.env` password was changed, but the Postgres **volume already exists** with the old password baked in — Postgres never re-reads `POSTGRES_PASSWORD` after first init | `docker compose down -v` (wipes the volume) then `docker compose up -d --build` again |
 | `Error: P1001` (can't reach database) | Wrong `DATABASE_URL` | Check user, password, host and port |
-| Prisma Client out of date | Schema changed without regenerating | `pnpm prisma generate` |
-| Migrations in conflict | Local schema doesn't match the database | `pnpm prisma migrate reset` (⚠️ wipes data) |
+| `PrismaConfigEnvError: Cannot resolve environment variable: DATABASE_URL` when running `prisma generate`/`migrate`/`studio` | `prisma.config.ts` needs `DATABASE_URL` in the environment, and nothing loaded `.env` in this shell/build step | Export it inline for that one command, e.g. `DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate` — any placeholder works for `generate` |
+| `[ERR_PNPM_IGNORED_BUILDS]` during `pnpm install` | pnpm ≥ 10 blocks lifecycle/build scripts by default (Prisma engines, `bcrypt`, `esbuild`) | Add `allowBuilds` to `pnpm-workspace.yaml` — see [8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) |
+| `Cannot find module '.prisma/client/default'` when seeding | The Prisma Client was never generated in this environment (fresh install, or `node_modules` wiped) | `pnpm exec prisma generate` before `pnpm db:seed` |
+| `sh: 1: tsc: not found` on build | `typescript` isn't declared as a direct dependency of this package (easy to miss if it used to come from a monorepo root) | Add `typescript` to `devDependencies` — see [8.3](#83-install-dependencies) |
+| `prisma:warn Prisma failed to detect the libssl/openssl version` during install/generate in a `node:*-slim` Docker image | Harmless in practice — Prisma falls back to a default engine variant | Safe to ignore; only worth acting on if queries actually fail at runtime, in which case switch away from a `-slim` base image |
+| Prisma Client out of date | Schema changed without regenerating | `pnpm exec prisma generate` |
+| Migrations in conflict | Local schema doesn't match the database | `pnpm exec prisma migrate reset` (⚠️ wipes data) |
 | Port `5432` already in use | Another PostgreSQL instance is running | Change the port in `docker-compose.yml` to e.g. `5433:5432` and update `DATABASE_URL` |
-| `401 Unauthorized` on every request | Missing/expired `session_token` cookie, or the frontend isn't sending `credentials: "include"` | Log in again; check `api.ts` ([9.4](#94-frontend-structure)) — see also [13. Common HTTP Status Codes](#13-common-http-status-codes) |
+| `401 Unauthorized` on every request in production, but it worked in local dev | Cookie is `SameSite=Lax`/non-`Secure` while frontend and backend are now on different domains — the browser silently drops it | Use the production cookie settings from [8.11](#811-simple-backend-entry-point-srcindexts-login-example) / [9.5](#95-cors-and-cookies-across-different-domains); see also [13. Common HTTP Status Codes](#13-common-http-status-codes) |
+| `No permitido por CORS` / `Not allowed by CORS` | The frontend's exact origin isn't in `ALLOWED_ORIGINS`, or it's missing `https://`, or it has a trailing slash | Fix `ALLOWED_ORIGINS` in `.env` (exact match required) and restart the backend — see [9.5](#95-cors-and-cookies-across-different-domains) |
 
 ---
 
-## 9. Full-Stack Project Structure (Frontend + Monorepo)
+## 9. Full Separation: Independent Backend, Frontend(s) and Deployment
 
-Ties the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql) together with a Vite + React frontend, using a `pnpm` monorepo so both apps — and the one shared PostgreSQL container — start together with a single command.
+An alternative to the monorepo approach: the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql) and each Vite + React frontend live in **completely separate repositories**, with no shared workspace, no shared root `package.json`, and no shared `docker-compose.yml`. The backend deploys to a VPS as a Docker container; each frontend deploys independently to Cloudflare Pages.
 
-### 9.1 Monorepo Overview: pnpm Workspaces
+### 9.1 Why Full Separation Instead of a Monorepo
 
-Two packages, `frontend` and `backend`, declared as a workspace at the repo root:
+| | Monorepo (pnpm workspace) | Full separation |
+|---|---|---|
+| Deploy targets | Awkward when frontend and backend go to genuinely different platforms (e.g. Cloudflare Pages vs a VPS) | Natural — each repo deploys to wherever it needs to, independently |
+| Shared internal packages (e.g. shared types) | Free — `workspace:*` just works | Not available — shared types/fetch helpers get duplicated by hand into each repo |
+| Coupling | One `git clone` gets everything; one `pnpm install` at the root sets up all packages | Each repo is `git clone`d, installed and versioned on its own |
+| Risk | A change to a shared package can silently affect every consumer | Nothing changes without an explicit edit in that specific repo — but keeping multiple copies of the same fetch wrapper/types in sync across repos is now a manual discipline, not something the tooling enforces |
 
-```yaml
-# pnpm-workspace.yaml
-packages:
-  - "frontend"
-  - "backend"
-```
+There's no universally correct choice — pick based on where each piece is actually going to be hosted. The rest of this section documents the full-separation setup end to end.
 
-This is what makes `pnpm --filter frontend ...` and `pnpm --filter backend ...` work from the root — each `--filter` targets the matching package by the `name` field in its own `package.json` (`"frontend"`, `"backend"`), exactly like the standalone `backend/package.json` from [8.3](#83-install-dependencies).
+### 9.2 Backend Repo: `docker-compose.yml` (Postgres and API)
 
-### 9.2 Root `package.json`: Explaining `concurrently`
-
-```json
-{
-  "name": "service-manager-monorepo",
-  "private": true,
-  "scripts": {
-    "dev:frontend": "pnpm --filter frontend dev",
-    "dev:backend": "pnpm --filter backend dev",
-    "dev": "docker compose up -d && concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
-    "dev:stop": "docker compose down",
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
-    "db:seed": "pnpm --filter backend exec prisma db seed",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
-  },
-  "devDependencies": {
-    "concurrently": "^10.0.5",
-    "prettier": "^3.9.6",
-    "typescript": "^6.0.3"
-  }
-}
-```
-
-Running `pnpm --filter backend dev` and `pnpm --filter frontend dev` normally each block their own terminal — running both at once would mean two separate terminal windows. **`concurrently`** runs several npm/pnpm scripts inside a single terminal instead, streaming both processes' output (color-coded per script) at the same time, and stops all of them together on a single `Ctrl+C`. That's what turns `pnpm dev` into one command that starts Postgres, then starts the backend and frontend dev servers together, instead of three manual steps in three terminals.
-
-A couple of other scripts worth calling out:
-
-- `pnpm -r build` / `pnpm -r lint` — the `-r` (`--recursive`) flag runs that script in **every** workspace package that defines it (so this runs both `frontend`'s and `backend`'s `build`/`lint` scripts in one call).
-- `pnpm --filter backend exec prisma db seed` — runs the command inside the `backend` package specifically, equivalent to `cd backend && pnpm exec prisma db seed`.
-
-### 9.3 Root `docker-compose.yml` (Shared Postgres)
+Unlike the monorepo's shared root compose file (which only ran Postgres), the backend's own `docker-compose.yml` runs **both** Postgres and the backend itself — this is what actually ships to the VPS:
 
 ```yaml
 services:
   postgres:
     image: postgres:18
-    container_name: sm-postgres
+    container_name: postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: mydb
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -1615,21 +1684,250 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build: .
+    image: service-manager-backend
+    container_name: backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD}@postgres:5432/mydb?schema=public
+      PORT: 3001
+      NODE_ENV: production
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    ports:
+      - "3001:3001"
+
 volumes:
   postgres_data:
+    name: postgres_data
 ```
 
-One Postgres container, used by the backend's `DATABASE_URL` from [8.4](#84-env-example). Nothing frontend-specific is needed here, since the frontend never talks to the database directly — see [8.1](#81-overview-which-framework-needs-a-separate-backend).
+Notes:
 
-### 9.4 Frontend Structure
+- `container_name` and `image` are set explicitly on both services — without `image:` on `backend`, Docker Compose names the built image `<folder-name>-backend`, which is rarely what you want to see in `docker images`.
+- Inside the Docker network, the backend reaches Postgres at host `postgres` (the service name), **not** `localhost` — that only applies when running the backend outside Docker.
+- In production, don't publish Postgres's `5432` to the host (remove any `ports:` under `postgres`) — nothing outside the VPS needs to talk to it directly, since the backend is on the same Docker network.
+- For **local development**, publishing `5432:5432` on `postgres` is exactly what lets `pnpm dev` ([8.3](#83-install-dependencies)) run the backend outside Docker while still reaching the containerized database.
+
+### 9.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)
+
+```dockerfile
+FROM node:24-slim AS base
+WORKDIR /app
+RUN corepack enable
+
+# ── deps ─────────────────────────────────────────────────────────────────────
+FROM base AS deps
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
+COPY prisma ./prisma
+RUN pnpm install --ignore-scripts=false
+
+# ── build ────────────────────────────────────────────────────────────────────
+FROM deps AS build
+COPY . .
+RUN DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate
+RUN pnpm run build
+
+# ── runtime ──────────────────────────────────────────────────────────────────
+FROM base AS runtime
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
+COPY package.json ./
+
+EXPOSE 3001
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/index.js"]
+```
+
+Points worth calling out:
+
+- `node:24-slim` — Node 24 is the current LTS; `-slim` keeps the image small. Avoid `node:latest`, which silently jumps major versions on every rebuild.
+- `--ignore-scripts=false` on `pnpm install` — needed alongside the `allowBuilds` list in `pnpm-workspace.yaml` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)), or the container image ends up with a half-installed Prisma/`bcrypt`.
+- The `DATABASE_URL="..."` placeholder before `prisma generate` in the `build` stage — this step runs at **image build time**, before any real `.env`/environment variables exist; `prisma generate` only needs a syntactically valid connection string, it never connects.
+- `COPY --from=deps` vs `COPY --from=build` in `runtime` — each pulls something different: `node_modules` comes from `deps` (installed dependencies), while `dist/` and `prisma/` come from `build` (compiled code and the schema/migrations, which only exist there because `build` is the stage that ran `COPY . .`).
+- The container's `CMD` runs `prisma migrate deploy` on every boot before starting the server — migrations apply themselves automatically on deploy, nothing to remember to run by hand on the VPS.
+
+Also add a `.dockerignore` next to the `Dockerfile`, or `node_modules`/`dist` from the host get copied into the build context and can break the build:
 
 ```
-frontend/
+node_modules
+dist
+.env
+```
+
+### 9.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)
+
+Covered in [8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) — repeated here because it's specifically what makes the Docker build in [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage) succeed instead of failing with `[ERR_PNPM_IGNORED_BUILDS]`:
+
+```yaml
+allowBuilds:
+  '@prisma/engines': true
+  bcrypt: true
+  esbuild: true
+  prisma: true
+```
+
+Must be copied into the Docker build context (`COPY pnpm-workspace.yaml ./` in the `deps` stage) — if it's missing from `.dockerignore` accidentally, or just never copied, the build fails inside the container the same way it does locally without it.
+
+### 9.5 CORS and Cookies Across Different Domains
+
+This is the part that actually breaks when going from monorepo (same-origin via Vite's dev proxy) to full separation (frontend and backend genuinely on different domains) — and the single most common source of "it works locally but not in production" here.
+
+**CORS** — an explicit origin allowlist instead of reflecting any origin:
+
+```typescript
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
+```
+
+`ALLOWED_ORIGINS` must list the **exact** production origins of every frontend that calls this backend (`https://admin.example.com,https://portal.example.com`) — protocol included, no trailing slash. A mismatch here is the direct cause of `No permitido por CORS` / `Not allowed by CORS`.
+
+**Cookies** — with the frontend and backend on different domains, every login/session cookie is a cross-site cookie from the browser's point of view:
+
+```typescript
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: (IS_PRODUCTION ? "none" : "lax") as "none" | "lax",
+};
+```
+
+- `SameSite=Lax` (the default) blocks the cookie on cross-site `fetch`/`XHR` calls — only `SameSite=None` allows it.
+- `SameSite=None` **requires** `Secure`, which means the backend must be served over real HTTPS in production ([9.7](#97-https-in-front-of-the-backend-caddy)) — without it, the browser refuses to set the cookie at all, and every request after login looks unauthenticated (`401`) even though login itself appeared to succeed.
+- Locally, frontend and backend are still effectively same-site (`localhost` talking to `localhost`, or same-origin behind Vite's dev proxy), so `Lax` without `Secure` keeps working — hence branching on `NODE_ENV`.
+
+`clearCookie(...)` on logout must use **the same options** (`httpOnly`, `secure`, `sameSite`) used when the cookie was set, or the browser won't recognize it as the same cookie to remove.
+
+### 9.6 Each Frontend as Its Own Repo (Cloudflare Pages)
+
+Nothing changes in the frontend's own code for this to work — the fetch wrapper already reads the backend's base URL from an environment variable:
+
+```typescript
+// src/api.ts
+const BASE = import.meta.env.VITE_API_URL ?? "";
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as { error?: string }).error ?? `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return undefined as T;
+  return res.json() as Promise<T>;
+}
+```
+
+In dev, leaving `VITE_API_URL` unset (`BASE` becomes `""`) works together with Vite's proxy (`/api` → `http://localhost:3001`, [6.3](#63-viteconfigts-reference)). In Cloudflare Pages:
+
+1. Push this frontend as its own Git repository.
+2. Create a Cloudflare Pages project connected to that repo.
+3. Build command: `npm run build` (or `pnpm build`). Output directory: `dist`.
+4. Under **Settings → Environment variables**, set `VITE_API_URL` to the backend's real HTTPS URL (e.g. `https://api.example.com`, no trailing slash).
+5. Deploy, then add the resulting Pages domain to the backend's `ALLOWED_ORIGINS` ([9.5](#95-cors-and-cookies-across-different-domains)) and restart the backend container.
+
+Multiple independent frontends (e.g. an admin panel and a separate customer-facing portal) can point at the same backend this way — each is its own Pages project, its own repo, and just needs its own entry added to `ALLOWED_ORIGINS`.
+
+### 9.7 HTTPS in Front of the Backend (Caddy)
+
+Required because of the cookie settings in [9.5](#95-cors-and-cookies-across-different-domains) — `Secure` cookies are simply not set by the browser over plain HTTP. Caddy is the simplest option since it issues and renews the TLS certificate on its own:
+
+```bash
+sudo apt install -y caddy
+```
+
+`/etc/caddy/Caddyfile`:
+
+```
+api.example.com {
+    reverse_proxy localhost:3001
+}
+```
+
+```bash
+sudo systemctl restart caddy
+```
+
+The domain's DNS `A` record must already point at this VPS's IP **before** restarting Caddy, or certificate issuance fails.
+
+### 9.8 Local Development Without Docker for the Backend
+
+The full production `docker-compose.yml` from [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) also builds and runs the backend itself — convenient for a final end-to-end check, but slower to iterate against than `tsx watch`. Day to day, only Postgres runs in Docker, and the backend runs directly on the host via the `dev` script from [8.3](#83-install-dependencies):
+
+```bash
+docker compose up -d postgres   # only the database, from the same compose file
+pnpm dev                        # generate + db push + tsx watch, outside Docker
+```
+
+This is exactly why `postgres` still publishes `5432:5432` in [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) — it's what lets `DATABASE_URL` in the local `.env` point at `localhost:5432` while `pnpm dev` runs on the host. When you actually want to test the full container build (`backend` service included), use `docker compose up -d --build` instead, and remember the container talks to Postgres via the service name `postgres`, not `localhost` — the two `DATABASE_URL`s (host `.env` vs the one injected into the `backend` container in `docker-compose.yml`) are intentionally different for this reason.
+
+### 9.9 Final Project Structure (Three Independent Repos)
+
+No shared root — three separate repositories, each deployed independently:
+
+```
+service-manager-backend/          (→ VPS, Docker)
+├── prisma/
+│   ├── migrations/
+│   ├── schema.prisma
+│   └── seed.ts
+├── src/
+│   └── index.ts
+├── .dockerignore
+├── .env                          (never committed)
+├── .env.example
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
+├── package.json
+├── pnpm-workspace.yaml
+├── prisma.config.ts
+└── tsconfig.json
+
+admin-frontend/                   (→ Cloudflare Pages)
 ├── public/
 └── src/
     ├── components/
-    ├── context/
-    │   └── AuthContext.tsx
+    ├── layouts/
+    ├── pages/
+    ├── api.ts
+    ├── types.ts
+    ├── App.tsx
+    ├── global.css
+    └── main.tsx
+
+customer-portal/                  (→ Cloudflare Pages, separate project)
+├── public/
+└── src/
+    ├── components/
     ├── layouts/
     ├── pages/
     ├── api.ts
@@ -1638,159 +1936,9 @@ frontend/
     └── main.tsx
 ```
 
-This is the same Vite + React layout from [6.6 Project Structure & Architecture](#66-project-structure--architecture), with two additions specific to talking to the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql): `api.ts` and `context/AuthContext.tsx`.
-
-**`api.ts`** — a small fetch wrapper that always points at the backend and always sends the session cookie:
-
-```typescript
-// src/api.ts
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
-
-export async function api(path: string, options: RequestInit = {}) {
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    credentials: "include", // sends/receives the session_token cookie
-    headers: { "Content-Type": "application/json", ...options.headers },
-  });
-
-  if (!res.ok) throw new Error((await res.json()).error ?? "Request failed");
-  return res.json();
-}
-```
-
-**`context/AuthContext.tsx`** — holds the logged-in user and exposes `login`/`logout`, matching the backend's `/login` and `/me` routes from [8.11](#811-simple-backend-entry-point-srcindexts-login-example):
-
-```typescript
-// src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState } from "react";
-import { api } from "../api";
-
-type User = { id: number; email: string; name: string | null };
-type AuthContextValue = {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-};
-
-const AuthContext = createContext<AuthContextValue | null>(null);
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    api("/me")
-      .then(setUser)
-      .catch(() => setUser(null))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  async function login(email: string, password: string) {
-    setUser(await api("/login", { method: "POST", body: JSON.stringify({ email, password }) }));
-  }
-
-  function logout() {
-    setUser(null); // pair with a POST /logout route on the backend that clears the cookie
-  }
-
-  return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside an AuthProvider");
-  return ctx;
-}
-```
-
-**`App.tsx`** — wraps the router in `AuthProvider` and gates the private routes behind a `ProtectedRoute` that reads `useAuth()`:
-
-```typescript
-// src/App.tsx
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return null;
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
-}
-
-function AppRoutes() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          element={
-            <ProtectedRoute>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default function App() {
-  return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
-  );
-}
-```
-
-> `main.tsx` and `global.css` don't change for this — they're the same entry point and Tailwind setup already covered in [4.1](#41-tailwind-css-setup) and [6.1](#61-scaffolding-a-new-project).
-
-### 9.5 Final Project Structure
-
-```
-service-manager-monorepo/
-├── backend/
-│   ├── prisma/
-│   │   ├── migrations/
-│   │   ├── schema.prisma
-│   │   └── seed.ts
-│   ├── src/
-│   │   └── index.ts
-│   ├── .env
-│   ├── package.json
-│   ├── prisma.config.ts
-│   └── tsconfig.json
-├── frontend/
-│   ├── public/
-│   └── src/
-│       ├── components/
-│       ├── context/
-│       │   └── AuthContext.tsx
-│       ├── layouts/
-│       ├── pages/
-│       ├── api.ts
-│       ├── App.tsx
-│       ├── global.css
-│       └── main.tsx
-├── docker-compose.yml
-├── package.json
-└── pnpm-workspace.yaml
-```
-
-`pnpm install` at the root installs both packages' dependencies; `pnpm dev` (from [9.2](#92-root-packagejson-explaining-concurrently)) starts Postgres and both dev servers together.
+Each repo has its own `package.json`, its own `pnpm install`, and its own `git` history. `admin-frontend/src/types.ts` exists because there's no shared workspace package to import domain types from anymore — they're copied in and kept manually in sync with whatever the backend actually returns; the same applies to the near-identical `api.ts` fetch wrapper duplicated across both frontends.
 
 ---
-
 ## 10. Linux Server & Docker Deployment
 
 This section is the complete server setup for **Vite + React and Next.js websites running with Docker and Traefik**.
