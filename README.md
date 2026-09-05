@@ -70,6 +70,7 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [9.7 HTTPS in Front of the Backend (Caddy)](#97-https-in-front-of-the-backend-caddy)
   - [9.8 Local Development Without Docker for the Backend](#98-local-development-without-docker-for-the-backend)
   - [9.9 Final Project Structure (Three Independent Repos)](#99-final-project-structure-three-independent-repos)
+  - [9.10 Continuous Deployment on Push (GitHub Actions)](#910-continuous-deployment-on-push-github-actions)
 - [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment)
   - [10.1 Connect with Bitvise SSH Client](#101-connect-with-bitvise-ssh-client)
   - [10.2 Basic Linux Setup](#102-basic-linux-setup)
@@ -1167,7 +1168,6 @@ backend/
 │   └── index.ts
 ├── .dockerignore
 ├── .env               (never committed)
-├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
 ├── Dockerfile
@@ -1239,10 +1239,8 @@ pnpm install
 
 ### 8.4 `.env` Example
 
-Commit an `.env.example` with placeholder values and comments; never commit the real `.env`.
-
 ```env
-# .env.example — copy to .env and fill in real values
+# .env — never commit this file
 
 DB_PASSWORD=change-this
 
@@ -1407,6 +1405,12 @@ pnpm exec prisma migrate deploy
 ```
 
 Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script (or a Docker container's startup command, see [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)), never `migrate dev` and never `db push`.
+
+```bash
+pnpm exec prisma migrate reset
+```
+
+⚠️ **Destructive — local/dev only, never run this in production.** Drops the entire database, recreates it from scratch, reapplies every migration in `prisma/migrations/` from the very first one, and then runs the seed script ([8.12](#812-seed-example)) automatically. Reach for this when the local database and the migration history have drifted apart and Prisma refuses to apply a new migration cleanly (`Migrations in conflict`, see [8.15](#815-common-prisma-and-postgresql-errors)) — it's the "just start over" escape hatch for a local database, not something to run against real data.
 
 ### 8.10 Modifying an Existing Schema: Update `User` and Add a New Table
 
@@ -1619,6 +1623,7 @@ docker compose logs -f backend     # follow the backend's logs
 pnpm exec prisma db push                # push schema, no migration file (fast local iteration)
 pnpm exec prisma migrate dev --name <name>   # new versioned migration
 pnpm exec prisma migrate deploy         # apply existing migrations (production/CI, no prompts)
+pnpm exec prisma migrate reset          # ⚠️ wipe local DB, reapply all migrations + reseed (local only)
 pnpm exec prisma generate               # regenerate the client
 pnpm exec prisma studio                 # visual data browser
 pnpm db:seed                            # run the seed script
@@ -1903,7 +1908,6 @@ service-manager-backend/          (→ VPS, Docker)
 │   └── index.ts
 ├── .dockerignore
 ├── .env                          (never committed)
-├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
 ├── Dockerfile
@@ -1937,6 +1941,74 @@ customer-portal/                  (→ Cloudflare Pages, separate project)
 ```
 
 Each repo has its own `package.json`, its own `pnpm install`, and its own `git` history. `admin-frontend/src/types.ts` exists because there's no shared workspace package to import domain types from anymore — they're copied in and kept manually in sync with whatever the backend actually returns; the same applies to the near-identical `api.ts` fetch wrapper duplicated across both frontends.
+
+### 9.10 Continuous Deployment on Push (GitHub Actions)
+
+Everything so far still means logging into the VPS by hand after every change (`git pull`, `docker compose up -d --build backend`). GitHub Actions can do that automatically on every `git push`, using the repo's built-in CI/CD instead of any extra service.
+
+The frontends already get this for free — Cloudflare Pages redeploys automatically as soon as it sees a new commit on the connected branch, no workflow file needed. This section is specifically for the **backend**, which doesn't have anything like that built in.
+
+**Step 1 — Generate a dedicated SSH key pair for deployment**, on the VPS itself:
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/deploy_key -N ""
+cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys
+cat ~/.ssh/deploy_key
+```
+
+The last command prints the **private** key — copy its full output (including the `-----BEGIN...-----`/`-----END...-----` lines) for the next step. Using a dedicated key (instead of your personal one) means it can be revoked later without affecting your own SSH access.
+
+**Step 2 — Store three secrets in the GitHub repo**, under **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret name | Value |
+|---|---|
+| `SSH_HOST` | The VPS's IP address (or domain) |
+| `SSH_USERNAME` | The Linux user to connect as on the VPS |
+| `SSH_PRIVATE_KEY` | The private key printed in Step 1 |
+
+Secrets are encrypted at rest and never shown again in the UI once saved — treat the values as you would any other credential.
+
+**Step 3 — Add the workflow file** at `.github/workflows/deploy.yml` in the backend's repo:
+
+```yaml
+name: Deploy backend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/service-manager-backend
+            git pull
+            docker compose up -d --build backend
+```
+
+What each part does:
+
+- `on: push: branches: [main]` — this workflow only runs on pushes to `main`. Change it if the default branch is `master`, or add more branches if needed.
+- `appleboy/ssh-action` — a community GitHub Action that opens an SSH connection using the three secrets above and runs `script:` on the remote host, exactly as if it were typed by hand over SSH.
+- `cd ~/service-manager-backend` — must match the actual path where the repo was cloned on the VPS.
+- `git pull` — fetches the commit that was just pushed.
+- `docker compose up -d --build backend` — rebuilds only the `backend` image and recreates that one container ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)); `postgres` is untouched, matching the reasoning in [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) about not restarting the database on every code change.
+
+**Step 4 — Push and watch it run**: `git push origin main`, then check the **Actions** tab on GitHub — a green check means the VPS already pulled and rebuilt on its own.
+
+Since the container's `CMD` runs `prisma migrate deploy` on every boot ([9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)), any pending migration is applied automatically as part of this same deploy — no separate manual step for that either.
+
+A couple of things worth keeping in mind:
+
+- This gives push access to your VPS to anyone who can push to `main` (or merge into it) — branch protection rules on GitHub are worth setting up if more than one person has write access to the repo.
+- The exact same pattern (workflow file + three secrets) can be reused for any other repo that needs this — it isn't specific to this backend, only the `cd` path and the `docker compose` command at the end change.
 
 ---
 ## 10. Linux Server & Docker Deployment
