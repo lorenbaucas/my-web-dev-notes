@@ -1,6 +1,6 @@
 # Developer Notes
 
-Personal reference notes for setting up a web development environment, scaffolding websites with **Astro, Vite + React, and Next.js**, and working with Git/GitHub. The classes, tags, colors, and fonts used in the examples below are illustrative — swap them for any generic CSS classes, framework, or design system.
+Personal reference notes for setting up a web development environment, scaffolding websites with **Astro, Vite + React, and Next.js**, and working with Git/GitHub.
 
 ## Index
 
@@ -18,10 +18,11 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [4.5 Sitemap Integration](#45-sitemap-integration)
   - [4.6 404 / Not Found Page](#46-404--not-found-page)
   - [4.7 Prettier Setup](#47-prettier-setup)
-  - [4.8 Windows PowerShell Execution Policy / npm Recovery](#48-windows-powershell-execution-policy--npm-recovery)
-  - [4.9 Development Server](#49-development-server)
-  - [4.10 `.env` Example](#410-env-example)
-  - [4.11 `.gitignore` Example](#411-gitignore-example)
+  - [4.8 ESLint Setup](#48-eslint-setup)
+  - [4.9 Windows PowerShell Execution Policy / npm Recovery](#49-windows-powershell-execution-policy--npm-recovery)
+  - [4.10 Development Server](#410-development-server)
+  - [4.11 `.env` Example](#411-env-example)
+  - [4.12 `.gitignore` Example](#412-gitignore-example)
 - [5. Astro](#5-astro)
   - [5.1 Project Setup](#51-project-setup)
   - [5.2 Install Dependencies](#52-install-dependencies)
@@ -49,7 +50,7 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [8.2 Backend Project Structure](#82-backend-project-structure)
   - [8.3 Install Dependencies](#83-install-dependencies)
   - [8.4 `.env` Example](#84-env-example)
-  - [8.5 Configuration Files: `tsconfig.json` and `prisma.config.ts`](#85-configuration-files-tsconfigjson-and-prismaconfigts)
+  - [8.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)
   - [8.6 PostgreSQL: Starting the Database](#86-postgresql-starting-the-database)
   - [8.7 Prisma From Scratch: Default `schema.prisma`](#87-prisma-from-scratch-default-schemaprisma)
   - [8.8 Add a Simple `User` Model](#88-add-a-simple-user-model)
@@ -122,7 +123,7 @@ Personal reference notes for setting up a web development environment, scaffoldi
 | Node.js | Required JavaScript runtime for local development, builds, Astro, Vite and Next.js | [nodejs.org/en/download](https://nodejs.org/en/download) |
 | pnpm | Fast, disk-efficient package manager | [pnpm.io/installation](https://pnpm.io/installation) |
 
-Install Node.js first, then install pnpm. Node.js is required for this development setup.
+Install Node.js first, then pnpm.
 
 ---
 
@@ -200,11 +201,11 @@ Install Node.js first, then install pnpm. Node.js is required for this developme
 
 ## 4. Shared Website Setup
 
-These steps are identical in spirit across **Astro**, **Vite** and **Next.js** — Tailwind, Open Graph, `robots.txt`, sitemaps, the 404 page, Prettier, and the Windows/npm recovery steps. Each subsection gives the shared idea once and then a short **Astro / Vite / Next.js** breakdown for whatever changes between them. Framework-specific scaffolding, routing and project structure live in their own sections: [5. Astro](#5-astro), [6. Vite](#6-vite), [7. Next.js](#7-nextjs).
+These steps are identical in spirit across **Astro**, **Vite** and **Next.js** — Tailwind, Open Graph, `robots.txt`, sitemaps, the 404 page, Prettier, ESLint, and the Windows/npm recovery steps. Each subsection gives the shared idea once, then a short **Astro / Vite / Next.js** breakdown for what changes between them. Framework-specific scaffolding, routing and project structure live in their own sections: [5. Astro](#5-astro), [6. Vite](#6-vite), [7. Next.js](#7-nextjs).
 
 ### 4.1 Tailwind CSS Setup
 
-All three projects use Tailwind CSS v4. The idea is the same everywhere: install the package, register it as a build plugin, and import it once from a global stylesheet.
+All three projects use Tailwind CSS v4:
 
 ```bash
 pnpm add tailwindcss @tailwindcss/vite
@@ -317,7 +318,7 @@ export const metadata = {
 
 ### 4.4 `robots.txt`
 
-`robots.txt` is framework-independent — it's a static file tells search engine crawlers what they can access and points them to the sitemap. The final URL is always `https://mysite.com/robots.txt`.
+`robots.txt` is framework-independent — a static file that tells search engine crawlers what they can access and points them to the sitemap. The final URL is always `https://mysite.com/robots.txt`.
 
 **Normal production site:**
 
@@ -435,8 +436,6 @@ export default function NotFound() {
 }
 ```
 
-> The `class`/`className` names and layout structure above are just an example — swap them for any generic CSS classes or framework.
-
 ### 4.7 Prettier Setup
 
 Install Prettier and add the standard scripts to `package.json`:
@@ -462,7 +461,142 @@ pnpm add -D prettier-plugin-astro
 
 **Vite / Next.js** — no extra plugin needed for plain `.tsx`/`.ts` files.
 
-### 4.8 Windows PowerShell Execution Policy / npm Recovery
+### 4.8 ESLint Setup
+
+Install ESLint and add the `lint` script to `package.json`:
+
+```json
+"lint": "eslint ."
+```
+
+**Vite / React** — install the full set (TypeScript rules + React-specific plugins):
+
+```bash
+pnpm add -D eslint @eslint/js typescript-eslint globals eslint-plugin-react-hooks eslint-plugin-react-refresh
+```
+
+`eslint.config.mjs`:
+
+```javascript
+import js from "@eslint/js";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
+import { defineConfig, globalIgnores } from "eslint/config";
+
+export default defineConfig([
+  globalIgnores(["dist", "node_modules/**"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+    },
+    rules: {
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+]);
+```
+
+`reactHooks.configs.flat.recommended` catches invalid Hook usage (calling a Hook conditionally, outside a component, etc. — see [React's Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks)); `reactRefresh.configs.vite` warns when a file mixes component and non-component exports in a way that breaks Vite's Fast Refresh ([6](#6-vite)). `no-explicit-any` and `no-unused-vars` (with an `_`-prefix escape hatch for intentionally unused args/vars) apply across every framework in this section — they're the two rules most worth keeping as errors rather than warnings.
+
+**Node.js backend** (Express + Prisma, [8](#8-database--backend-prisma--postgresql)) — same TypeScript rules, without the React-specific plugins:
+
+```bash
+pnpm add -D eslint @eslint/js typescript-eslint
+```
+
+`eslint.config.mjs`:
+
+```javascript
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import { defineConfig, globalIgnores } from "eslint/config";
+
+export default defineConfig([
+  globalIgnores(["dist/**", "node_modules/**"]),
+  {
+    files: ["**/*.ts"],
+    extends: [js.configs.recommended, tseslint.configs.recommended],
+    rules: {
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+]);
+```
+
+No `languageOptions.globals` here — there's no browser code to account for, and Node's own globals (`process`, `__dirname`, etc.) are already covered by `@types/node` at the TypeScript level, not by ESLint's global-variable checking.
+
+**Astro** — adds `eslint-plugin-astro` on top of the base TypeScript config, to lint the script portions of `.astro` files:
+
+```bash
+pnpm add -D eslint @eslint/js typescript-eslint globals eslint-plugin-astro
+```
+
+`eslint.config.mjs`:
+
+```javascript
+import js from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import eslintPluginAstro from "eslint-plugin-astro";
+import { defineConfig, globalIgnores } from "eslint/config";
+
+export default defineConfig([
+  globalIgnores(["dist/**", ".astro/**", "node_modules/**"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [js.configs.recommended, tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.browser,
+    },
+    rules: {
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  ...eslintPluginAstro.configs.recommended,
+]);
+```
+
+`eslintPluginAstro.configs.recommended` is spread at the end (rather than listed inside one object's `extends`) because it's an array of several config objects — Astro's own flat-config plugin ships it this way so it can attach its parser specifically to `**/*.astro` files without interfering with the plain `.ts`/`.tsx` block above it.
+
+Across all three: `pnpm run lint` reports the errors, `pnpm run lint --fix` auto-fixes what it safely can (mainly formatting-adjacent issues — most real style formatting is Prettier's job, [4.7](#47-prettier-setup), not ESLint's).
+
+### 4.9 Windows PowerShell Execution Policy / npm Recovery
 
 This applies the same way regardless of framework.
 
@@ -483,7 +617,7 @@ rm -rf node_modules package-lock.json
 pnpm install
 ```
 
-### 4.9 Development Server
+### 4.10 Development Server
 
 The command is the same in all three projects:
 
@@ -499,9 +633,9 @@ Vite     → http://localhost:5173
 Next.js  → http://localhost:3000
 ```
 
-### 4.10 `.env` Example
+### 4.11 `.env` Example
 
-Environment variables keep secrets (API keys, database URLs, tokens) out of the codebase. The `.env` file is never committed — it's excluded via [`.gitignore`](#411-gitignore-example) — only `.env.example` (with placeholder values, no real secrets) gets committed as a reference for other developers.
+Environment variables keep secrets (API keys, database URLs, tokens) out of the codebase. The `.env` file is never committed — it's excluded via [`.gitignore`](#412-gitignore-example) — only `.env.example` (with placeholder values, no real secrets) gets committed as a reference for other developers.
 
 **Astro** — variables must be prefixed with `PUBLIC_` to be exposed to client-side code; anything without that prefix is only available server-side:
 
@@ -542,9 +676,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
 
 Accessed via `process.env.NEXT_PUBLIC_SITE_URL` (client or server) or `process.env.DATABASE_URL` (server-only). Next.js conventionally uses `.env.local` for local secrets — it's ignored by Git by default in the standard Next.js `.gitignore`, on top of `.env*`.
 
-> These variable names, prefixes and values are illustrative — swap them for whatever real services and keys the project actually needs.
-
-### 4.11 `.gitignore` Example
+### 4.12 `.gitignore` Example
 
 A single generic `.gitignore` covers Astro, Vite and Next.js, since the underlying tooling (Node.js, pnpm, TypeScript, editors, OS files) is the same across all three:
 
@@ -596,7 +728,7 @@ coverage/
 *.local
 ```
 
-> `.env` is deliberately ignored while `.env.example` is not — commit `.env.example` with placeholder values so the pattern from [4.10](#410-env-example) is documented for anyone who clones the repo. `!.vscode/extensions.json` is a negation pattern: it re-includes that one file even though `.vscode/*` ignores the folder, which is handy for sharing the extension list from [2. VS Code Extensions](#2-vs-code-extensions) with the team.
+> `.env` is deliberately ignored while `.env.example` is not — commit `.env.example` with placeholder values so the pattern from [4.11](#411-env-example) is documented for anyone who clones the repo. `!.vscode/extensions.json` is a negation pattern: it re-includes that one file even though `.vscode/*` ignores the folder, which is handy for sharing the extension list from [2. VS Code Extensions](#2-vs-code-extensions) with the team.
 
 ---
 
@@ -679,6 +811,10 @@ import Footer from "../components/Footer.astro";
 
 ```
 /
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       └── prettier.yml
 ├── public/
 │   ├── favicon.svg
 │   ├── icon.png
@@ -912,6 +1048,10 @@ createRoot(document.getElementById('root')!).render(
 
 ```
 /
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       └── prettier.yml
 ├── public/
 │   ├── favicon.svg
 │   ├── icon.png
@@ -1110,6 +1250,10 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 
 ```
 /
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       └── prettier.yml
 ├── public/
 │   ├── favicon.ico
 │   ├── images/
@@ -1155,7 +1299,7 @@ Between the frameworks in this README, only **Vite + React** and **Next.js** eve
 | **Next.js** | Directly inside API Routes / Route Handlers / Server Actions | No — Next.js *is* the backend |
 | **Vite + React** | Never in the frontend bundle | **Yes** — Vite is a pure client-side SPA, so it needs a standalone Node/Express API server that the React app calls over `fetch` |
 
-Everything below builds that standalone Express + Prisma backend — the same one one or more Vite frontends call over `fetch`, or that a Next.js project could adapt into its own Route Handlers. See [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment) for how this backend is deployed completely on its own, with each frontend living in its own separate repo.
+Everything below builds that standalone Express + Prisma backend, called over `fetch` by one or more Vite frontends (or adapted into a Next.js project's own Route Handlers). See [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment) for deploying it fully on its own, with each frontend in its own repo.
 
 ### 8.2 Backend Project Structure
 
@@ -1178,7 +1322,7 @@ backend/
 └── tsconfig.json
 ```
 
-This backend is its own repository — it isn't a package inside a monorepo. `docker-compose.yml` and `Dockerfile` ship *with the backend*, since it deploys entirely on its own to a VPS (see [9](#9-full-separation-independent-backend-frontends-and-deployment)).
+This backend is its own repository, not a monorepo package — `docker-compose.yml` and `Dockerfile` ship with it, since it deploys on its own to a VPS (see [9](#9-full-separation-independent-backend-frontends-and-deployment)).
 
 ### 8.3 Install Dependencies
 
@@ -1199,7 +1343,7 @@ pnpm install
 
 - `prisma` — the Prisma CLI (`pnpm exec prisma ...`)
 - `tsx` — runs TypeScript directly, with `--watch` for hot reload in dev
-- `typescript` and the matching `@types/*` packages — **must be listed explicitly** here. In a monorepo it's easy to get away with a single `typescript` at the workspace root and never notice each package needs it too; in a standalone repo, skipping it means `tsc`/`tsc -b` fails with `tsc: not found` the moment you try to build.
+- `typescript` and the matching `@types/*` packages — **must be listed explicitly** here; a monorepo can hide this behind one root-level `typescript`, but a standalone repo without it fails with `tsc: not found` on build.
 
 ```json
 {
@@ -1236,7 +1380,7 @@ pnpm install
 }
 ```
 
-`dev` starts the local Postgres container (from the backend's own `docker-compose.yml`, [9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), regenerates the client, pushes the schema, and starts the server watching for changes — one command instead of four manual steps.
+`dev` starts the local Postgres container ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), regenerates the client, pushes the schema, and starts the server watching for changes — one command instead of four.
 
 ### 8.4 `.env` Example
 
@@ -1259,7 +1403,7 @@ ADMIN_PASSWORD=change-this-too
 ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-> Add `.env` to `.gitignore` ([4.11](#411-gitignore-example)) — never commit it.
+> Add `.env` to `.gitignore` ([4.12](#412-gitignore-example)) — never commit it.
 
 ### 8.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`
 
@@ -1300,7 +1444,7 @@ export default defineConfig({
 });
 ```
 
-`prisma.config.ts` is the Prisma CLI's configuration file: it tells `prisma migrate`/`prisma studio`/`prisma db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use. Because it reads `DATABASE_URL` from the environment, **any command that touches this file — including `prisma generate` — needs `DATABASE_URL` set**, even just to generate the client with no real database available yet. This matters most inside a Docker build stage, where `.env` isn't loaded automatically (see [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)):
+`prisma.config.ts` is the Prisma CLI's config file: it tells `prisma migrate`/`studio`/`db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use. Since it reads `DATABASE_URL` from the environment, **any command touching this file — `prisma generate` included — needs `DATABASE_URL` set**, even just to generate the client with no real database yet. This matters most inside a Docker build stage, where `.env` isn't loaded automatically ([9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)):
 
 ```bash
 DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate
@@ -1317,7 +1461,7 @@ allowBuilds:
   prisma: true
 ```
 
-Since pnpm 10, `pnpm install` **ignores lifecycle/build scripts by default** for supply-chain safety — packages that ship native binaries or run `postinstall` (Prisma's engines, `bcrypt`'s native bindings, `esbuild`) silently fail to finish setting themselves up, and pnpm prints `[ERR_PNPM_IGNORED_BUILDS]`. `allowBuilds` in `pnpm-workspace.yaml` explicitly trusts these specific packages to run their install scripts. This file is required even for a single, non-monorepo package — `pnpm-workspace.yaml` is simply where pnpm looks for this setting regardless of whether you actually have multiple workspace packages.
+Since pnpm 10, `pnpm install` **ignores lifecycle/build scripts by default** for supply-chain safety — packages that ship native binaries or run `postinstall` (Prisma's engines, `bcrypt`'s native bindings, `esbuild`) silently fail to finish setting up, and pnpm prints `[ERR_PNPM_IGNORED_BUILDS]`. `allowBuilds` explicitly trusts these packages to run their install scripts. It's required even for a single, non-monorepo package — `pnpm-workspace.yaml` is just where pnpm looks for this setting either way.
 
 ### 8.6 PostgreSQL: Starting the Database
 
@@ -1333,7 +1477,7 @@ docker run --name backend-postgres \
   -d postgres:18
 ```
 
-In practice this is quickly replaced by the backend's own `docker-compose.yml` ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), which defines the same container declaratively alongside the API service itself — `docker compose up -d postgres` (used by the `dev` script in [8.3](#83-install-dependencies)) or `docker compose up -d --build` (full stack, production) replace the manual `docker run` above.
+In practice this is quickly replaced by the backend's own `docker-compose.yml` ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)): `docker compose up -d postgres` (used by the `dev` script in [8.3](#83-install-dependencies)) or `docker compose up -d --build` (full stack, production) replace the manual `docker run` above.
 
 ### 8.7 Prisma From Scratch: Default `schema.prisma`
 
@@ -1380,7 +1524,7 @@ Two different ways to push a schema change to the database, depending on the sta
 pnpm exec prisma db push
 ```
 
-Pushes the current `schema.prisma` straight to the database **without creating a migration file**. Fast to iterate with while a model is still changing shape every few minutes — this is what the `dev` script in [8.3](#83-install-dependencies) uses. The trade-off: there's no history, so it's not meant for anything beyond local development, and switching back to `migrate dev`/`migrate deploy` later requires the schema and database to already be in sync.
+Pushes the current `schema.prisma` straight to the database **without creating a migration file**. Fast to iterate with while a model is still changing shape often — this is what the `dev` script in [8.3](#83-install-dependencies) uses. Trade-off: no history, so it's for local development only, and switching to `migrate dev`/`migrate deploy` later requires the schema and database to already be in sync.
 
 ```bash
 pnpm exec prisma migrate dev --name init
@@ -1655,7 +1799,7 @@ pnpm dev                          # docker compose up -d postgres + generate + p
 
 ## 9. Full Separation: Independent Backend, Frontend(s) and Deployment
 
-An alternative to the monorepo approach: the backend from [8. Database & Backend](#8-database--backend-prisma--postgresql) and each Vite + React frontend live in **completely separate repositories**, with no shared workspace, no shared root `package.json`, and no shared `docker-compose.yml`. The backend deploys to a VPS as a Docker container; each frontend deploys independently to Cloudflare Pages.
+An alternative to the monorepo approach: the backend from [8](#8-database--backend-prisma--postgresql) and each Vite + React frontend live in **completely separate repositories**, with no shared workspace, root `package.json`, or `docker-compose.yml`. The backend deploys to a VPS as a Docker container; each frontend deploys independently to Cloudflare Pages.
 
 ### 9.1 Why Full Separation Instead of a Monorepo
 
@@ -1666,7 +1810,7 @@ An alternative to the monorepo approach: the backend from [8. Database & Backend
 | Coupling | One `git clone` gets everything; one `pnpm install` at the root sets up all packages | Each repo is `git clone`d, installed and versioned on its own |
 | Risk | A change to a shared package can silently affect every consumer | Nothing changes without an explicit edit in that specific repo — but keeping multiple copies of the same fetch wrapper/types in sync across repos is now a manual discipline, not something the tooling enforces |
 
-There's no universally correct choice — pick based on where each piece is actually going to be hosted. The rest of this section documents the full-separation setup end to end.
+There's no universally correct choice — pick based on where each piece will actually be hosted. The rest of this section documents the full-separation setup end to end.
 
 ### 9.2 Backend Repo: `docker-compose.yml` (Postgres and API)
 
@@ -1756,10 +1900,10 @@ CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/index.js"]
 Points worth calling out:
 
 - `node:24-slim` — Node 24 is the current LTS; `-slim` keeps the image small. Avoid `node:latest`, which silently jumps major versions on every rebuild.
-- `--ignore-scripts=false` on `pnpm install` — needed alongside the `allowBuilds` list in `pnpm-workspace.yaml` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)), or the container image ends up with a half-installed Prisma/`bcrypt`.
-- The `DATABASE_URL="..."` placeholder before `prisma generate` in the `build` stage — this step runs at **image build time**, before any real `.env`/environment variables exist; `prisma generate` only needs a syntactically valid connection string, it never connects.
-- `COPY --from=deps` vs `COPY --from=build` in `runtime` — each pulls something different: `node_modules` comes from `deps` (installed dependencies), while `dist/` and `prisma/` come from `build` (compiled code and the schema/migrations, which only exist there because `build` is the stage that ran `COPY . .`).
-- The container's `CMD` runs `prisma migrate deploy` on every boot before starting the server — migrations apply themselves automatically on deploy, nothing to remember to run by hand on the VPS.
+- `--ignore-scripts=false` on `pnpm install` — needed alongside `allowBuilds` in `pnpm-workspace.yaml` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)), or the image ends up with a half-installed Prisma/`bcrypt`.
+- The `DATABASE_URL="..."` placeholder before `prisma generate` — this runs at **image build time**, before any real `.env` exists; `generate` only needs a syntactically valid connection string, it never connects.
+- `COPY --from=deps` vs `COPY --from=build` in `runtime` — `node_modules` comes from `deps` (installed dependencies), `dist/` and `prisma/` from `build` (compiled code and migrations, since that's the stage that ran `COPY . .`).
+- The `CMD` runs `prisma migrate deploy` on every boot before starting the server — migrations apply automatically, nothing to run by hand on the VPS.
 
 Also add a `.dockerignore` next to the `Dockerfile`, or `node_modules`/`dist` from the host get copied into the build context and can break the build:
 
@@ -2121,9 +2265,7 @@ For this Docker-only setup, that is enough. There is no need to install a separa
 
 ### 10.4 Node.js: Required by the Projects
 
-**Node.js is required for this development stack.** Vite, Next.js and pnpm all use Node.js.
-
-There are two different places where Node.js can exist:
+**Node.js is required for this development stack** — Vite, Next.js and pnpm all use it. There are two different places it can exist:
 
 ```text
 Development machine
@@ -2135,15 +2277,9 @@ Production server
               └── your application
 ```
 
-For production, the Linux host does **not** need a separate Node.js installation because the Docker image already contains Node.js.
+For production, the Linux host does **not** need its own Node.js installation — the Docker image already contains it, so there's nothing to install twice.
 
-So:
-
-- Node.js is **not optional for the projects**.
-- Node.js is **inside the Docker image**.
-- You do not need to install Node twice on the production host.
-
-If you intentionally want Node directly on the server, you can install the Ubuntu package:
+If you intentionally want Node directly on the server anyway, you can install the Ubuntu package:
 
 ```bash
 sudo apt install -y nodejs npm
@@ -2159,8 +2295,6 @@ npm -v
 For the Docker deployment in this README, you can skip those host commands.
 
 ### 10.5 Install Docker and Docker Compose
-
-We will keep the installation direct and simple.
 
 First:
 
@@ -3192,7 +3326,7 @@ Usually the problem is one of:
 
 1. Go to [Google Search Console](https://search.google.com/search-console) and add a new property using the site's domain or URL prefix.
 2. Verify ownership — via DNS TXT record (domain property) or an HTML file/meta tag (URL-prefix property), depending on the method chosen.
-3. Once verified, submit the sitemap under **Sitemaps** using the sitemap URL generated by the project (e.g. `https://mysite.com/sitemap-index.xml` for Vite + React, or the sitemap URL generated by the project).
+3. Once verified, submit the sitemap under **Sitemaps** using the URL generated by the project (e.g. `https://mysite.com/sitemap-index.xml` for Vite + React).
 4. Use the **URL Inspection** tool to request indexing for key pages after the first deploy.
 
 ### 11.2 Cloudflare Pages
@@ -3665,17 +3799,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+        uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/setup@v2
         with:
-          version: 11
+          version: 12
+          runtime: node@24
 
       - name: Run Security Audit
         # Runs pnpm audit. To check production dependencies only, use: pnpm audit --prod
@@ -3698,17 +3828,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+        uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/setup@v2
         with:
-          version: 11
+          version: 12
+          runtime: node@24
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -3718,6 +3844,8 @@ jobs:
 ```
 
 Requires a `format:check` script in `package.json` (e.g. `"format:check": "prettier --check ."`) — the same command run locally before committing.
+
+`pnpm/setup@v2` replaces the two separate steps used previously (`actions/setup-node` + `pnpm/action-setup`) — `runtime: node@24` installs the Node.js runtime and `version: 12` the pnpm version, both in a single step.
 
 `audit.yml` and `prettier.yml` are generic enough to copy as-is into any repo that has a `package.json` and a lockfile; `deploy.yml` is specific to whichever repo actually deploys by SSH (the backend, in the full-separation setup from [9](#9-full-separation-independent-backend-frontends-and-deployment) — the frontends deploy via Cloudflare Pages instead, which redeploys on push without needing a workflow file at all).
 
