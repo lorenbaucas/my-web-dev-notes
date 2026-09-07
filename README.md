@@ -5,117 +5,117 @@ Personal reference notes for setting up a web development environment, scaffoldi
 ## Index
 
 - [1. Required Programs](#1-required-programs)
-- [2. VS Code Extensions](#2-vs-code-extensions)
-- [3. VS Code Keyboard Shortcuts](#3-vs-code-keyboard-shortcuts)
-  - [3.1 General](#31-general)
-  - [3.2 Editing](#32-editing)
-  - [3.3 Navigation](#33-navigation)
-- [4. Shared Website Setup](#4-shared-website-setup)
-  - [4.1 Tailwind CSS Setup](#41-tailwind-css-setup)
-  - [4.2 Tailwind Theme & Custom Fonts](#42-tailwind-theme--custom-fonts)
-  - [4.3 Open Graph & Metadata](#43-open-graph--metadata)
-  - [4.4 `robots.txt`](#44-robotstxt)
-  - [4.5 Sitemap Integration](#45-sitemap-integration)
-  - [4.6 404 / Not Found Page](#46-404--not-found-page)
-  - [4.7 Prettier Setup](#47-prettier-setup)
-  - [4.8 ESLint Setup](#48-eslint-setup)
-  - [4.9 Windows PowerShell Execution Policy / npm Recovery](#49-windows-powershell-execution-policy--npm-recovery)
-  - [4.10 Development Server](#410-development-server)
-  - [4.11 `.env` Example](#411-env-example)
-  - [4.12 `.gitignore` Example](#412-gitignore-example)
-- [5. Astro](#5-astro)
-  - [5.1 Project Setup](#51-project-setup)
+- [2. VS Code](#2-vs-code)
+  - [2.1 Extensions](#21-extensions)
+  - [2.2 Keyboard Shortcuts](#22-keyboard-shortcuts)
+- [3. Shared Website Setup](#3-shared-website-setup)
+  - [3.1 Tailwind CSS Setup](#31-tailwind-css-setup)
+  - [3.2 Tailwind Theme & Custom Fonts](#32-tailwind-theme--custom-fonts)
+  - [3.3 Open Graph & Metadata](#33-open-graph--metadata)
+  - [3.4 JSON-LD Structured Data (schema.org)](#34-json-ld-structured-data-schemaorg)
+  - [3.5 Progressive Web App (PWA) Setup](#35-progressive-web-app-pwa-setup)
+  - [3.6 `robots.txt`](#36-robotstxt)
+  - [3.7 Sitemap Integration](#37-sitemap-integration)
+  - [3.8 404 / Not Found Page](#38-404--not-found-page)
+  - [3.9 Prettier Setup](#39-prettier-setup)
+  - [3.10 ESLint Setup](#310-eslint-setup)
+  - [3.11 Windows PowerShell Execution Policy / npm Recovery](#311-windows-powershell-execution-policy--npm-recovery)
+  - [3.12 Development Server](#312-development-server)
+  - [3.13 `.env` Example](#313-env-example)
+  - [3.14 `.gitignore` Example](#314-gitignore-example)
+- [4. Astro](#4-astro)
+  - [4.1 Project Setup](#41-project-setup)
+  - [4.2 Install Dependencies](#42-install-dependencies)
+  - [4.3 Routing & Client-Side Navigation](#43-routing--client-side-navigation)
+  - [4.4 Main Layout Example](#44-main-layout-example)
+  - [4.5 Project Structure & Architecture](#45-project-structure--architecture)
+- [5. Vite](#5-vite)
+  - [5.1 Scaffolding a New Project](#51-scaffolding-a-new-project)
   - [5.2 Install Dependencies](#52-install-dependencies)
-  - [5.3 Routing & Client-Side Navigation](#53-routing--client-side-navigation)
-  - [5.4 Main Layout Example](#54-main-layout-example)
-  - [5.5 Project Structure & Architecture](#55-project-structure--architecture)
-- [6. Vite](#6-vite)
-  - [6.1 Scaffolding a New Project](#61-scaffolding-a-new-project)
+  - [5.3 `vite.config.ts` Reference](#53-viteconfigts-reference)
+  - [5.4 Routing & Layouts (React Router DOM)](#54-routing--layouts-react-router-dom)
+  - [5.5 Layout Route with `Outlet`](#55-layout-route-with-outlet)
+  - [5.6 Project Structure & Architecture](#56-project-structure--architecture)
+- [6. Next.js](#6-nextjs)
+  - [6.1 Create a New Project](#61-create-a-new-project)
   - [6.2 Install Dependencies](#62-install-dependencies)
-  - [6.3 `vite.config.ts` Reference](#63-viteconfigts-reference)
-  - [6.4 Routing & Layouts (React Router DOM)](#64-routing--layouts-react-router-dom)
-  - [6.5 Layout Route with `Outlet`](#65-layout-route-with-outlet)
-  - [6.6 Project Structure & Architecture](#66-project-structure--architecture)
-- [7. Next.js](#7-nextjs)
-  - [7.1 Create a New Project](#71-create-a-new-project)
-  - [7.2 Install Dependencies](#72-install-dependencies)
-  - [7.3 `next.config.ts` Reference](#73-nextconfigts-reference)
-  - [7.4 Routing & Layouts (App Router)](#74-routing--layouts-app-router)
-  - [7.5 Root Layout](#75-root-layout)
-  - [7.6 Server and Client Components](#76-server-and-client-components)
-  - [7.7 Production Build](#77-production-build)
-  - [7.8 Project Structure & Architecture](#78-project-structure--architecture)
-- [8. Database & Backend: Prisma + PostgreSQL](#8-database--backend-prisma--postgresql)
-  - [8.1 Overview: Which Framework Needs a Separate Backend](#81-overview-which-framework-needs-a-separate-backend)
-  - [8.2 Backend Project Structure](#82-backend-project-structure)
-  - [8.3 Install Dependencies](#83-install-dependencies)
-  - [8.4 `.env` Example](#84-env-example)
-  - [8.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)
-  - [8.6 PostgreSQL: Starting the Database](#86-postgresql-starting-the-database)
-  - [8.7 Prisma From Scratch: Default `schema.prisma`](#87-prisma-from-scratch-default-schemaprisma)
-  - [8.8 Add a Simple `User` Model](#88-add-a-simple-user-model)
-  - [8.9 Create and Apply the First Migration](#89-create-and-apply-the-first-migration)
-  - [8.10 Modifying an Existing Schema: Update `User` and Add a New Table](#810-modifying-an-existing-schema-update-user-and-add-a-new-table)
-  - [8.11 Simple Backend Entry Point (`src/index.ts`): Login Example](#811-simple-backend-entry-point-srcindexts-login-example)
-  - [8.12 Seed Example](#812-seed-example)
-  - [8.13 Prisma Studio](#813-prisma-studio)
-  - [8.14 Day-to-Day Workflow and Reference Commands](#814-day-to-day-workflow-and-reference-commands)
-  - [8.15 Common Prisma and PostgreSQL Errors](#815-common-prisma-and-postgresql-errors)
-- [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment)
-  - [9.1 Why Full Separation Instead of a Monorepo](#91-why-full-separation-instead-of-a-monorepo)
-  - [9.2 Backend Repo: `docker-compose.yml` (Postgres and API)](#92-backend-repo-docker-composeyml-postgres-and-api)
-  - [9.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)](#93-backend-dockerfile-pnpm-node-24-multi-stage)
-  - [9.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)](#94-pnpm-workspaceyaml-allowing-build-scripts-pnpm-10-or-newer)
-  - [9.5 CORS and Cookies Across Different Domains](#95-cors-and-cookies-across-different-domains)
-  - [9.6 Each Frontend as Its Own Repo (Cloudflare Pages)](#96-each-frontend-as-its-own-repo-cloudflare-pages)
-  - [9.7 HTTPS in Front of the Backend (Caddy)](#97-https-in-front-of-the-backend-caddy)
-  - [9.8 Local Development Without Docker for the Backend](#98-local-development-without-docker-for-the-backend)
-  - [9.9 Final Project Structure (Three Independent Repos)](#99-final-project-structure-three-independent-repos)
-  - [9.10 Continuous Deployment on Push (GitHub Actions)](#910-continuous-deployment-on-push-github-actions)
-- [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment)
-  - [10.1 Connect with Bitvise SSH Client](#101-connect-with-bitvise-ssh-client)
-  - [10.2 Basic Linux Setup](#102-basic-linux-setup)
-  - [10.3 Install Only the Basic Utilities Needed Here](#103-install-only-the-basic-utilities-needed-here)
-  - [10.4 Node.js: Required by the Projects](#104-nodejs-required-by-the-projects)
-  - [10.5 Install Docker and Docker Compose](#105-install-docker-and-docker-compose)
-  - [10.6 Allow Your User to Run Docker Without `sudo`](#106-allow-your-user-to-run-docker-without-sudo)
-  - [10.7 First Docker Test](#107-first-docker-test)
-  - [10.8 Basic Linux Commands for Deployments](#108-basic-linux-commands-for-deployments)
-  - [10.9 Firewall Basics with UFW](#109-firewall-basics-with-ufw)
-  - [10.10 Create the Server Structure](#1010-create-the-server-structure)
-  - [10.11 Vite + React Dockerfile](#1011-vite--react-dockerfile)
-  - [10.12 Next.js Dockerfile](#1012-nextjs-dockerfile)
-  - [10.13 `.dockerignore`](#1013-dockerignore)
-  - [10.14 Traefik + Cloudflare Origin Certificate + Three Websites](#1014-traefik--cloudflare-origin-certificate--three-websites)
-  - [10.15 Understand the Important Traefik Lines](#1015-understand-the-important-traefik-lines)
-  - [10.16 Why the Three Websites Are Different](#1016-why-the-three-websites-are-different)
-  - [10.17 DNS Setup](#1017-dns-setup)
-  - [10.18 First Deployment](#1018-first-deployment)
-  - [10.19 Useful Deployment Commands](#1019-useful-deployment-commands)
-  - [10.20 Update Only One Website](#1020-update-only-one-website)
-  - [10.21 Docker Disk Cleanup](#1021-docker-disk-cleanup)
-  - [10.22 Fail2ban Basic Configuration](#1022-fail2ban-basic-configuration)
-  - [10.23 Basic SSH Hardening](#1023-basic-ssh-hardening)
-  - [10.24 Troubleshooting](#1024-troubleshooting)
-  - [10.25 Final Production Checklist](#1025-final-production-checklist)
-- [11. Deployment](#11-deployment)
-  - [11.1 Google Search Console](#111-google-search-console)
-  - [11.2 Cloudflare Pages](#112-cloudflare-pages)
-  - [11.3 Cloudflare Domains & Rules](#113-cloudflare-domains--rules)
-  - [11.4 Vite + Next.js + Cloudflare Protection & Free SSL](#114-vite--nextjs--cloudflare-protection--free-ssl)
-  - [11.5 Pointing the Client's Domain (Astro)](#115-pointing-the-clients-domain-astro)
-  - [11.6 Pointing the Client's Domain (Vite + Next.js)](#116-pointing-the-clients-domain-vite--nextjs)
-- [12. Git and GitHub](#12-git-and-github)
-  - [12.1 Initial Setup (First-Time Project)](#121-initial-setup-first-time-project)
-  - [12.2 Daily Workflow](#122-daily-workflow)
-  - [12.3 Branching](#123-branching)
-  - [12.4 Other Useful Commands](#124-other-useful-commands)
-  - [12.5 Undoing Things: `reset`, `restore`, `revert`](#125-undoing-things-reset-restore-revert)
-  - [12.6 `rebase` vs `merge`](#126-rebase-vs-merge)
-  - [12.7 Force Push and Other Dangerous Commands](#127-force-push-and-other-dangerous-commands)
-  - [12.8 Real Branching Flow: Feature Branch → Main](#128-real-branching-flow-feature-branch--main)
-  - [12.9 GitHub Actions: CI/CD Workflows](#129-github-actions-cicd-workflows)
-- [13. Common HTTP Status Codes](#13-common-http-status-codes)
+  - [6.3 `next.config.ts` Reference](#63-nextconfigts-reference)
+  - [6.4 Routing & Layouts (App Router)](#64-routing--layouts-app-router)
+  - [6.5 Root Layout](#65-root-layout)
+  - [6.6 Server and Client Components](#66-server-and-client-components)
+  - [6.7 Production Build](#67-production-build)
+  - [6.8 Project Structure & Architecture](#68-project-structure--architecture)
+- [7. Database & Backend: Prisma + PostgreSQL](#7-database--backend-prisma--postgresql)
+  - [7.1 Overview: Which Framework Needs a Separate Backend](#71-overview-which-framework-needs-a-separate-backend)
+  - [7.2 Backend Project Structure](#72-backend-project-structure)
+  - [7.3 Install Dependencies](#73-install-dependencies)
+  - [7.4 `.env` Example](#74-env-example)
+  - [7.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`](#75-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)
+  - [7.6 PostgreSQL: Starting the Database](#76-postgresql-starting-the-database)
+  - [7.7 Prisma From Scratch: Default `schema.prisma`](#77-prisma-from-scratch-default-schemaprisma)
+  - [7.8 Add a Simple `User` Model](#78-add-a-simple-user-model)
+  - [7.9 Create and Apply the First Migration](#79-create-and-apply-the-first-migration)
+  - [7.10 Modifying an Existing Schema: Update `User` and Add a New Table](#710-modifying-an-existing-schema-update-user-and-add-a-new-table)
+  - [7.11 Simple Backend Entry Point (`src/index.ts`): Login Example](#711-simple-backend-entry-point-srcindexts-login-example)
+  - [7.12 Seed Example](#712-seed-example)
+  - [7.13 Prisma Studio](#713-prisma-studio)
+  - [7.14 Day-to-Day Workflow and Reference Commands](#714-day-to-day-workflow-and-reference-commands)
+  - [7.15 Common Prisma and PostgreSQL Errors](#715-common-prisma-and-postgresql-errors)
+- [8. Full Separation: Independent Backend, Frontend(s) and Deployment](#8-full-separation-independent-backend-frontends-and-deployment)
+  - [8.1 Why Full Separation Instead of a Monorepo](#81-why-full-separation-instead-of-a-monorepo)
+  - [8.2 Backend Repo: `docker-compose.yml` (Postgres and API)](#82-backend-repo-docker-composeyml-postgres-and-api)
+  - [8.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)](#83-backend-dockerfile-pnpm-node-24-multi-stage)
+  - [8.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)](#84-pnpm-workspaceyaml-allowing-build-scripts-pnpm-10-or-newer)
+  - [8.5 CORS and Cookies Across Different Domains](#85-cors-and-cookies-across-different-domains)
+  - [8.6 Each Frontend as Its Own Repo (Cloudflare Pages)](#86-each-frontend-as-its-own-repo-cloudflare-pages)
+  - [8.7 HTTPS in Front of the Backend (Caddy)](#87-https-in-front-of-the-backend-caddy)
+  - [8.8 Local Development Without Docker for the Backend](#88-local-development-without-docker-for-the-backend)
+  - [8.9 Final Project Structure (Three Independent Repos)](#89-final-project-structure-three-independent-repos)
+  - [8.10 Continuous Deployment on Push (GitHub Actions)](#810-continuous-deployment-on-push-github-actions)
+- [9. Linux Server & Docker Deployment](#9-linux-server--docker-deployment)
+  - [9.1 Connect with Bitvise SSH Client](#91-connect-with-bitvise-ssh-client)
+  - [9.2 Basic Linux Setup](#92-basic-linux-setup)
+  - [9.3 Install Only the Basic Utilities Needed Here](#93-install-only-the-basic-utilities-needed-here)
+  - [9.4 Node.js: Required by the Projects](#94-nodejs-required-by-the-projects)
+  - [9.5 Install Docker and Docker Compose](#95-install-docker-and-docker-compose)
+  - [9.6 Allow Your User to Run Docker Without `sudo`](#96-allow-your-user-to-run-docker-without-sudo)
+  - [9.7 First Docker Test](#97-first-docker-test)
+  - [9.8 Basic Linux Commands for Deployments](#98-basic-linux-commands-for-deployments)
+  - [9.9 Firewall Basics with UFW](#99-firewall-basics-with-ufw)
+  - [9.10 Create the Server Structure](#910-create-the-server-structure)
+  - [9.11 Vite + React Dockerfile](#911-vite--react-dockerfile)
+  - [9.12 Next.js Dockerfile](#912-nextjs-dockerfile)
+  - [9.13 `.dockerignore`](#913-dockerignore)
+  - [9.14 Traefik + Cloudflare Origin Certificate + Three Websites](#914-traefik--cloudflare-origin-certificate--three-websites)
+  - [9.15 Understand the Important Traefik Lines](#915-understand-the-important-traefik-lines)
+  - [9.16 Why the Three Websites Are Different](#916-why-the-three-websites-are-different)
+  - [9.17 DNS Setup](#917-dns-setup)
+  - [9.18 First Deployment](#918-first-deployment)
+  - [9.19 Useful Deployment Commands](#919-useful-deployment-commands)
+  - [9.20 Update Only One Website](#920-update-only-one-website)
+  - [9.21 Docker Disk Cleanup](#921-docker-disk-cleanup)
+  - [9.22 Fail2ban Basic Configuration](#922-fail2ban-basic-configuration)
+  - [9.23 Basic SSH Hardening](#923-basic-ssh-hardening)
+  - [9.24 Troubleshooting](#924-troubleshooting)
+  - [9.25 Final Production Checklist](#925-final-production-checklist)
+- [10. Deployment](#10-deployment)
+  - [10.1 Google Search Console](#101-google-search-console)
+  - [10.2 Cloudflare Pages](#102-cloudflare-pages)
+  - [10.3 Cloudflare Domains & Rules](#103-cloudflare-domains--rules)
+  - [10.4 Vite + Next.js + Cloudflare Protection & Free SSL](#104-vite--nextjs--cloudflare-protection--free-ssl)
+  - [10.5 Pointing the Client's Domain (Astro)](#105-pointing-the-clients-domain-astro)
+  - [10.6 Pointing the Client's Domain (Vite + Next.js)](#106-pointing-the-clients-domain-vite--nextjs)
+- [11. Git and GitHub](#11-git-and-github)
+  - [11.1 Initial Setup (First-Time Project)](#111-initial-setup-first-time-project)
+  - [11.2 Daily Workflow](#112-daily-workflow)
+  - [11.3 Branching](#113-branching)
+  - [11.4 Other Useful Commands](#114-other-useful-commands)
+  - [11.5 Undoing Things: `reset`, `restore`, `revert`](#115-undoing-things-reset-restore-revert)
+  - [11.6 `rebase` vs `merge`](#116-rebase-vs-merge)
+  - [11.7 Force Push and Other Dangerous Commands](#117-force-push-and-other-dangerous-commands)
+  - [11.8 Real Branching Flow: Feature Branch → Main](#118-real-branching-flow-feature-branch--main)
+  - [11.9 GitHub Actions: CI/CD Workflows](#119-github-actions-cicd-workflows)
+- [12. Common HTTP Status Codes](#12-common-http-status-codes)
 ## 1. Required Programs
 
 | Program | Purpose | Link |
@@ -127,7 +127,9 @@ Install Node.js first, then pnpm.
 
 ---
 
-## 2. VS Code Extensions
+## 2. VS Code
+
+### 2.1 Extensions
 
 | Extension | Purpose |
 |---|---|
@@ -151,11 +153,9 @@ Install Node.js first, then pnpm.
 | Tailwind CSS IntelliSense | Autocomplete and linting for Tailwind classes |
 | XML | XML language support |
 
----
+### 2.2 Keyboard Shortcuts
 
-## 3. VS Code Keyboard Shortcuts
-
-### 3.1 General
+**General**
 
 | Shortcut (Win/Linux) | Shortcut (Mac) | Action |
 |---|---|---|
@@ -169,7 +169,7 @@ Install Node.js first, then pnpm.
 | `Ctrl+Shift+G` | `Cmd+Shift+G` | Open Source Control panel |
 | `Ctrl+K Ctrl+S` | `Cmd+K Cmd+S` | Open Keyboard Shortcuts |
 
-### 3.2 Editing
+**Editing**
 
 | Shortcut (Win/Linux) | Shortcut (Mac) | Action |
 |---|---|---|
@@ -185,7 +185,7 @@ Install Node.js first, then pnpm.
 | `F2` | `F2` | Rename symbol |
 | `Ctrl+.` | `Cmd+.` | Quick fix |
 
-### 3.3 Navigation
+**Navigation**
 
 | Shortcut (Win/Linux) | Shortcut (Mac) | Action |
 |---|---|---|
@@ -199,11 +199,11 @@ Install Node.js first, then pnpm.
 
 ---
 
-## 4. Shared Website Setup
+## 3. Shared Website Setup
 
-These steps are identical in spirit across **Astro**, **Vite** and **Next.js** — Tailwind, Open Graph, `robots.txt`, sitemaps, the 404 page, Prettier, ESLint, and the Windows/npm recovery steps. Each subsection gives the shared idea once, then a short **Astro / Vite / Next.js** breakdown for what changes between them. Framework-specific scaffolding, routing and project structure live in their own sections: [5. Astro](#5-astro), [6. Vite](#6-vite), [7. Next.js](#7-nextjs).
+These steps are identical in spirit across **Astro**, **Vite** and **Next.js** — Tailwind, Open Graph, `robots.txt`, sitemaps, the 404 page, Prettier, ESLint, and the Windows/npm recovery steps. Each subsection gives the shared idea once, then a short **Astro / Vite / Next.js** breakdown for what changes between them. Framework-specific scaffolding, routing and project structure live in their own sections: [4. Astro](#4-astro), [5. Vite](#5-vite), [6. Next.js](#6-nextjs).
 
-### 4.1 Tailwind CSS Setup
+### 3.1 Tailwind CSS Setup
 
 All three projects use Tailwind CSS v4:
 
@@ -228,7 +228,7 @@ export default defineConfig({
 });
 ```
 
-**Vite** — register the plugin directly in `vite.config.ts` (see [6.3](#63-viteconfigts-reference) for the full file):
+**Vite** — register the plugin directly in `vite.config.ts` (see [5.3](#53-viteconfigts-reference) for the full file):
 
 ```typescript
 import { defineConfig } from 'vite';
@@ -241,7 +241,7 @@ export default defineConfig({
 
 **Next.js** — `pnpm create next-app@latest` asks `Tailwind CSS: Yes` and wires everything (PostCSS config included) automatically. Nothing else to install; just start writing Tailwind classes and import the global stylesheet from `app/layout.tsx`.
 
-### 4.2 Tailwind Theme & Custom Fonts
+### 3.2 Tailwind Theme & Custom Fonts
 
 The same `@theme` pattern works in all three projects to register custom fonts as Tailwind utilities:
 
@@ -258,7 +258,7 @@ The same `@theme` pattern works in all three projects to register custom fonts a
 
 This exposes `font-sans`, `font-display` and `font-mono` as Tailwind class names, usable directly in markup in any of the three frameworks.
 
-**Astro** — additionally ships smooth page-crossfade CSS tied to its built-in client-side router (see [5.3](#53-routing--client-side-navigation)):
+**Astro** — additionally ships smooth page-crossfade CSS tied to its built-in client-side router (see [4.3](#43-routing--client-side-navigation)):
 
 ```css
 ::view-transition-old(root) {
@@ -273,7 +273,7 @@ This exposes `font-sans`, `font-display` and `font-mono` as Tailwind class names
 
 **Vite / Next.js** — the same crossfade can be added with the browser-native View Transitions API (`document.startViewTransition(...)`) around a route change; it's optional and not wired in by default the way Astro's `ClientRouter` wires it in.
 
-### 4.3 Open Graph & Metadata
+### 3.3 Open Graph & Metadata
 
 Open Graph controls how a page looks when shared on social media, WhatsApp, Slack, etc.
 
@@ -298,9 +298,9 @@ Preview tools: [opengraph.xyz](https://www.opengraph.xyz/) and Meta's official s
 <meta property="og:type" content="website" />
 ```
 
-In Astro this lives in the `<head>` of `src/layouts/Layout.astro` (see [5.4](#54-main-layout-example)); in Vite it lives in `index.html`.
+In Astro this lives in the `<head>` of `src/layouts/Layout.astro` (see [4.4](#44-main-layout-example)); in Vite it lives in `index.html`.
 
-**Next.js** — use the Metadata API instead of hand-written tags (see [7.5](#75-root-layout) for the full example):
+**Next.js** — use the Metadata API instead of hand-written tags (see [6.5](#65-root-layout) for the full example):
 
 ```tsx
 export const metadata = {
@@ -316,7 +316,263 @@ export const metadata = {
 }
 ```
 
-### 4.4 `robots.txt`
+### 3.4 JSON-LD Structured Data (schema.org)
+
+A `<script type="application/ld+json">` block describing the page as machine-readable data — search engines use it for rich results (sitelinks, knowledge panels) without changing anything visible on the page. Keep the object minimal and truthful; Google ignores or penalizes structured data that doesn't match the visible content. The simplest, safest `@type` for a homepage is `WebSite`.
+
+**Astro** — build it in the frontmatter of the shared layout, next to the Open Graph tags from [3.3](#33-open-graph--metadata):
+
+```astro
+---
+// src/layouts/Layout.astro
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "My Site",
+  url: "https://mysite.com",
+  description: "A short description of what this site does.",
+};
+---
+<head>
+  <!-- ...other tags... -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</head>
+```
+
+**Vite + React** — there's no per-request template to inject into, so it goes straight into the static `index.html`:
+
+```html
+<!-- index.html -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "My Site",
+    "url": "https://mysite.com",
+    "description": "A short description of what this site does."
+  }
+</script>
+```
+
+**Next.js** — in the root layout, using `dangerouslySetInnerHTML` (the same escape hatch `next/script` itself uses internally for inline JSON):
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "My Site",
+    url: "https://mysite.com",
+    description: "A short description of what this site does.",
+  };
+
+  return (
+    <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+Common `@type` values beyond a plain website:
+
+| `@type` | Use case |
+|---|---|
+| `WebSite` | Generic website or homepage — the default, safest choice |
+| `Organization` | The company/brand itself (logo, social links, contact info) |
+| `SoftwareApplication` | An installable app (web app, mobile app store listing) |
+| `Article` / `BlogPosting` | An individual blog post or news article |
+| `Product` | A product page (price, availability, reviews) |
+| `LocalBusiness` | A physical business with an address and opening hours |
+| `BreadcrumbList` | The breadcrumb trail shown on a page |
+| `FAQPage` | A page laid out as question/answer pairs |
+
+Properties worth adding to the `WebSite` object above, beyond the four shown:
+
+| Property | Description |
+|---|---|
+| `inLanguage` | BCP 47 language tag, e.g. `"en"` or `"es-ES"` |
+| `publisher` | Nested `Organization` object naming who publishes the site |
+| `sameAs` | Array of URLs to the same entity's social profiles (LinkedIn, X, GitHub…) |
+| `potentialAction` | A nested `SearchAction` — enables Google's sitelinks search box if the site has an internal search page |
+
+Validate with Google's [Rich Results Test](https://search.google.com/test/rich-results) — paste the live URL and confirm the `WebSite` type is detected with no errors.
+
+### 3.5 Progressive Web App (PWA) Setup
+
+A PWA needs three things: a **Web App Manifest** (JSON describing the app's name, icons, and colors so it can be installed), a **service worker** (enables offline support and caching), and **HTTPS** in production (required for service workers to register at all).
+
+Astro and Vite each have an official-adjacent, actively-maintained plugin that generates both the manifest and the service worker (via [Workbox](https://developer.chrome.com/docs/workbox) under the hood) from one config block. **Next.js has no equivalent plugin** — not even a de-facto standard one: the long-popular `next-pwa` is unmaintained, and its actively-maintained fork `@ducanh2912/next-pwa` now recommends migrating away from itself. Next.js's own official guide ([nextjs.org/docs/app/guides/progressive-web-apps](https://nextjs.org/docs/app/guides/progressive-web-apps)) instead documents a manual approach: the manifest through Next's built-in Manifest API (no plugin needed for that part), and a hand-written service worker for anything beyond basic installability. If full offline caching is worth the extra dependency, that same official guide points to [Serwist](https://github.com/serwist/serwist) as the maintained option, with first-party examples for both Turbopack and webpack.
+
+| Framework | Approach | Generates |
+|---|---|---|
+| Astro | Plugin: [`@vite-pwa/astro`](https://vite-pwa-org.netlify.app/frameworks/astro) | manifest + service worker + auto `<link rel="manifest">` |
+| Vite + React | Plugin: [`vite-plugin-pwa`](https://vite-pwa-org.netlify.app/) | manifest + service worker + auto `<link rel="manifest">` |
+| Next.js | Official, manual (per Next's own guide) | manifest via `app/manifest.ts` (built-in); service worker hand-written |
+
+```bash
+# Astro
+pnpm add -D @vite-pwa/astro
+
+# Vite + React
+pnpm add -D vite-plugin-pwa
+
+# Next.js — no plugin needed for the manifest (built-in); see below for the
+# service worker, or `pnpm add @serwist/next serwist` if you want full offline caching
+```
+
+**Astro** (`astro.config.mjs`):
+
+```javascript
+import { defineConfig } from "astro/config";
+import AstroPWA from "@vite-pwa/astro";
+
+export default defineConfig({
+  integrations: [
+    AstroPWA({
+      registerType: "autoUpdate",
+      manifest: {
+        name: "My Site",
+        short_name: "MySite",
+        description: "A short description of what this site does.",
+        theme_color: "#0f172a",
+        background_color: "#0f172a",
+        display: "standalone",
+        icons: [
+          { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+          { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+        ],
+      },
+    }),
+  ],
+});
+```
+
+**Vite + React** (`vite.config.ts`) — same `manifest` shape, added to the existing plugins array:
+
+```typescript
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: {
+        name: "My Site",
+        short_name: "MySite",
+        description: "A short description of what this site does.",
+        theme_color: "#0f172a",
+        background_color: "#0f172a",
+        display: "standalone",
+        icons: [
+          { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+          { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+        ],
+      },
+    }),
+  ],
+});
+```
+
+**Next.js** — the manifest uses Next's built-in, typed Manifest API (this part genuinely is official, no plugin involved):
+
+```typescript
+// app/manifest.ts
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "My Site",
+    short_name: "MySite",
+    description: "A short description of what this site does.",
+    start_url: "/",
+    theme_color: "#0f172a",
+    background_color: "#0f172a",
+    display: "standalone",
+    icons: [
+      { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+      { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+  };
+}
+```
+
+For the service worker, Next's official guide has you write a small one by hand and register it yourself — there's no build step generating it:
+
+```javascript
+// public/sw.js
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", () => self.clients.claim());
+// Add fetch/cache-strategy or push-notification handlers here as needed.
+```
+
+```tsx
+// app/register-sw.tsx
+"use client";
+import { useEffect } from "react";
+
+export function RegisterServiceWorker() {
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  }, []);
+  return null;
+}
+```
+
+```tsx
+// app/layout.tsx
+import { RegisterServiceWorker } from "./register-sw";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <RegisterServiceWorker />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+A manifest plus HTTPS is already enough for the browser's install prompt to show up — the service worker above only starts to matter once you want offline caching or push notifications. If that's the goal, swap the hand-written `sw.js` for [Serwist](https://github.com/serwist/serwist) instead of maintaining Workbox-equivalent caching logic by hand.
+
+Manifest properties worth knowing:
+
+| Property | Description |
+|---|---|
+| `name` | Full app name, shown on the install prompt |
+| `short_name` | Short name shown under the icon once installed |
+| `start_url` | Page opened when launched from the home screen (defaults to `/`) |
+| `display` | `standalone` hides the browser UI (most common); also `fullscreen`, `minimal-ui`, `browser` |
+| `theme_color` | Color of the OS status bar / title bar |
+| `background_color` | Splash screen background shown while the app loads |
+| `icons` | Icon files at multiple sizes — at minimum, 192×192 and 512×512 PNGs |
+
+Both icon files (`pwa-192x192.png`, `pwa-512x512.png`) live in `public/` for Astro and Vite, referenced by path in the `manifest` object above — see the updated project structures in [4.5](#45-project-structure--architecture), [5.6](#56-project-structure--architecture) and [6.8](#68-project-structure--architecture).
+
+Service workers generally aren't worth testing against the dev server — test against the production build instead:
+
+```bash
+pnpm build
+pnpm preview
+```
+
+Then check **Chrome DevTools → Application tab** (Manifest / Service Workers sections) and run a Lighthouse PWA audit — both confirm the manifest is valid and the service worker is controlling the page.
+
+### 3.6 `robots.txt`
 
 `robots.txt` is framework-independent — a static file that tells search engine crawlers what they can access and points them to the sitemap. The final URL is always `https://mysite.com/robots.txt`.
 
@@ -344,9 +600,9 @@ public/robots.txt
 
 Next.js can alternatively generate it dynamically from `app/robots.ts` instead of a static file, if the rules need to depend on environment variables.
 
-### 4.5 Sitemap Integration
+### 3.7 Sitemap Integration
 
-A sitemap is useful for SEO and should be submitted to Google Search Console (see [11.1](#111-google-search-console)). The mechanism differs per framework:
+A sitemap is useful for SEO and should be submitted to Google Search Console (see [10.1](#101-google-search-console)). The mechanism differs per framework:
 
 **Astro:**
 
@@ -396,7 +652,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 }
 ```
 
-### 4.6 404 / Not Found Page
+### 3.8 404 / Not Found Page
 
 Every project needs a not-found page; the implementation differs per framework.
 
@@ -416,7 +672,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 ```
 
-**Vite** — with React Router, a catch-all route is enough (see [6.4](#64-routing--layouts-react-router-dom)):
+**Vite** — with React Router, a catch-all route is enough (see [5.4](#54-routing--layouts-react-router-dom)):
 
 ```tsx
 <Route path="*" element={<NotFound />} />
@@ -436,7 +692,7 @@ export default function NotFound() {
 }
 ```
 
-### 4.7 Prettier Setup
+### 3.9 Prettier Setup
 
 Install Prettier and add the standard scripts to `package.json`:
 
@@ -461,7 +717,7 @@ pnpm add -D prettier-plugin-astro
 
 **Vite / Next.js** — no extra plugin needed for plain `.tsx`/`.ts` files.
 
-### 4.8 ESLint Setup
+### 3.10 ESLint Setup
 
 Install ESLint and add the `lint` script to `package.json`:
 
@@ -514,9 +770,9 @@ export default defineConfig([
 ]);
 ```
 
-`reactHooks.configs.flat.recommended` catches invalid Hook usage (calling a Hook conditionally, outside a component, etc. — see [React's Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks)); `reactRefresh.configs.vite` warns when a file mixes component and non-component exports in a way that breaks Vite's Fast Refresh ([6](#6-vite)). `no-explicit-any` and `no-unused-vars` (with an `_`-prefix escape hatch for intentionally unused args/vars) apply across every framework in this section — they're the two rules most worth keeping as errors rather than warnings.
+`reactHooks.configs.flat.recommended` catches invalid Hook usage (calling a Hook conditionally, outside a component, etc. — see [React's Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks)); `reactRefresh.configs.vite` warns when a file mixes component and non-component exports in a way that breaks Vite's Fast Refresh ([5](#5-vite)). `no-explicit-any` and `no-unused-vars` (with an `_`-prefix escape hatch for intentionally unused args/vars) apply across every framework in this section — they're the two rules most worth keeping as errors rather than warnings.
 
-**Node.js backend** (Express + Prisma, [8](#8-database--backend-prisma--postgresql)) — same TypeScript rules, without the React-specific plugins:
+**Node.js backend** (Express + Prisma, [7](#7-database--backend-prisma--postgresql)) — same TypeScript rules, without the React-specific plugins:
 
 ```bash
 pnpm add -D eslint @eslint/js typescript-eslint
@@ -594,9 +850,9 @@ export default defineConfig([
 
 `eslintPluginAstro.configs.recommended` is spread at the end (rather than listed inside one object's `extends`) because it's an array of several config objects — Astro's own flat-config plugin ships it this way so it can attach its parser specifically to `**/*.astro` files without interfering with the plain `.ts`/`.tsx` block above it.
 
-Across all three: `pnpm run lint` reports the errors, `pnpm run lint --fix` auto-fixes what it safely can (mainly formatting-adjacent issues — most real style formatting is Prettier's job, [4.7](#47-prettier-setup), not ESLint's).
+Across all three: `pnpm run lint` reports the errors, `pnpm run lint --fix` auto-fixes what it safely can (mainly formatting-adjacent issues — most real style formatting is Prettier's job, [3.9](#39-prettier-setup), not ESLint's).
 
-### 4.9 Windows PowerShell Execution Policy / npm Recovery
+### 3.11 Windows PowerShell Execution Policy / npm Recovery
 
 This applies the same way regardless of framework.
 
@@ -617,7 +873,7 @@ rm -rf node_modules package-lock.json
 pnpm install
 ```
 
-### 4.10 Development Server
+### 3.12 Development Server
 
 The command is the same in all three projects:
 
@@ -633,9 +889,9 @@ Vite     → http://localhost:5173
 Next.js  → http://localhost:3000
 ```
 
-### 4.11 `.env` Example
+### 3.13 `.env` Example
 
-Environment variables keep secrets (API keys, database URLs, tokens) out of the codebase. The `.env` file is never committed — it's excluded via [`.gitignore`](#412-gitignore-example) — only `.env.example` (with placeholder values, no real secrets) gets committed as a reference for other developers.
+Environment variables keep secrets (API keys, database URLs, tokens) out of the codebase. The `.env` file is never committed — it's excluded via [`.gitignore`](#314-gitignore-example) — only `.env.example` (with placeholder values, no real secrets) gets committed as a reference for other developers.
 
 **Astro** — variables must be prefixed with `PUBLIC_` to be exposed to client-side code; anything without that prefix is only available server-side:
 
@@ -676,7 +932,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
 
 Accessed via `process.env.NEXT_PUBLIC_SITE_URL` (client or server) or `process.env.DATABASE_URL` (server-only). Next.js conventionally uses `.env.local` for local secrets — it's ignored by Git by default in the standard Next.js `.gitignore`, on top of `.env*`.
 
-### 4.12 `.gitignore` Example
+### 3.14 `.gitignore` Example
 
 A single generic `.gitignore` covers Astro, Vite and Next.js, since the underlying tooling (Node.js, pnpm, TypeScript, editors, OS files) is the same across all three:
 
@@ -728,23 +984,23 @@ coverage/
 *.local
 ```
 
-> `.env` is deliberately ignored while `.env.example` is not — commit `.env.example` with placeholder values so the pattern from [4.11](#411-env-example) is documented for anyone who clones the repo. `!.vscode/extensions.json` is a negation pattern: it re-includes that one file even though `.vscode/*` ignores the folder, which is handy for sharing the extension list from [2. VS Code Extensions](#2-vs-code-extensions) with the team.
+> `.env` is deliberately ignored while `.env.example` is not — commit `.env.example` with placeholder values so the pattern from [3.13](#313-env-example) is documented for anyone who clones the repo. `!.vscode/extensions.json` is a negation pattern: it re-includes that one file even though `.vscode/*` ignores the folder, which is handy for sharing the extension list from [2.1 Extensions](#21-extensions) with the team.
 
 ---
 
-## 5. Astro
+## 4. Astro
 
-> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in section 10. Astro sites are deployed directly to Cloudflare Pages (see [11.2](#112-cloudflare-pages)).
+> **Deployment note:** Astro is included as a development reference, but it is not part of the Docker/server setup in section 9. Astro sites are deployed directly to Cloudflare Pages (see [10.2](#102-cloudflare-pages)).
 
-### 5.1 Project Setup
+### 4.1 Project Setup
 
 ```bash
 pnpm create astro@latest
 ```
 
-The Tailwind CSS setup that follows scaffolding is covered in [4.1](#41-tailwind-css-setup); sitemap in [4.5](#45-sitemap-integration).
+The Tailwind CSS setup that follows scaffolding is covered in [3.1](#31-tailwind-css-setup); sitemap in [3.7](#37-sitemap-integration).
 
-### 5.2 Install Dependencies
+### 4.2 Install Dependencies
 
 The Astro CLI installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
 
@@ -752,11 +1008,11 @@ The Astro CLI installs dependencies as part of scaffolding. If they ever need re
 pnpm install
 ```
 
-### 5.3 Routing & Client-Side Navigation
+### 4.3 Routing & Client-Side Navigation
 
-Astro uses **file-based routing**: every file in `src/pages/` becomes a route (see [5.5](#55-project-structure--architecture) for the full mapping).
+Astro uses **file-based routing**: every file in `src/pages/` becomes a route (see [4.5](#45-project-structure--architecture) for the full mapping).
 
-Astro's built-in `ClientRouter` enables View Transitions for smooth navigation between pages without full reloads — no router library needed. It's imported once in the shared layout (see [5.4](#54-main-layout-example)) and paired with the CSS crossfade from [4.2](#42-tailwind-theme--custom-fonts).
+Astro's built-in `ClientRouter` enables View Transitions for smooth navigation between pages without full reloads — no router library needed. It's imported once in the shared layout (see [4.4](#44-main-layout-example)) and paired with the CSS crossfade from [3.2](#32-tailwind-theme--custom-fonts).
 
 ```astro
 ---
@@ -767,9 +1023,9 @@ import { ClientRouter } from "astro:transitions";
 </head>
 ```
 
-### 5.4 Main Layout Example
+### 4.4 Main Layout Example
 
-`src/layouts/Layout.astro` is the shared HTML shell: head, meta tags, Open Graph (see [4.3](#43-open-graph--metadata)), `<Navbar />` / `<Footer />`, and `<slot />` for page content — the Astro equivalent of Vite's layout route ([6.5](#65-layout-route-with-outlet)) or Next.js's root layout ([7.5](#75-root-layout)).
+`src/layouts/Layout.astro` is the shared HTML shell: head, meta tags, Open Graph (see [3.3](#33-open-graph--metadata)), `<Navbar />` / `<Footer />`, and `<slot />` for page content — the Astro equivalent of Vite's layout route ([5.5](#55-layout-route-with-outlet)) or Next.js's root layout ([6.5](#65-root-layout)).
 
 ```astro
 ---
@@ -807,7 +1063,7 @@ import Footer from "../components/Footer.astro";
 </html>
 ```
 
-### 5.5 Project Structure & Architecture
+### 4.5 Project Structure & Architecture
 
 ```
 /
@@ -818,6 +1074,8 @@ import Footer from "../components/Footer.astro";
 ├── public/
 │   ├── favicon.svg
 │   ├── icon.png
+│   ├── pwa-192x192.png
+│   ├── pwa-512x512.png
 │   ├── images/
 │   └── robots.txt
 ├── src/
@@ -840,11 +1098,13 @@ import Footer from "../components/Footer.astro";
 └── tsconfig.json
 ```
 
-**`public/`** — Static assets served as-is, without processing. Anything here is copied directly to the final build output at the same path (favicon, images, `robots.txt` — see [4.4](#44-robotstxt)).
+**`.github/workflows/`** — CI checks that run on every push ([11.9](#119-github-actions-cicd-workflows)): `audit.yml` and `prettier.yml`. No `deploy.yml` here — this site deploys via Cloudflare Pages ([8.6](#86-each-frontend-as-its-own-repo-cloudflare-pages)), which redeploys automatically on push; `deploy.yml` only applies to the backend repo ([8.9](#89-final-project-structure-three-independent-repos)).
+
+**`public/`** — Static assets served as-is, without processing. Anything here is copied directly to the final build output at the same path (favicon, images, `robots.txt` — see [3.6](#36-robotstxt) — and the PWA icons from [3.5](#35-progressive-web-app-pwa-setup)).
 
 **`src/components/`** — Reusable UI pieces used across multiple pages (e.g. `Hero.astro`, `Navbar.astro`, `Footer.astro`). Each component encapsulates its own markup, styles, and logic.
 
-**`src/layouts/`** — Page wrappers that define the shared HTML shell (see [5.4](#54-main-layout-example)). Most projects only need one `Layout.astro`, but additional layouts can be added for different page types (e.g. a blog post layout).
+**`src/layouts/`** — Page wrappers that define the shared HTML shell (see [4.4](#44-main-layout-example)). Most projects only need one `Layout.astro`, but additional layouts can be added for different page types (e.g. a blog post layout).
 
 **`src/pages/`** — File-based routing: each file becomes a route.
 
@@ -852,30 +1112,30 @@ import Footer from "../components/Footer.astro";
 - `terms-of-service.astro` → `/terms-of-service`
 - `privacy-policy.astro` → `/privacy-policy`
 - `contact.astro` → `/contact`
-- `404.astro` → custom not-found page (see [4.6](#46-404--not-found-page))
+- `404.astro` → custom not-found page (see [3.8](#38-404--not-found-page))
 
-**`src/styles/`** — Global stylesheets. `global.css` is where Tailwind is imported (see [4.1](#41-tailwind-css-setup)) and where fonts/theme tokens live (see [4.2](#42-tailwind-theme--custom-fonts)).
+**`src/styles/`** — Global stylesheets. `global.css` is where Tailwind is imported (see [3.1](#31-tailwind-css-setup)) and where fonts/theme tokens live (see [3.2](#32-tailwind-theme--custom-fonts)).
 
 ---
 
-## 6. Vite
+## 5. Vite
 
-### 6.1 Scaffolding a New Project
+### 5.1 Scaffolding a New Project
 
 ```bash
 pnpm create vite@latest project-name --template react-ts
 cd project-name
 ```
 
-### 6.2 Install Dependencies
+### 5.2 Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-The Tailwind CSS setup that follows is covered in [4.1](#41-tailwind-css-setup); sitemap in [4.5](#45-sitemap-integration).
+The Tailwind CSS setup that follows is covered in [3.1](#31-tailwind-css-setup); sitemap in [3.7](#37-sitemap-integration).
 
-### 6.3 `vite.config.ts` Reference
+### 5.3 `vite.config.ts` Reference
 
 Basic version (React + Tailwind):
 
@@ -910,7 +1170,7 @@ export default defineConfig({
 })
 ```
 
-### 6.4 Routing & Layouts (React Router DOM)
+### 5.4 Routing & Layouts (React Router DOM)
 
 Unlike Astro or Next.js, Vite has no built-in router — routes are declared explicitly with `react-router-dom`.
 
@@ -979,7 +1239,7 @@ createRoot(document.getElementById('root')!).render(
 
 The two-file split is still the more common convention once routes multiply or `App.tsx` starts holding shared state/providers, since it keeps the DOM-mounting boilerplate separate from anything route- or app-logic related — but for a two-route project, either works.
 
-### 6.5 Layout Route with `Outlet`
+### 5.5 Layout Route with `Outlet`
 
 For a shared shell (navbar + footer on every page — the Vite equivalent of Astro's `Layout.astro` or Next.js's root layout), use a layout route with React Router's `<Outlet />`, which renders whichever child route matched:
 
@@ -1044,7 +1304,7 @@ createRoot(document.getElementById('root')!).render(
 
 > If `<BrowserRouter>` isn't wrapped around `<App />` in `main.tsx` (as in this last example), make sure it's added inside `App.tsx` itself, or swap to `createBrowserRouter` + `<RouterProvider />` for data-loading features (loaders, actions) — see the [React Router docs](https://reactrouter.com/en/main).
 
-### 6.6 Project Structure & Architecture
+### 5.6 Project Structure & Architecture
 
 ```
 /
@@ -1055,6 +1315,8 @@ createRoot(document.getElementById('root')!).render(
 ├── public/
 │   ├── favicon.svg
 │   ├── icon.png
+│   ├── pwa-192x192.png
+│   ├── pwa-512x512.png
 │   ├── images/
 │   └── robots.txt
 ├── src/
@@ -1080,11 +1342,13 @@ createRoot(document.getElementById('root')!).render(
 └── tsconfig.json
 ```
 
-**`public/`** — Static assets served as-is; same role as described in [4.4 `robots.txt`](#44-robotstxt).
+**`.github/workflows/`** — Same as Astro's ([4.5](#45-project-structure--architecture)): `audit.yml` and `prettier.yml`, no `deploy.yml` (Cloudflare Pages autodeploys this site — [8.6](#86-each-frontend-as-its-own-repo-cloudflare-pages)).
+
+**`public/`** — Static assets served as-is; same role as described in [3.6 `robots.txt`](#36-robotstxt), plus the PWA icons from [3.5](#35-progressive-web-app-pwa-setup).
 
 **`src/components/`** — Reusable UI pieces (`Hero.tsx`, `Navbar.tsx`, `Footer.tsx`) shared across pages.
 
-**`src/layouts/`** — Shared page shells rendered via a layout route with `<Outlet />` (see [6.5](#65-layout-route-with-outlet)), equivalent to Astro's `Layout.astro` or Next.js's root layout.
+**`src/layouts/`** — Shared page shells rendered via a layout route with `<Outlet />` (see [5.5](#55-layout-route-with-outlet)), equivalent to Astro's `Layout.astro` or Next.js's root layout.
 
 **`src/pages/`** — One component per route, registered manually in `App.tsx` when using React Router:
 
@@ -1095,17 +1359,17 @@ createRoot(document.getElementById('root')!).render(
 - `PrivacyPolicy.tsx` → `/privacy-policy`
 - `NotFound.tsx` → catch-all `*` route
 
-**`src/global.css`** (or `index.css`) — Where Tailwind is imported and font/theme tokens are defined (see [4.2](#42-tailwind-theme--custom-fonts)).
+**`src/global.css`** (or `index.css`) — Where Tailwind is imported and font/theme tokens are defined (see [3.2](#32-tailwind-theme--custom-fonts)).
 
-**`index.html`** — The single HTML entry point; holds the `<head>` meta tags and Open Graph tags (see [4.3](#43-open-graph--metadata)), and the `#root` mount point for React.
+**`index.html`** — The single HTML entry point; holds the `<head>` meta tags and Open Graph tags (see [3.3](#33-open-graph--metadata)), and the `#root` mount point for React.
 
 ---
 
-## 7. Next.js
+## 6. Next.js
 
-Next.js is the third framework covered here. Unlike a static Astro or Vite build, a standard Next.js application runs a Node.js server in production (see [7.7](#77-production-build)).
+Next.js is the third framework covered here. Unlike a static Astro or Vite build, a standard Next.js application runs a Node.js server in production (see [6.7](#67-production-build)).
 
-### 7.1 Create a New Project
+### 6.1 Create a New Project
 
 ```bash
 pnpm create next-app@latest my-next-site
@@ -1119,7 +1383,7 @@ A typical setup for this README is:
 - Tailwind CSS: `Yes`
 - App Router: `Yes`
 
-### 7.2 Install Dependencies
+### 6.2 Install Dependencies
 
 `create-next-app` installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
 
@@ -1127,9 +1391,9 @@ A typical setup for this README is:
 pnpm install
 ```
 
-### 7.3 `next.config.ts` Reference
+### 6.3 `next.config.ts` Reference
 
-Basic version — an empty config is valid since Tailwind is already wired in through PostCSS by `create-next-app` (see [4.1](#41-tailwind-css-setup)):
+Basic version — an empty config is valid since Tailwind is already wired in through PostCSS by `create-next-app` (see [3.1](#31-tailwind-css-setup)):
 
 ```typescript
 import type { NextConfig } from 'next'
@@ -1139,7 +1403,7 @@ const nextConfig: NextConfig = {}
 export default nextConfig
 ```
 
-Extended version, enabling the [React Compiler](https://react.dev/learn/react-compiler) and typed routes — the Next.js equivalent of Vite's extended `vite.config.ts` in [6.3](#63-viteconfigts-reference):
+Extended version, enabling the [React Compiler](https://react.dev/learn/react-compiler) and typed routes — the Next.js equivalent of Vite's extended `vite.config.ts` in [5.3](#53-viteconfigts-reference):
 
 ```typescript
 import type { NextConfig } from 'next'
@@ -1154,22 +1418,22 @@ const nextConfig: NextConfig = {
 export default nextConfig
 ```
 
-### 7.4 Routing & Layouts (App Router)
+### 6.4 Routing & Layouts (App Router)
 
-Like Astro, Next.js uses **file-based routing** — no router library needed, unlike Vite's `react-router-dom` ([6.4](#64-routing--layouts-react-router-dom)). Every folder under `app/` maps to a URL segment, and a `page.tsx` inside it is what actually renders:
+Like Astro, Next.js uses **file-based routing** — no router library needed, unlike Vite's `react-router-dom` ([5.4](#54-routing--layouts-react-router-dom)). Every folder under `app/` maps to a URL segment, and a `page.tsx` inside it is what actually renders:
 
 ```text
 app/page.tsx            → /
 app/about/page.tsx      → /about
 app/contact/page.tsx    → /contact
-app/not-found.tsx       → custom 404 (see 4.6)
+app/not-found.tsx       → custom 404 (see 3.8)
 ```
 
-Layouts nest automatically: any `layout.tsx` wraps every route below it, so the shared shell (navbar + footer) only needs to be defined once at the root — see [7.5](#75-root-layout) for the equivalent of Astro's `<slot />` or Vite's `<Outlet />`. Nested folders can add their own `layout.tsx` to wrap just that subsection of the site (e.g. a `blog/layout.tsx` shared by every post).
+Layouts nest automatically: any `layout.tsx` wraps every route below it, so the shared shell (navbar + footer) only needs to be defined once at the root — see [6.5](#65-root-layout) for the equivalent of Astro's `<slot />` or Vite's `<Outlet />`. Nested folders can add their own `layout.tsx` to wrap just that subsection of the site (e.g. a `blog/layout.tsx` shared by every post).
 
-### 7.5 Root Layout
+### 6.5 Root Layout
 
-`app/layout.tsx` is the shared HTML shell — the Next.js equivalent of Astro's `Layout.astro` ([5.4](#54-main-layout-example)) or Vite's `MainLayout.tsx` + `<Outlet />` ([6.5](#65-layout-route-with-outlet)). Instead of `<slot />` or `<Outlet />`, it receives page content as the `children` prop:
+`app/layout.tsx` is the shared HTML shell — the Next.js equivalent of Astro's `Layout.astro` ([4.4](#44-main-layout-example)) or Vite's `MainLayout.tsx` + `<Outlet />` ([5.5](#55-layout-route-with-outlet)). Instead of `<slot />` or `<Outlet />`, it receives page content as the `children` prop:
 
 ```tsx
 import type { Metadata } from 'next'
@@ -1202,9 +1466,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-The Metadata API above is the Next.js equivalent of the hand-written Open Graph `<meta>` tags used in Astro/Vite (see [4.3](#43-open-graph--metadata)).
+The Metadata API above is the Next.js equivalent of the hand-written Open Graph `<meta>` tags used in Astro/Vite (see [3.3](#33-open-graph--metadata)).
 
-### 7.6 Server and Client Components
+### 6.6 Server and Client Components
 
 App Router components are Server Components by default — this has no direct equivalent in Vite, and is closer in spirit to Astro components (which are also server-rendered by default, with interactive "islands" opted into separately).
 
@@ -1228,7 +1492,7 @@ export default function Counter() {
 
 This is important for deployment: server-side code stays inside the Node.js container, while client components are sent to the browser.
 
-### 7.7 Production Build
+### 6.7 Production Build
 
 ```bash
 pnpm build
@@ -1237,7 +1501,7 @@ pnpm start
 
 `pnpm build` creates the optimized production output. `pnpm start` runs the production Next.js server, normally on port `3000`.
 
-For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
+For the Docker deployment in [section 9](#9-linux-server--docker-deployment):
 
 - A normal Next.js application should run `next start`.
 - Do not treat a normal Next.js application as a `dist/` static site.
@@ -1246,7 +1510,7 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 
 > Next.js can also be configured for static export, but that is a different deployment model. This README treats Next.js as a normal Node.js application running in Docker.
 
-### 7.8 Project Structure & Architecture
+### 6.8 Project Structure & Architecture
 
 ```
 /
@@ -1256,6 +1520,8 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 │       └── prettier.yml
 ├── public/
 │   ├── favicon.ico
+│   ├── pwa-192x192.png
+│   ├── pwa-512x512.png
 │   ├── images/
 │   └── robots.txt
 ├── app/
@@ -1263,6 +1529,7 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 │   ├── page.tsx
 │   ├── not-found.tsx
 │   ├── sitemap.ts
+│   ├── manifest.ts
 │   ├── about/
 │   │   └── page.tsx
 │   └── contact/
@@ -1276,9 +1543,11 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 └── tsconfig.json
 ```
 
-**`public/`** — Static assets served as-is; same role as described in [4.4 `robots.txt`](#44-robotstxt).
+**`.github/workflows/`** — Same as Astro's ([4.5](#45-project-structure--architecture)): `audit.yml` and `prettier.yml`, no `deploy.yml` (Cloudflare Pages autodeploys this site — [8.6](#86-each-frontend-as-its-own-repo-cloudflare-pages)).
 
-**`app/`** — File-based routing (see [7.4](#74-routing--layouts-app-router)). `app/page.tsx` is the homepage, `app/layout.tsx` is the root layout (see [7.5](#75-root-layout)), `app/not-found.tsx` handles 404 pages (see [4.6](#46-404--not-found-page)) and `app/sitemap.ts` generates the sitemap (see [4.5](#45-sitemap-integration)). Each subfolder with its own `page.tsx` becomes a route, equivalent to a file under Astro's `src/pages/` or a route entry in Vite's `App.tsx`.
+**`public/`** — Static assets served as-is; same role as described in [3.6 `robots.txt`](#36-robotstxt). Next.js's PWA manifest is `app/manifest.ts`, not a static file here — see [3.5](#35-progressive-web-app-pwa-setup).
+
+**`app/`** — File-based routing (see [6.4](#64-routing--layouts-app-router)). `app/page.tsx` is the homepage, `app/layout.tsx` is the root layout (see [6.5](#65-root-layout)), `app/not-found.tsx` handles 404 pages (see [3.8](#38-404--not-found-page)), `app/sitemap.ts` generates the sitemap (see [3.7](#37-sitemap-integration)), and `app/manifest.ts` generates the PWA manifest (see [3.5](#35-progressive-web-app-pwa-setup)). Each subfolder with its own `page.tsx` becomes a route, equivalent to a file under Astro's `src/pages/` or a route entry in Vite's `App.tsx`.
 
 **`components/`** — Reusable UI pieces (`Navbar.tsx`, `Footer.tsx`) shared across pages, equivalent to `src/components/` in Astro or Vite.
 
@@ -1286,11 +1555,11 @@ For the Docker deployment in [section 10](#10-linux-server--docker-deployment):
 
 ---
 
-## 8. Database & Backend: Prisma + PostgreSQL
+## 7. Database & Backend: Prisma + PostgreSQL
 
 Stack: **Express + TypeScript + Prisma + PostgreSQL (Docker)**. This section covers setting up that backend from zero — schema, migrations, `.env`, a minimal login endpoint, and a seed script.
 
-### 8.1 Overview: Which Framework Needs a Separate Backend
+### 7.1 Overview: Which Framework Needs a Separate Backend
 
 Between the frameworks in this README, only **Vite + React** and **Next.js** ever talk to a database.
 
@@ -1299,12 +1568,17 @@ Between the frameworks in this README, only **Vite + React** and **Next.js** eve
 | **Next.js** | Directly inside API Routes / Route Handlers / Server Actions | No — Next.js *is* the backend |
 | **Vite + React** | Never in the frontend bundle | **Yes** — Vite is a pure client-side SPA, so it needs a standalone Node/Express API server that the React app calls over `fetch` |
 
-Everything below builds that standalone Express + Prisma backend, called over `fetch` by one or more Vite frontends (or adapted into a Next.js project's own Route Handlers). See [9. Full Separation: Independent Backend, Frontend(s) and Deployment](#9-full-separation-independent-backend-frontends-and-deployment) for deploying it fully on its own, with each frontend in its own repo.
+Everything below builds that standalone Express + Prisma backend, called over `fetch` by one or more Vite frontends (or adapted into a Next.js project's own Route Handlers). See [8. Full Separation: Independent Backend, Frontend(s) and Deployment](#8-full-separation-independent-backend-frontends-and-deployment) for deploying it fully on its own, with each frontend in its own repo.
 
-### 8.2 Backend Project Structure
+### 7.2 Backend Project Structure
 
 ```
 backend/
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       ├── deploy.yml
+│       └── prettier.yml
 ├── prisma/
 │   ├── migrations/
 │   ├── schema.prisma
@@ -1322,9 +1596,11 @@ backend/
 └── tsconfig.json
 ```
 
-This backend is its own repository, not a monorepo package — `docker-compose.yml` and `Dockerfile` ship with it, since it deploys on its own to a VPS (see [9](#9-full-separation-independent-backend-frontends-and-deployment)).
+`deploy.yml` only makes sense here — it's the only repo that deploys by SSH to a VPS ([8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage)); `audit.yml` and `prettier.yml` are the same generic checks used in the frontends ([11.9](#119-github-actions-cicd-workflows)).
 
-### 8.3 Install Dependencies
+This backend is its own repository, not a monorepo package — `docker-compose.yml` and `Dockerfile` ship with it, since it deploys on its own to a VPS (see [8](#8-full-separation-independent-backend-frontends-and-deployment)).
+
+### 7.3 Install Dependencies
 
 ```bash
 pnpm install
@@ -1380,9 +1656,9 @@ pnpm install
 }
 ```
 
-`dev` starts the local Postgres container ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)), regenerates the client, pushes the schema, and starts the server watching for changes — one command instead of four.
+`dev` starts the local Postgres container ([8.2](#82-backend-repo-docker-composeyml-postgres-and-api)), regenerates the client, pushes the schema, and starts the server watching for changes — one command instead of four.
 
-### 8.4 `.env` Example
+### 7.4 `.env` Example
 
 ```env
 # .env — never commit this file
@@ -1403,9 +1679,9 @@ ADMIN_PASSWORD=change-this-too
 ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-> Add `.env` to `.gitignore` ([4.12](#412-gitignore-example)) — never commit it.
+> Add `.env` to `.gitignore` ([3.14](#314-gitignore-example)) — never commit it.
 
-### 8.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`
+### 7.5 Configuration Files: `tsconfig.json`, `prisma.config.ts` and `pnpm-workspace.yaml`
 
 ```json
 // tsconfig.json
@@ -1444,7 +1720,7 @@ export default defineConfig({
 });
 ```
 
-`prisma.config.ts` is the Prisma CLI's config file: it tells `prisma migrate`/`studio`/`db seed` where the schema and migrations live, which seed script to run ([8.12](#812-seed-example)), and which connection string to use. Since it reads `DATABASE_URL` from the environment, **any command touching this file — `prisma generate` included — needs `DATABASE_URL` set**, even just to generate the client with no real database yet. This matters most inside a Docker build stage, where `.env` isn't loaded automatically ([9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)):
+`prisma.config.ts` is the Prisma CLI's config file: it tells `prisma migrate`/`studio`/`db seed` where the schema and migrations live, which seed script to run ([7.12](#712-seed-example)), and which connection string to use. Since it reads `DATABASE_URL` from the environment, **any command touching this file — `prisma generate` included — needs `DATABASE_URL` set**, even just to generate the client with no real database yet. This matters most inside a Docker build stage, where `.env` isn't loaded automatically ([8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage)):
 
 ```bash
 DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate
@@ -1463,7 +1739,7 @@ allowBuilds:
 
 Since pnpm 10, `pnpm install` **ignores lifecycle/build scripts by default** for supply-chain safety — packages that ship native binaries or run `postinstall` (Prisma's engines, `bcrypt`'s native bindings, `esbuild`) silently fail to finish setting up, and pnpm prints `[ERR_PNPM_IGNORED_BUILDS]`. `allowBuilds` explicitly trusts these packages to run their install scripts. It's required even for a single, non-monorepo package — `pnpm-workspace.yaml` is just where pnpm looks for this setting either way.
 
-### 8.6 PostgreSQL: Starting the Database
+### 7.6 PostgreSQL: Starting the Database
 
 For working on the backend in isolation, without even a `docker-compose.yml` yet:
 
@@ -1477,9 +1753,9 @@ docker run --name backend-postgres \
   -d postgres:18
 ```
 
-In practice this is quickly replaced by the backend's own `docker-compose.yml` ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)): `docker compose up -d postgres` (used by the `dev` script in [8.3](#83-install-dependencies)) or `docker compose up -d --build` (full stack, production) replace the manual `docker run` above.
+In practice this is quickly replaced by the backend's own `docker-compose.yml` ([8.2](#82-backend-repo-docker-composeyml-postgres-and-api)): `docker compose up -d postgres` (used by the `dev` script in [7.3](#73-install-dependencies)) or `docker compose up -d --build` (full stack, production) replace the manual `docker run` above.
 
-### 8.7 Prisma From Scratch: Default `schema.prisma`
+### 7.7 Prisma From Scratch: Default `schema.prisma`
 
 ```bash
 pnpm dlx prisma init
@@ -1501,9 +1777,9 @@ datasource db {
 }
 ```
 
-It also creates a placeholder `.env` — replace its `DATABASE_URL` with the real one from [8.4](#84-env-example).
+It also creates a placeholder `.env` — replace its `DATABASE_URL` with the real one from [7.4](#74-env-example).
 
-### 8.8 Add a Simple `User` Model
+### 7.8 Add a Simple `User` Model
 
 ```prisma
 model User {
@@ -1514,9 +1790,9 @@ model User {
 }
 ```
 
-`password` here always means the **hash**, never the plain text — see the `bcrypt.hash()` call in [8.11](#811-simple-backend-entry-point-srcindexts-login-example).
+`password` here always means the **hash**, never the plain text — see the `bcrypt.hash()` call in [7.11](#711-simple-backend-entry-point-srcindexts-login-example).
 
-### 8.9 Create and Apply the First Migration
+### 7.9 Create and Apply the First Migration
 
 Two different ways to push a schema change to the database, depending on the stage of the work:
 
@@ -1524,7 +1800,7 @@ Two different ways to push a schema change to the database, depending on the sta
 pnpm exec prisma db push
 ```
 
-Pushes the current `schema.prisma` straight to the database **without creating a migration file**. Fast to iterate with while a model is still changing shape often — this is what the `dev` script in [8.3](#83-install-dependencies) uses. Trade-off: no history, so it's for local development only, and switching to `migrate dev`/`migrate deploy` later requires the schema and database to already be in sync.
+Pushes the current `schema.prisma` straight to the database **without creating a migration file**. Fast to iterate with while a model is still changing shape often — this is what the `dev` script in [7.3](#73-install-dependencies) uses. Trade-off: no history, so it's for local development only, and switching to `migrate dev`/`migrate deploy` later requires the schema and database to already be in sync.
 
 ```bash
 pnpm exec prisma migrate dev --name init
@@ -1549,15 +1825,15 @@ Regenerates the client without migrating — needed after pulling someone else's
 pnpm exec prisma migrate deploy
 ```
 
-Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script (or a Docker container's startup command, see [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)), never `migrate dev` and never `db push`.
+Used in production/CI: applies any pending migrations from `prisma/migrations/` without prompting and without generating new ones — this is the command that belongs in a deployment script (or a Docker container's startup command, see [8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage)), never `migrate dev` and never `db push`.
 
 ```bash
 pnpm exec prisma migrate reset
 ```
 
-⚠️ **Destructive — local/dev only, never run this in production.** Drops the entire database, recreates it from scratch, reapplies every migration in `prisma/migrations/` from the very first one, and then runs the seed script ([8.12](#812-seed-example)) automatically. Reach for this when the local database and the migration history have drifted apart and Prisma refuses to apply a new migration cleanly (`Migrations in conflict`, see [8.15](#815-common-prisma-and-postgresql-errors)) — it's the "just start over" escape hatch for a local database, not something to run against real data.
+⚠️ **Destructive — local/dev only, never run this in production.** Drops the entire database, recreates it from scratch, reapplies every migration in `prisma/migrations/` from the very first one, and then runs the seed script ([7.12](#712-seed-example)) automatically. Reach for this when the local database and the migration history have drifted apart and Prisma refuses to apply a new migration cleanly (`Migrations in conflict`, see [7.15](#715-common-prisma-and-postgresql-errors)) — it's the "just start over" escape hatch for a local database, not something to run against real data.
 
-### 8.10 Modifying an Existing Schema: Update `User` and Add a New Table
+### 7.10 Modifying an Existing Schema: Update `User` and Add a New Table
 
 This is the general case the previous step builds up to: the schema already exists and now needs to grow. Say logins should now persist a session, and `User` should have an optional name:
 
@@ -1580,7 +1856,7 @@ model Session {
 }
 ```
 
-Then either `db push` (while still iterating) or a new named migration ([8.9](#89-create-and-apply-the-first-migration)) once it's stable:
+Then either `db push` (while still iterating) or a new named migration ([7.9](#79-create-and-apply-the-first-migration)) once it's stable:
 
 ```bash
 pnpm exec prisma migrate dev --name add-name-and-sessions
@@ -1588,9 +1864,9 @@ pnpm exec prisma migrate dev --name add-name-and-sessions
 
 That's the general rule for growing a schema over time — it never changes: edit `schema.prisma` (add fields, add models, add relations), then push or migrate again. Prisma diffs the current database against the schema and figures out the SQL on its own; nothing needs to be written by hand.
 
-### 8.11 Simple Backend Entry Point (`src/index.ts`): Login Example
+### 7.11 Simple Backend Entry Point (`src/index.ts`): Login Example
 
-A minimal Express server using the schema above — register is left out for brevity, but `/login` and `/me` show the full pattern: hash comparison, a `Session` row, and an `httpOnly` cookie configured for **cross-domain** use, since the frontend (Cloudflare Pages) and this API (a VPS) live on different domains in production — see [9.5](#95-cors-and-cookies-across-different-domains) for the full explanation.
+A minimal Express server using the schema above — register is left out for brevity, but `/login` and `/me` show the full pattern: hash comparison, a `Session` row, and an `httpOnly` cookie configured for **cross-domain** use, since the frontend (Cloudflare Pages) and this API (a VPS) live on different domains in production — see [8.5](#85-cors-and-cookies-across-different-domains) for the full explanation.
 
 ```typescript
 // src/index.ts
@@ -1637,7 +1913,7 @@ const COOKIE_NAME = "session_token";
 // SameSite=None + Secure is required for the browser to send this cookie on
 // cross-site requests (frontend and API on different domains); Secure means
 // this only works over HTTPS, which is why the API needs a real TLS
-// certificate in production ([9.7](#97-https-in-front-of-the-backend-caddy)).
+// certificate in production ([8.7](#87-https-in-front-of-the-backend-caddy)).
 // In local dev (same-origin via Vite's proxy) "lax" without Secure still works.
 const cookieOptions = {
   httpOnly: true,
@@ -1681,7 +1957,7 @@ app.get("/me", async (req, res) => {
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
 ```
 
-### 8.12 Seed Example
+### 7.12 Seed Example
 
 ```typescript
 // prisma/seed.ts
@@ -1717,9 +1993,9 @@ main()
 pnpm db:seed
 ```
 
-No extra wiring needed — the seed command is already pointed at this file by `prisma.config.ts` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)). One easy-to-miss requirement: the Prisma Client must already be generated before seeding — on a fresh `pnpm install` (or after wiping `node_modules`), run `pnpm exec prisma generate` once before `pnpm db:seed`, or it fails with `Cannot find module '.prisma/client/default'`.
+No extra wiring needed — the seed command is already pointed at this file by `prisma.config.ts` ([7.5](#75-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)). One easy-to-miss requirement: the Prisma Client must already be generated before seeding — on a fresh `pnpm install` (or after wiping `node_modules`), run `pnpm exec prisma generate` once before `pnpm db:seed`, or it fails with `Cannot find module '.prisma/client/default'`.
 
-### 8.13 Prisma Studio
+### 7.13 Prisma Studio
 
 ```bash
 pnpm exec prisma studio
@@ -1727,7 +2003,7 @@ pnpm exec prisma studio
 
 Opens a visual database browser at `http://localhost:5555` — view, create, edit and delete rows in any table without writing SQL.
 
-### 8.14 Day-to-Day Workflow and Reference Commands
+### 7.14 Day-to-Day Workflow and Reference Commands
 
 ```bash
 # 1. Start the database (this backend's own docker-compose.yml — see 9.2)
@@ -1777,7 +2053,7 @@ pnpm db:seed                            # run the seed script
 pnpm dev                          # docker compose up -d postgres + generate + push + hot reload
 ```
 
-### 8.15 Common Prisma and PostgreSQL Errors
+### 7.15 Common Prisma and PostgreSQL Errors
 
 | Problem | Likely cause | Fix |
 |---|---|---|
@@ -1785,23 +2061,23 @@ pnpm dev                          # docker compose up -d postgres + generate + p
 | `Error: P1000` (authentication failed) on a container that starts fine | The `.env` password was changed, but the Postgres **volume already exists** with the old password baked in — Postgres never re-reads `POSTGRES_PASSWORD` after first init | `docker compose down -v` (wipes the volume) then `docker compose up -d --build` again |
 | `Error: P1001` (can't reach database) | Wrong `DATABASE_URL` | Check user, password, host and port |
 | `PrismaConfigEnvError: Cannot resolve environment variable: DATABASE_URL` when running `prisma generate`/`migrate`/`studio` | `prisma.config.ts` needs `DATABASE_URL` in the environment, and nothing loaded `.env` in this shell/build step | Export it inline for that one command, e.g. `DATABASE_URL="postgresql://user:pass@localhost:5432/db" pnpm exec prisma generate` — any placeholder works for `generate` |
-| `[ERR_PNPM_IGNORED_BUILDS]` during `pnpm install` | pnpm ≥ 10 blocks lifecycle/build scripts by default (Prisma engines, `bcrypt`, `esbuild`) | Add `allowBuilds` to `pnpm-workspace.yaml` — see [8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) |
+| `[ERR_PNPM_IGNORED_BUILDS]` during `pnpm install` | pnpm ≥ 10 blocks lifecycle/build scripts by default (Prisma engines, `bcrypt`, `esbuild`) | Add `allowBuilds` to `pnpm-workspace.yaml` — see [7.5](#75-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) |
 | `Cannot find module '.prisma/client/default'` when seeding | The Prisma Client was never generated in this environment (fresh install, or `node_modules` wiped) | `pnpm exec prisma generate` before `pnpm db:seed` |
-| `sh: 1: tsc: not found` on build | `typescript` isn't declared as a direct dependency of this package (easy to miss if it used to come from a monorepo root) | Add `typescript` to `devDependencies` — see [8.3](#83-install-dependencies) |
+| `sh: 1: tsc: not found` on build | `typescript` isn't declared as a direct dependency of this package (easy to miss if it used to come from a monorepo root) | Add `typescript` to `devDependencies` — see [7.3](#73-install-dependencies) |
 | `prisma:warn Prisma failed to detect the libssl/openssl version` during install/generate in a `node:*-slim` Docker image | Harmless in practice — Prisma falls back to a default engine variant | Safe to ignore; only worth acting on if queries actually fail at runtime, in which case switch away from a `-slim` base image |
 | Prisma Client out of date | Schema changed without regenerating | `pnpm exec prisma generate` |
 | Migrations in conflict | Local schema doesn't match the database | `pnpm exec prisma migrate reset` (⚠️ wipes data) |
 | Port `5432` already in use | Another PostgreSQL instance is running | Change the port in `docker-compose.yml` to e.g. `5433:5432` and update `DATABASE_URL` |
-| `401 Unauthorized` on every request in production, but it worked in local dev | Cookie is `SameSite=Lax`/non-`Secure` while frontend and backend are now on different domains — the browser silently drops it | Use the production cookie settings from [8.11](#811-simple-backend-entry-point-srcindexts-login-example) / [9.5](#95-cors-and-cookies-across-different-domains); see also [13. Common HTTP Status Codes](#13-common-http-status-codes) |
-| `No permitido por CORS` / `Not allowed by CORS` | The frontend's exact origin isn't in `ALLOWED_ORIGINS`, or it's missing `https://`, or it has a trailing slash | Fix `ALLOWED_ORIGINS` in `.env` (exact match required) and restart the backend — see [9.5](#95-cors-and-cookies-across-different-domains) |
+| `401 Unauthorized` on every request in production, but it worked in local dev | Cookie is `SameSite=Lax`/non-`Secure` while frontend and backend are now on different domains — the browser silently drops it | Use the production cookie settings from [7.11](#711-simple-backend-entry-point-srcindexts-login-example) / [8.5](#85-cors-and-cookies-across-different-domains); see also [12. Common HTTP Status Codes](#12-common-http-status-codes) |
+| `No permitido por CORS` / `Not allowed by CORS` | The frontend's exact origin isn't in `ALLOWED_ORIGINS`, or it's missing `https://`, or it has a trailing slash | Fix `ALLOWED_ORIGINS` in `.env` (exact match required) and restart the backend — see [8.5](#85-cors-and-cookies-across-different-domains) |
 
 ---
 
-## 9. Full Separation: Independent Backend, Frontend(s) and Deployment
+## 8. Full Separation: Independent Backend, Frontend(s) and Deployment
 
-An alternative to the monorepo approach: the backend from [8](#8-database--backend-prisma--postgresql) and each Vite + React frontend live in **completely separate repositories**, with no shared workspace, root `package.json`, or `docker-compose.yml`. The backend deploys to a VPS as a Docker container; each frontend deploys independently to Cloudflare Pages.
+An alternative to the monorepo approach: the backend from [7](#7-database--backend-prisma--postgresql) and each Vite + React frontend live in **completely separate repositories**, with no shared workspace, root `package.json`, or `docker-compose.yml`. The backend deploys to a VPS as a Docker container; each frontend deploys independently to Cloudflare Pages.
 
-### 9.1 Why Full Separation Instead of a Monorepo
+### 8.1 Why Full Separation Instead of a Monorepo
 
 | | Monorepo (pnpm workspace) | Full separation |
 |---|---|---|
@@ -1812,7 +2088,7 @@ An alternative to the monorepo approach: the backend from [8](#8-database--backe
 
 There's no universally correct choice — pick based on where each piece will actually be hosted. The rest of this section documents the full-separation setup end to end.
 
-### 9.2 Backend Repo: `docker-compose.yml` (Postgres and API)
+### 8.2 Backend Repo: `docker-compose.yml` (Postgres and API)
 
 Unlike the monorepo's shared root compose file (which only ran Postgres), the backend's own `docker-compose.yml` runs **both** Postgres and the backend itself — this is what actually ships to the VPS:
 
@@ -1862,9 +2138,9 @@ Notes:
 - `container_name` and `image` are set explicitly on both services — without `image:` on `backend`, Docker Compose names the built image `<folder-name>-backend`, which is rarely what you want to see in `docker images`.
 - Inside the Docker network, the backend reaches Postgres at host `postgres` (the service name), **not** `localhost` — that only applies when running the backend outside Docker.
 - In production, don't publish Postgres's `5432` to the host (remove any `ports:` under `postgres`) — nothing outside the VPS needs to talk to it directly, since the backend is on the same Docker network.
-- For **local development**, publishing `5432:5432` on `postgres` is exactly what lets `pnpm dev` ([8.3](#83-install-dependencies)) run the backend outside Docker while still reaching the containerized database.
+- For **local development**, publishing `5432:5432` on `postgres` is exactly what lets `pnpm dev` ([7.3](#73-install-dependencies)) run the backend outside Docker while still reaching the containerized database.
 
-### 9.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)
+### 8.3 Backend `Dockerfile` (pnpm, Node 24, Multi-Stage)
 
 ```dockerfile
 FROM node:24-slim AS base
@@ -1900,7 +2176,7 @@ CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/index.js"]
 Points worth calling out:
 
 - `node:24-slim` — Node 24 is the current LTS; `-slim` keeps the image small. Avoid `node:latest`, which silently jumps major versions on every rebuild.
-- `--ignore-scripts=false` on `pnpm install` — needed alongside `allowBuilds` in `pnpm-workspace.yaml` ([8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)), or the image ends up with a half-installed Prisma/`bcrypt`.
+- `--ignore-scripts=false` on `pnpm install` — needed alongside `allowBuilds` in `pnpm-workspace.yaml` ([7.5](#75-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml)), or the image ends up with a half-installed Prisma/`bcrypt`.
 - The `DATABASE_URL="..."` placeholder before `prisma generate` — this runs at **image build time**, before any real `.env` exists; `generate` only needs a syntactically valid connection string, it never connects.
 - `COPY --from=deps` vs `COPY --from=build` in `runtime` — `node_modules` comes from `deps` (installed dependencies), `dist/` and `prisma/` from `build` (compiled code and migrations, since that's the stage that ran `COPY . .`).
 - The `CMD` runs `prisma migrate deploy` on every boot before starting the server — migrations apply automatically, nothing to run by hand on the VPS.
@@ -1913,9 +2189,9 @@ dist
 .env
 ```
 
-### 9.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)
+### 8.4 `pnpm-workspace.yaml`: Allowing Build Scripts (pnpm 10 or Newer)
 
-Covered in [8.5](#85-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) — repeated here because it's specifically what makes the Docker build in [9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage) succeed instead of failing with `[ERR_PNPM_IGNORED_BUILDS]`:
+Covered in [7.5](#75-configuration-files-tsconfigjson-prismaconfigts-and-pnpm-workspaceyaml) — repeated here because it's specifically what makes the Docker build in [8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage) succeed instead of failing with `[ERR_PNPM_IGNORED_BUILDS]`:
 
 ```yaml
 allowBuilds:
@@ -1927,7 +2203,7 @@ allowBuilds:
 
 Must be copied into the Docker build context (`COPY pnpm-workspace.yaml ./` in the `deps` stage) — if it's missing from `.dockerignore` accidentally, or just never copied, the build fails inside the container the same way it does locally without it.
 
-### 9.5 CORS and Cookies Across Different Domains
+### 8.5 CORS and Cookies Across Different Domains
 
 This is the part that actually breaks when going from monorepo (same-origin via Vite's dev proxy) to full separation (frontend and backend genuinely on different domains) — and the single most common source of "it works locally but not in production" here.
 
@@ -1968,12 +2244,12 @@ const cookieOptions = {
 ```
 
 - `SameSite=Lax` (the default) blocks the cookie on cross-site `fetch`/`XHR` calls — only `SameSite=None` allows it.
-- `SameSite=None` **requires** `Secure`, which means the backend must be served over real HTTPS in production ([9.7](#97-https-in-front-of-the-backend-caddy)) — without it, the browser refuses to set the cookie at all, and every request after login looks unauthenticated (`401`) even though login itself appeared to succeed.
+- `SameSite=None` **requires** `Secure`, which means the backend must be served over real HTTPS in production ([8.7](#87-https-in-front-of-the-backend-caddy)) — without it, the browser refuses to set the cookie at all, and every request after login looks unauthenticated (`401`) even though login itself appeared to succeed.
 - Locally, frontend and backend are still effectively same-site (`localhost` talking to `localhost`, or same-origin behind Vite's dev proxy), so `Lax` without `Secure` keeps working — hence branching on `NODE_ENV`.
 
 `clearCookie(...)` on logout must use **the same options** (`httpOnly`, `secure`, `sameSite`) used when the cookie was set, or the browser won't recognize it as the same cookie to remove.
 
-### 9.6 Each Frontend as Its Own Repo (Cloudflare Pages)
+### 8.6 Each Frontend as Its Own Repo (Cloudflare Pages)
 
 Nothing changes in the frontend's own code for this to work — the fetch wrapper already reads the backend's base URL from an environment variable:
 
@@ -1996,19 +2272,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 ```
 
-In dev, leaving `VITE_API_URL` unset (`BASE` becomes `""`) works together with Vite's proxy (`/api` → `http://localhost:3001`, [6.3](#63-viteconfigts-reference)). In Cloudflare Pages:
+In dev, leaving `VITE_API_URL` unset (`BASE` becomes `""`) works together with Vite's proxy (`/api` → `http://localhost:3001`, [5.3](#53-viteconfigts-reference)). In Cloudflare Pages:
 
 1. Push this frontend as its own Git repository.
 2. Create a Cloudflare Pages project connected to that repo.
 3. Build command: `npm run build` (or `pnpm build`). Output directory: `dist`.
 4. Under **Settings → Environment variables**, set `VITE_API_URL` to the backend's real HTTPS URL (e.g. `https://api.example.com`, no trailing slash).
-5. Deploy, then add the resulting Pages domain to the backend's `ALLOWED_ORIGINS` ([9.5](#95-cors-and-cookies-across-different-domains)) and restart the backend container.
+5. Deploy, then add the resulting Pages domain to the backend's `ALLOWED_ORIGINS` ([8.5](#85-cors-and-cookies-across-different-domains)) and restart the backend container.
 
 Multiple independent frontends (e.g. an admin panel and a separate customer-facing portal) can point at the same backend this way — each is its own Pages project, its own repo, and just needs its own entry added to `ALLOWED_ORIGINS`.
 
-### 9.7 HTTPS in Front of the Backend (Caddy)
+### 8.7 HTTPS in Front of the Backend (Caddy)
 
-Required because of the cookie settings in [9.5](#95-cors-and-cookies-across-different-domains) — `Secure` cookies are simply not set by the browser over plain HTTP. Caddy is the simplest option since it issues and renews the TLS certificate on its own:
+Required because of the cookie settings in [8.5](#85-cors-and-cookies-across-different-domains) — `Secure` cookies are simply not set by the browser over plain HTTP. Caddy is the simplest option since it issues and renews the TLS certificate on its own:
 
 ```bash
 sudo apt install -y caddy
@@ -2028,23 +2304,28 @@ sudo systemctl restart caddy
 
 The domain's DNS `A` record must already point at this VPS's IP **before** restarting Caddy, or certificate issuance fails.
 
-### 9.8 Local Development Without Docker for the Backend
+### 8.8 Local Development Without Docker for the Backend
 
-The full production `docker-compose.yml` from [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) also builds and runs the backend itself — convenient for a final end-to-end check, but slower to iterate against than `tsx watch`. Day to day, only Postgres runs in Docker, and the backend runs directly on the host via the `dev` script from [8.3](#83-install-dependencies):
+The full production `docker-compose.yml` from [8.2](#82-backend-repo-docker-composeyml-postgres-and-api) also builds and runs the backend itself — convenient for a final end-to-end check, but slower to iterate against than `tsx watch`. Day to day, only Postgres runs in Docker, and the backend runs directly on the host via the `dev` script from [7.3](#73-install-dependencies):
 
 ```bash
 docker compose up -d postgres   # only the database, from the same compose file
 pnpm dev                        # generate + db push + tsx watch, outside Docker
 ```
 
-This is exactly why `postgres` still publishes `5432:5432` in [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) — it's what lets `DATABASE_URL` in the local `.env` point at `localhost:5432` while `pnpm dev` runs on the host. When you actually want to test the full container build (`backend` service included), use `docker compose up -d --build` instead, and remember the container talks to Postgres via the service name `postgres`, not `localhost` — the two `DATABASE_URL`s (host `.env` vs the one injected into the `backend` container in `docker-compose.yml`) are intentionally different for this reason.
+This is exactly why `postgres` still publishes `5432:5432` in [8.2](#82-backend-repo-docker-composeyml-postgres-and-api) — it's what lets `DATABASE_URL` in the local `.env` point at `localhost:5432` while `pnpm dev` runs on the host. When you actually want to test the full container build (`backend` service included), use `docker compose up -d --build` instead, and remember the container talks to Postgres via the service name `postgres`, not `localhost` — the two `DATABASE_URL`s (host `.env` vs the one injected into the `backend` container in `docker-compose.yml`) are intentionally different for this reason.
 
-### 9.9 Final Project Structure (Three Independent Repos)
+### 8.9 Final Project Structure (Three Independent Repos)
 
 No shared root — three separate repositories, each deployed independently:
 
 ```
 service-manager-backend/          (→ VPS, Docker)
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       ├── deploy.yml
+│       └── prettier.yml
 ├── prisma/
 │   ├── migrations/
 │   ├── schema.prisma
@@ -2062,6 +2343,10 @@ service-manager-backend/          (→ VPS, Docker)
 └── tsconfig.json
 
 admin-frontend/                   (→ Cloudflare Pages)
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       └── prettier.yml
 ├── public/
 └── src/
     ├── components/
@@ -2074,6 +2359,10 @@ admin-frontend/                   (→ Cloudflare Pages)
     └── main.tsx
 
 customer-portal/                  (→ Cloudflare Pages, separate project)
+├── .github/
+│   └── workflows/
+│       ├── audit.yml
+│       └── prettier.yml
 ├── public/
 └── src/
     ├── components/
@@ -2085,9 +2374,11 @@ customer-portal/                  (→ Cloudflare Pages, separate project)
     └── main.tsx
 ```
 
+Only the backend gets `deploy.yml` — it's the one repo that deploys by SSH to a VPS ([8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage)). `audit.yml` and `prettier.yml` are identical across all three, since they're generic checks that don't depend on how (or where) a repo deploys ([11.9](#119-github-actions-cicd-workflows)).
+
 Each repo has its own `package.json`, its own `pnpm install`, and its own `git` history. `admin-frontend/src/types.ts` exists because there's no shared workspace package to import domain types from anymore — they're copied in and kept manually in sync with whatever the backend actually returns; the same applies to the near-identical `api.ts` fetch wrapper duplicated across both frontends.
 
-### 9.10 Continuous Deployment on Push (GitHub Actions)
+### 8.10 Continuous Deployment on Push (GitHub Actions)
 
 Everything so far still means logging into the VPS by hand after every change (`git pull`, `docker compose up -d --build backend`). GitHub Actions can do that automatically on every `git push`, using the repo's built-in CI/CD instead of any extra service.
 
@@ -2144,11 +2435,11 @@ What each part does:
 - `appleboy/ssh-action` — a community GitHub Action that opens an SSH connection using the three secrets above and runs `script:` on the remote host, exactly as if it were typed by hand over SSH.
 - `cd ~/service-manager-backend` — must match the actual path where the repo was cloned on the VPS.
 - `git pull` — fetches the commit that was just pushed.
-- `docker compose up -d --build backend` — rebuilds only the `backend` image and recreates that one container ([9.2](#92-backend-repo-docker-composeyml-postgres-and-api)); `postgres` is untouched, matching the reasoning in [9.2](#92-backend-repo-docker-composeyml-postgres-and-api) about not restarting the database on every code change.
+- `docker compose up -d --build backend` — rebuilds only the `backend` image and recreates that one container ([8.2](#82-backend-repo-docker-composeyml-postgres-and-api)); `postgres` is untouched, matching the reasoning in [8.2](#82-backend-repo-docker-composeyml-postgres-and-api) about not restarting the database on every code change.
 
 **Step 4 — Push and watch it run**: `git push origin main`, then check the **Actions** tab on GitHub — a green check means the VPS already pulled and rebuilt on its own.
 
-Since the container's `CMD` runs `prisma migrate deploy` on every boot ([9.3](#93-backend-dockerfile-pnpm-node-24-multi-stage)), any pending migration is applied automatically as part of this same deploy — no separate manual step for that either.
+Since the container's `CMD` runs `prisma migrate deploy` on every boot ([8.3](#83-backend-dockerfile-pnpm-node-24-multi-stage)), any pending migration is applied automatically as part of this same deploy — no separate manual step for that either.
 
 A couple of things worth keeping in mind:
 
@@ -2156,7 +2447,7 @@ A couple of things worth keeping in mind:
 - The exact same pattern (workflow file + three secrets) can be reused for any other repo that needs this — it isn't specific to this backend, only the `cd` path and the `docker compose` command at the end change.
 
 ---
-## 10. Linux Server & Docker Deployment
+## 9. Linux Server & Docker Deployment
 
 This section is the complete server setup for **Vite + React and Next.js websites running with Docker and Traefik**.
 
@@ -2186,7 +2477,7 @@ The key rule is:
 
 This keeps the setup simple. You do not need one reverse proxy per website.
 
-### 10.1 Connect with Bitvise SSH Client
+### 9.1 Connect with Bitvise SSH Client
 
 On Windows, [Bitvise SSH Client](https://www.bitvise.com/ssh-client) can be used for both terminal access and SFTP file transfer.
 
@@ -2207,7 +2498,7 @@ After connecting:
 
 You do not need a separate FTP server just to upload a project.
 
-### 10.2 Basic Linux Setup
+### 9.2 Basic Linux Setup
 
 Start with the package list:
 
@@ -2243,7 +2534,7 @@ free -h
 
 They show the operating system, disk usage and RAM usage.
 
-### 10.3 Install Only the Basic Utilities Needed Here
+### 9.3 Install Only the Basic Utilities Needed Here
 
 ```bash
 sudo apt install -y unzip curl git nano htop ufw fail2ban
@@ -2263,7 +2554,7 @@ What each package does:
 
 For this Docker-only setup, that is enough. There is no need to install a separate web server.
 
-### 10.4 Node.js: Required by the Projects
+### 9.4 Node.js: Required by the Projects
 
 **Node.js is required for this development stack** — Vite, Next.js and pnpm all use it. There are two different places it can exist:
 
@@ -2294,7 +2585,7 @@ npm -v
 
 For the Docker deployment in this README, you can skip those host commands.
 
-### 10.5 Install Docker and Docker Compose
+### 9.5 Install Docker and Docker Compose
 
 First:
 
@@ -2342,7 +2633,7 @@ docker compose
 
 Do not use the old standalone `docker-compose` command in this README.
 
-### 10.6 Allow Your User to Run Docker Without `sudo`
+### 9.6 Allow Your User to Run Docker Without `sudo`
 
 Add your current Linux user to the Docker group:
 
@@ -2373,7 +2664,7 @@ If the command works without `sudo`, the setup is ready.
 
 > Docker access is powerful enough to control the host system. Only give trusted users access to it.
 
-### 10.7 First Docker Test
+### 9.7 First Docker Test
 
 Before creating any website container, test Docker itself:
 
@@ -2391,7 +2682,7 @@ What happens:
 
 This is the fastest way to know whether Docker is working.
 
-### 10.8 Basic Linux Commands for Deployments
+### 9.8 Basic Linux Commands for Deployments
 
 You will use these commands constantly:
 
@@ -2432,9 +2723,9 @@ rm file.zip
 
 You remove the ZIP after extraction to avoid storing two copies of the same deployment.
 
-### 10.9 Firewall Basics with UFW
+### 9.9 Firewall Basics with UFW
 
-The server needs SSH, HTTP and HTTPS. Since every domain will always sit behind Cloudflare (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), it's worth restricting `80`/`443` to Cloudflare's own IP ranges instead of the whole Internet — that way nobody can bypass Cloudflare's protection by hitting the server's IP directly.
+The server needs SSH, HTTP and HTTPS. Since every domain will always sit behind Cloudflare (see [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl)), it's worth restricting `80`/`443` to Cloudflare's own IP ranges instead of the whole Internet — that way nobody can bypass Cloudflare's protection by hitting the server's IP directly.
 
 First allow SSH:
 
@@ -2472,9 +2763,9 @@ sudo ufw status verbose
 
 Do not open application ports such as `3000` to the Internet. Traefik reaches the websites through Docker networking.
 
-> If a site is ever used without Cloudflare in front of it, allow `80/tcp` and `443/tcp` from anywhere instead (`sudo ufw allow 80/tcp` / `sudo ufw allow 443/tcp`) — but that also means the Origin Certificate from [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites) won't be trusted by regular browsers, since it's only trusted by Cloudflare.
+> If a site is ever used without Cloudflare in front of it, allow `80/tcp` and `443/tcp` from anywhere instead (`sudo ufw allow 80/tcp` / `sudo ufw allow 443/tcp`) — but that also means the Origin Certificate from [9.14](#914-traefik--cloudflare-origin-certificate--three-websites) won't be trusted by regular browsers, since it's only trusted by Cloudflare.
 
-### 10.10 Create the Server Structure
+### 9.10 Create the Server Structure
 
 Create the main folder:
 
@@ -2483,7 +2774,7 @@ sudo mkdir -p /opt/web
 cd /opt/web
 ```
 
-Create the folder for the Cloudflare Origin Certificate (generated in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)):
+Create the folder for the Cloudflare Origin Certificate (generated in [9.14](#914-traefik--cloudflare-origin-certificate--three-websites)):
 
 ```bash
 sudo mkdir -p /opt/web/certs
@@ -2533,7 +2824,7 @@ Final structure:
     └── ...Vite project...
 ```
 
-### 10.11 Vite + React Dockerfile
+### 9.11 Vite + React Dockerfile
 
 A normal Vite production build creates a static `dist/` directory.
 
@@ -2582,7 +2873,7 @@ Why each part exists:
 
 The public server still does **not** expose port 80 for this container. Traefik will connect to it internally.
 
-### 10.12 Next.js Dockerfile
+### 9.12 Next.js Dockerfile
 
 A normal Next.js production application is different from a Vite static site.
 
@@ -2628,7 +2919,7 @@ Next.js      → internal container port 3000
 
 Both remain private behind Traefik.
 
-### 10.13 `.dockerignore`
+### 9.13 `.dockerignore`
 
 Use a `.dockerignore` in every project:
 
@@ -2653,7 +2944,7 @@ In particular:
 - `dist` and `.next` are generated build output.
 - `.env` files should not automatically be baked into images.
 
-### 10.14 Traefik + Cloudflare Origin Certificate + Three Websites
+### 9.14 Traefik + Cloudflare Origin Certificate + Three Websites
 
 Traefik is the only reverse proxy in this architecture.
 
@@ -2667,7 +2958,7 @@ It will:
 
 Traefik's Docker provider reads container labels. Using `exposedbydefault=false` means containers are ignored unless they explicitly opt in with `traefik.enable=true`.
 
-Since every domain here is always proxied through Cloudflare (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), Cloudflare's free Universal SSL already handles the certificate that public visitors see — Traefik doesn't need to request or renew a Let's Encrypt certificate for that. What Traefik still needs is a certificate for the **Cloudflare → origin** leg of the connection, so that "Full (strict)" mode can verify it. That's what a free **Cloudflare Origin Certificate** is for: generate it once in the Cloudflare dashboard (**SSL/TLS → Origin Server → Create Certificate**), list all three hostnames as SANs (`site1.example.com`, `site2.example.com`, `site3.example.com`), and it stays valid for up to 15 years — no ACME challenge, no renewal automation needed.
+Since every domain here is always proxied through Cloudflare (see [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl)), Cloudflare's free Universal SSL already handles the certificate that public visitors see — Traefik doesn't need to request or renew a Let's Encrypt certificate for that. What Traefik still needs is a certificate for the **Cloudflare → origin** leg of the connection, so that "Full (strict)" mode can verify it. That's what a free **Cloudflare Origin Certificate** is for: generate it once in the Cloudflare dashboard (**SSL/TLS → Origin Server → Create Certificate**), list all three hostnames as SANs (`site1.example.com`, `site2.example.com`, `site3.example.com`), and it stays valid for up to 15 years — no ACME challenge, no renewal automation needed.
 
 Save the two files it gives you:
 
@@ -2781,7 +3072,7 @@ networks:
 
 > The `tls.certresolver` label from the old Let's Encrypt setup is gone — with a single certificate loaded through the file provider, Traefik just serves it by default, so `traefik.http.routers.webX.tls=true` is all each router needs.
 
-### 10.15 Understand the Important Traefik Lines
+### 9.15 Understand the Important Traefik Lines
 
 **Docker provider**
 
@@ -2841,7 +3132,7 @@ https://site1.example.com
 ./dynamic:/dynamic:ro
 ```
 
-These mount the Cloudflare Origin Certificate and the file-provider config that loads it (see [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)). No ACME resolver, no HTTP-01 challenge, and nothing to renew — the certificate is generated once in the Cloudflare dashboard and is valid for up to 15 years.
+These mount the Cloudflare Origin Certificate and the file-provider config that loads it (see [9.14](#914-traefik--cloudflare-origin-certificate--three-websites)). No ACME resolver, no HTTP-01 challenge, and nothing to renew — the certificate is generated once in the Cloudflare dashboard and is valid for up to 15 years.
 
 **Docker socket**
 
@@ -2867,7 +3158,7 @@ traefik.http.services.web1.loadbalancer.server.port=80
 
 This is the port inside the Docker network, not a public host port.
 
-### 10.16 Why the Three Websites Are Different
+### 9.16 Why the Three Websites Are Different
 
 The Compose structure is intentionally repetitive. Only a few values change.
 
@@ -2901,7 +3192,7 @@ loadbalancer.server.port=3000
 
 Everything else stays almost identical.
 
-### 10.17 DNS Setup
+### 9.17 DNS Setup
 
 Before HTTPS can work, the domains must point to the server through Cloudflare.
 
@@ -2913,7 +3204,7 @@ site2.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
 site3.example.com → A → SERVER_PUBLIC_IP → Proxied (orange cloud)
 ```
 
-Use `A` records for IPv4 addresses, and keep the proxy status **Proxied** (orange cloud), not **DNS only** (grey cloud). Proxied is what actually puts Cloudflare in front of the site — it hides the server's real IP, applies the free protection described in [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl), and terminates the public-facing SSL. A grey-cloud record just points visitors straight at the server, bypassing all of that.
+Use `A` records for IPv4 addresses, and keep the proxy status **Proxied** (orange cloud), not **DNS only** (grey cloud). Proxied is what actually puts Cloudflare in front of the site — it hides the server's real IP, applies the free protection described in [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl), and terminates the public-facing SSL. A grey-cloud record just points visitors straight at the server, bypassing all of that.
 
 The important rule is:
 
@@ -2935,7 +3226,7 @@ curl -I http://localhost
 
 Do not move on to HTTPS troubleshooting until the record shows as proxied in Cloudflare and the server responds locally.
 
-### 10.18 First Deployment
+### 9.18 First Deployment
 
 Upload your ZIP with Bitvise SFTP.
 
@@ -3003,7 +3294,7 @@ Check Traefik logs:
 docker compose logs -f traefik
 ```
 
-### 10.19 Useful Deployment Commands
+### 9.19 Useful Deployment Commands
 
 These are the commands you will use most often:
 
@@ -3053,11 +3344,11 @@ rm file.zip
 # rm -rf <folder>   # WARNING: permanently deletes everything inside
 ```
 
-### 10.20 Update Only One Website
+### 9.20 Update Only One Website
 
 Suppose only `web2` changed. `docker-compose.yml` and `certs/` live one level above `web2/`, so none of this touches them.
 
-Back up anything that only exists on the server and isn't in your new zip (usually the `Dockerfile`, if you created it directly on the server instead of keeping it in your project — see [10.11](#1011-vite--react-dockerfile)/[10.12](#1012-nextjs-dockerfile) — and any `.env` file):
+Back up anything that only exists on the server and isn't in your new zip (usually the `Dockerfile`, if you created it directly on the server instead of keeping it in your project — see [9.11](#911-vite--react-dockerfile)/[9.12](#912-nextjs-dockerfile) — and any `.env` file):
 
 ```bash
 cp web2/Dockerfile /opt/web2-Dockerfile.bak
@@ -3096,7 +3387,7 @@ docker compose logs -f web2
 
 This is the normal workflow once several websites share the same server.
 
-### 10.21 Docker Disk Cleanup
+### 9.21 Docker Disk Cleanup
 
 Check Docker's disk usage:
 
@@ -3124,7 +3415,7 @@ Also check the server disk:
 df -h
 ```
 
-### 10.22 Fail2ban Basic Configuration
+### 9.22 Fail2ban Basic Configuration
 
 Fail2ban is mainly useful here for protecting SSH from repeated login attempts.
 
@@ -3183,9 +3474,9 @@ Check SSH specifically:
 sudo fail2ban-client status sshd
 ```
 
-Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys. It's only needed here for SSH — SSH isn't proxied through Cloudflare, so Cloudflare's DDoS/bot protection never sees it. The websites themselves don't need a `[traefik]`/HTTP jail: that surface already sits behind Cloudflare's free protection (see [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)), and UFW ([10.9](#109-firewall-basics-with-ufw)) already blocks anyone trying to hit ports `80`/`443` directly instead of through Cloudflare.
+Fail2ban is an additional layer. It does not replace updates, firewall rules or SSH keys. It's only needed here for SSH — SSH isn't proxied through Cloudflare, so Cloudflare's DDoS/bot protection never sees it. The websites themselves don't need a `[traefik]`/HTTP jail: that surface already sits behind Cloudflare's free protection (see [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl)), and UFW ([9.9](#99-firewall-basics-with-ufw)) already blocks anyone trying to hit ports `80`/`443` directly instead of through Cloudflare.
 
-### 10.23 Basic SSH Hardening
+### 9.23 Basic SSH Hardening
 
 SSH is the main administrative door to the server.
 
@@ -3225,7 +3516,7 @@ If there is no error, restart SSH:
 sudo systemctl restart ssh
 ```
 
-### 10.24 Troubleshooting
+### 9.24 Troubleshooting
 
 **Website does not open**
 
@@ -3253,11 +3544,11 @@ docker compose logs -f web3
 
 Check in this order:
 
-1. The DNS record is **Proxied** (orange cloud), not DNS only — see [10.17](#1017-dns-setup).
-2. SSL/TLS mode in Cloudflare is set to **Full (strict)**, not Flexible ([11.4](#114-vite--nextjs--cloudflare-protection--free-ssl)).
-3. `/opt/web/certs/cert.pem` and `key.pem` exist and hold the Origin Certificate/Key generated in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites), not placeholders.
+1. The DNS record is **Proxied** (orange cloud), not DNS only — see [9.17](#917-dns-setup).
+2. SSL/TLS mode in Cloudflare is set to **Full (strict)**, not Flexible ([10.4](#104-vite--nextjs--cloudflare-protection--free-ssl)).
+3. `/opt/web/certs/cert.pem` and `key.pem` exist and hold the Origin Certificate/Key generated in [9.14](#914-traefik--cloudflare-origin-certificate--three-websites), not placeholders.
 4. The Origin Certificate's SANs include the exact domain being requested.
-5. UFW allows `80`/`443` from Cloudflare's IP ranges ([10.9](#109-firewall-basics-with-ufw)).
+5. UFW allows `80`/`443` from Cloudflare's IP ranges ([9.9](#99-firewall-basics-with-ufw)).
 6. The `Host(...)` rule exactly matches the domain.
 7. Traefik logs show the certificate being loaded from the file provider, with no errors reading `/certs`.
 
@@ -3295,7 +3586,7 @@ Usually the problem is one of:
 - The second container is not running.
 - The internal port is wrong.
 
-### 10.25 Final Production Checklist
+### 9.25 Final Production Checklist
 
 ```text
 [ ] Server packages updated
@@ -3320,16 +3611,16 @@ Usually the problem is one of:
 ```
 
 ---
-## 11. Deployment
+## 10. Deployment
 
-### 11.1 Google Search Console
+### 10.1 Google Search Console
 
 1. Go to [Google Search Console](https://search.google.com/search-console) and add a new property using the site's domain or URL prefix.
 2. Verify ownership — via DNS TXT record (domain property) or an HTML file/meta tag (URL-prefix property), depending on the method chosen.
 3. Once verified, submit the sitemap under **Sitemaps** using the URL generated by the project (e.g. `https://mysite.com/sitemap-index.xml` for Vite + React).
 4. Use the **URL Inspection** tool to request indexing for key pages after the first deploy.
 
-### 11.2 Cloudflare Pages
+### 10.2 Cloudflare Pages
 
 1. In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **Workers & Pages → Create → Pages**, and connect the GitHub repository.
 2. Configure the build settings:
@@ -3340,37 +3631,37 @@ Usually the problem is one of:
 4. Every push to the connected branch (e.g. `main`) triggers an automatic deploy; other branches get preview deployments.
 5. Under **Custom domains**, attach the production domain once it's ready.
 
-Astro sites always live in your own Cloudflare Pages account, but the domain itself usually belongs to the client — see [11.5](#115-pointing-the-clients-domain-astro) for how to point it there.
+Astro sites always live in your own Cloudflare Pages account, but the domain itself usually belongs to the client — see [10.5](#105-pointing-the-clients-domain-astro) for how to point it there.
 
-### 11.3 Cloudflare Domains & Rules
+### 10.3 Cloudflare Domains & Rules
 
 - **DNS**: if the domain is registered with Cloudflare (or just uses Cloudflare as DNS), add/verify the records under **DNS → Records**. Pages projects usually just need a `CNAME` pointing to the `*.pages.dev` deployment, added automatically when attaching a custom domain.
 - **SSL/TLS**: keep the encryption mode set to **Full** or **Full (strict)** for Pages projects.
 - **Redirect rules**: under **Rules → Redirect Rules**, common basics are forcing `www` → apex (or the reverse) and forcing `https`.
 - **Page Rules / Cache Rules**: useful for basics like always redirecting `http://` to `https://`, or setting cache behavior for static assets under `/images/*` or `/assets/*`.
 
-### 11.4 Vite + Next.js + Cloudflare Protection & Free SSL
+### 10.4 Vite + Next.js + Cloudflare Protection & Free SSL
 
-This section applies to the self-hosted Vite/Next.js sites from [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment) — the Docker + Traefik setup running on your own VPS, as opposed to [11.2](#112-cloudflare-pages) which is for Cloudflare Pages. On the free plan, Cloudflare in front of that server gives you both protection and SSL with nothing extra to buy or renew.
+This section applies to the self-hosted Vite/Next.js sites from [9. Linux Server & Docker Deployment](#9-linux-server--docker-deployment) — the Docker + Traefik setup running on your own VPS, as opposed to [10.2](#102-cloudflare-pages) which is for Cloudflare Pages. On the free plan, Cloudflare in front of that server gives you both protection and SSL with nothing extra to buy or renew.
 
 **1. Add the site and proxy the DNS record**
 
-In the Cloudflare dashboard, add the domain and create the `A` record described in [10.17](#1017-dns-setup), keeping it **Proxied** (orange cloud). This is what actually routes traffic through Cloudflare instead of straight to the server, and it's a prerequisite for everything below.
+In the Cloudflare dashboard, add the domain and create the `A` record described in [9.17](#917-dns-setup), keeping it **Proxied** (orange cloud). This is what actually routes traffic through Cloudflare instead of straight to the server, and it's a prerequisite for everything below.
 
 **2. Set the SSL/TLS encryption mode to Full (strict)**
 
-Under **SSL/TLS → Overview**, choose **Full (strict)**. This encrypts both legs of the connection: browser → Cloudflare (Cloudflare's free Universal SSL certificate, issued and renewed automatically) and Cloudflare → your server (the Cloudflare Origin Certificate from [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)). Avoid **Flexible** — it only encrypts the first leg, leaving Cloudflare-to-server traffic in plain HTTP.
+Under **SSL/TLS → Overview**, choose **Full (strict)**. This encrypts both legs of the connection: browser → Cloudflare (Cloudflare's free Universal SSL certificate, issued and renewed automatically) and Cloudflare → your server (the Cloudflare Origin Certificate from [9.14](#914-traefik--cloudflare-origin-certificate--three-websites)). Avoid **Flexible** — it only encrypts the first leg, leaving Cloudflare-to-server traffic in plain HTTP.
 
 **3. Turn on "Always Use HTTPS"**
 
-Under **SSL/TLS → Edge Certificates**, enable **Always Use HTTPS** so any `http://` request gets redirected. This is redundant with Traefik's own HTTP→HTTPS redirect ([10.15](#1015-understand-the-important-traefik-lines)), but costs nothing to leave on and catches requests before they even reach the server.
+Under **SSL/TLS → Edge Certificates**, enable **Always Use HTTPS** so any `http://` request gets redirected. This is redundant with Traefik's own HTTP→HTTPS redirect ([9.15](#915-understand-the-important-traefik-lines)), but costs nothing to leave on and catches requests before they even reach the server.
 
 **4. Protection that's on by default (nothing to configure)**
 
 The free plan already includes, automatically, for any proxied domain:
 
 - Unmetered DDoS protection at the network edge.
-- The server's real IP is hidden — only Cloudflare's IPs are ever visible to visitors, which is what [10.9](#109-firewall-basics-with-ufw)'s UFW rule (allowing `80`/`443` only from Cloudflare's ranges) is there to enforce.
+- The server's real IP is hidden — only Cloudflare's IPs are ever visible to visitors, which is what [9.9](#99-firewall-basics-with-ufw)'s UFW rule (allowing `80`/`443` only from Cloudflare's ranges) is there to enforce.
 - A CDN cache for static assets, reducing load on the server.
 
 **5. Optional extra protection (free plan)**
@@ -3381,13 +3672,13 @@ The free plan already includes, automatically, for any proxied domain:
 
 **What this replaces**
 
-Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([10.9](#109-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([10.22](#1022-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
+Because Cloudflare handles the above automatically, this setup intentionally drops what a non-Cloudflare deployment would otherwise need: no Let's Encrypt/ACME renewal loop on the server ([9.14](#914-traefik--cloudflare-origin-certificate--three-websites)), no open port `80`/`443` to the whole Internet ([9.9](#99-firewall-basics-with-ufw)), and no separate HTTP-layer fail2ban jail ([9.22](#922-fail2ban-basic-configuration)) — Fail2ban stays, but only for SSH.
 
-Everything above assumes the domain's DNS is already a zone inside your own Cloudflare account. When the domain actually belongs to a client, see [11.6](#116-pointing-the-clients-domain-vite--nextjs) for how to get it pointed at the server.
+Everything above assumes the domain's DNS is already a zone inside your own Cloudflare account. When the domain actually belongs to a client, see [10.6](#106-pointing-the-clients-domain-vite--nextjs) for how to get it pointed at the server.
 
-### 11.5 Pointing the Client's Domain (Astro)
+### 10.5 Pointing the Client's Domain (Astro)
 
-This applies to Astro sites deployed on [11.2](#112-cloudflare-pages): the Pages project always lives in **your** Cloudflare account, but the domain (e.g. `clientsite.com`) belongs to the client. There are two ways to connect them, depending on how much access the client is willing to give you.
+This applies to Astro sites deployed on [10.2](#102-cloudflare-pages): the Pages project always lives in **your** Cloudflare account, but the domain (e.g. `clientsite.com`) belongs to the client. There are two ways to connect them, depending on how much access the client is willing to give you.
 
 **Option A — The client moves their nameservers into your Cloudflare account (best integration)**
 
@@ -3411,28 +3702,28 @@ This option gives you full control (redirect rules, caching, WAF) but requires t
 
 Option B is the usual choice for client work: it needs no access to their registrar or Cloudflare account beyond asking them to paste in one DNS record.
 
-### 11.6 Pointing the Client's Domain (Vite + Next.js)
+### 10.6 Pointing the Client's Domain (Vite + Next.js)
 
-This applies to the self-hosted Vite/Next.js sites from [10. Linux Server & Docker Deployment](#10-linux-server--docker-deployment), using the free SSL setup from [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl). Unlike Astro on Pages, this setup needs the domain to actually be **proxied through Cloudflare** (orange cloud) for the free Universal SSL and DDoS/bot protection to apply — a plain DNS-only record pointed at the server bypasses Cloudflare entirely.
+This applies to the self-hosted Vite/Next.js sites from [9. Linux Server & Docker Deployment](#9-linux-server--docker-deployment), using the free SSL setup from [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl). Unlike Astro on Pages, this setup needs the domain to actually be **proxied through Cloudflare** (orange cloud) for the free Universal SSL and DDoS/bot protection to apply — a plain DNS-only record pointed at the server bypasses Cloudflare entirely.
 
 **Option A — The client moves their nameservers into your Cloudflare account**
 
-1. Add the domain to your Cloudflare account the same way as in [11.5](#115-pointing-the-clients-domain-astro), Option A (steps 1–4).
-2. Once the domain is **Active** in your account, follow [10.17](#1017-dns-setup) exactly: create the `A` record pointing to the server's public IP, kept **Proxied** (orange cloud).
-3. Generate/reuse the Cloudflare **Origin Certificate** for that domain ([10.14](#1014-traefik--cloudflare-origin-certificate--three-websites)) and add it to Traefik's `dynamic` config alongside the existing sites.
-4. Set **SSL/TLS → Overview** to **Full (strict)** for the zone, as in [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl).
+1. Add the domain to your Cloudflare account the same way as in [10.5](#105-pointing-the-clients-domain-astro), Option A (steps 1–4).
+2. Once the domain is **Active** in your account, follow [9.17](#917-dns-setup) exactly: create the `A` record pointing to the server's public IP, kept **Proxied** (orange cloud).
+3. Generate/reuse the Cloudflare **Origin Certificate** for that domain ([9.14](#914-traefik--cloudflare-origin-certificate--three-websites)) and add it to Traefik's `dynamic` config alongside the existing sites.
+4. Set **SSL/TLS → Overview** to **Full (strict)** for the zone, as in [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl).
 
 **Option B — The client keeps their own Cloudflare account**
 
 Use this when the client already has the domain on Cloudflare themselves and doesn't want to change nameservers.
 
 1. Give the client the server's public IP and ask them to create an `A` record (e.g. `app.clientsite.com` → your server IP) in **their** Cloudflare dashboard, kept **Proxied** (orange cloud). Without Proxied, they get no free SSL or protection from Cloudflare — traffic goes straight to the server over plain HTTP unless you handle certificates yourself.
-2. Ask the client to set their zone's **SSL/TLS → Overview** to **Full (strict)** — same reasoning as [11.4](#114-vite--nextjs--cloudflare-protection--free-ssl): Flexible would leave the Cloudflare→server leg unencrypted.
+2. Ask the client to set their zone's **SSL/TLS → Overview** to **Full (strict)** — same reasoning as [10.4](#104-vite--nextjs--cloudflare-protection--free-ssl): Flexible would leave the Cloudflare→server leg unencrypted.
 3. You still need a **Cloudflare Origin Certificate** on the server for that domain so the Cloudflare→server leg is encrypted. Since the zone lives in the client's account, either:
-   - Ask the client to generate the Origin Certificate themselves (**SSL/TLS → Origin Server → Create Certificate**, covering the subdomain you need) and send you the cert/key pair, which you drop into `certs/` and reference in Traefik's `dynamic` config exactly like the other sites in [10.14](#1014-traefik--cloudflare-origin-certificate--three-websites); or
+   - Ask the client to generate the Origin Certificate themselves (**SSL/TLS → Origin Server → Create Certificate**, covering the subdomain you need) and send you the cert/key pair, which you drop into `certs/` and reference in Traefik's `dynamic` config exactly like the other sites in [9.14](#914-traefik--cloudflare-origin-certificate--three-websites); or
    - Ask them to add you as a member on their Cloudflare account (**Manage Account → Members**) with access scoped to that zone, so you can generate the certificate yourself without them needing to know what it is.
-4. Add a new router/service block in `docker-compose.yml` for the client's domain, following the pattern in [10.16](#1016-why-the-three-websites-are-different) — same idea, just with the client's domain in the `Host(...)` rule instead of one of your own.
-5. Firewall-wise, nothing changes: UFW ([10.9](#109-firewall-basics-with-ufw)) already only allows `80`/`443` from Cloudflare's IP ranges regardless of which Cloudflare account is proxying the request.
+4. Add a new router/service block in `docker-compose.yml` for the client's domain, following the pattern in [9.16](#916-why-the-three-websites-are-different) — same idea, just with the client's domain in the `Host(...)` rule instead of one of your own.
+5. Firewall-wise, nothing changes: UFW ([9.9](#99-firewall-basics-with-ufw)) already only allows `80`/`443` from Cloudflare's IP ranges regardless of which Cloudflare account is proxying the request.
 
 **Option A vs Option B**
 
@@ -3444,9 +3735,9 @@ Use this when the client already has the domain on Cloudflare themselves and doe
 | Best for | Long-term/ongoing clients | Clients who want to keep control of their domain |
 
 ---
-## 12. Git and GitHub
+## 11. Git and GitHub
 
-### 12.1 Initial Setup (First-Time Project)
+### 11.1 Initial Setup (First-Time Project)
 
 Use these commands when starting a brand-new project locally and connecting it to a GitHub repository.
 
@@ -3480,7 +3771,7 @@ git push -u origin main
 ```
 Uploads local commits to the `main` branch on GitHub for the first time.
 
-### 12.2 Daily Workflow
+### 11.2 Daily Workflow
 
 Use these steps every time files are edited and need to be pushed to GitHub.
 
@@ -3504,7 +3795,7 @@ git push
 ```
 Uploads newly saved local commits to GitHub.
 
-### 12.3 Branching
+### 11.3 Branching
 
 Branches allow working on new features safely without breaking the live site.
 
@@ -3533,7 +3824,7 @@ git merge <branch-name>
 ```
 Merges changes from the specified branch into the current branch.
 
-### 12.4 Other Useful Commands
+### 11.4 Other Useful Commands
 
 ```bash
 git pull
@@ -3550,7 +3841,7 @@ git log
 ```
 Displays the history of all commits made in the repository.
 
-### 12.5 Undoing Things: `reset`, `restore`, `revert`
+### 11.5 Undoing Things: `reset`, `restore`, `revert`
 
 These three commands all "undo" something, but they act on different things and at different levels of danger.
 
@@ -3586,7 +3877,7 @@ Creates a **new commit** that undoes the changes from `<commit>`, without rewrit
 
 > Rule of thumb: use `revert` on commits that are already pushed and shared with others; use `reset` freely on local commits nobody else has pulled yet.
 
-### 12.6 `rebase` vs `merge`
+### 11.6 `rebase` vs `merge`
 
 Both combine work from one branch into another, but they produce different history.
 
@@ -3616,7 +3907,7 @@ Cancels an in-progress rebase and returns the branch to the state it was in befo
 | Safe on shared/pushed branches | Yes | No (unless nobody else has pulled those commits) |
 | Typical use | Merging a finished feature branch into `main` | Cleaning up / updating a feature branch before opening a PR |
 
-### 12.7 Force Push and Other Dangerous Commands
+### 11.7 Force Push and Other Dangerous Commands
 
 ```bash
 git push --force
@@ -3645,7 +3936,7 @@ Applies a single specific commit from another branch onto the current branch, wi
 
 > As a general rule: never force-push to `main` or any branch other people are actively pulling from. Force-push is for cleaning up **your own** feature branch before it's merged.
 
-### 12.8 Real Branching Flow: Feature Branch → Main
+### 11.8 Real Branching Flow: Feature Branch → Main
 
 A realistic day-to-day flow for working on a feature without breaking `main`, including the forks in the road that commonly come up.
 
@@ -3751,11 +4042,11 @@ git push origin --delete feature/login-form  # delete remote branch
 
 > If `git branch -d` refuses because the branch isn't fully merged (e.g. it was squash-merged on GitHub, so Git doesn't recognize the commits as merged), force the local delete with `git branch -D feature/login-form` once the PR is confirmed merged on GitHub.
 
-### 12.9 GitHub Actions: CI/CD Workflows
+### 11.9 GitHub Actions: CI/CD Workflows
 
-GitHub Actions runs workflow files automatically on events like `push` or `pull_request` — no external CI service needed. Each workflow lives in `.github/workflows/<name>.yml`, in the repo it applies to (with full separation, [9.9](#99-final-project-structure-three-independent-repos), each repo needs its own copy of whichever of these apply to it).
+GitHub Actions runs workflow files automatically on events like `push` or `pull_request` — no external CI service needed. Each workflow lives in `.github/workflows/<name>.yml`, in the repo it applies to (with full separation, [8.9](#89-final-project-structure-three-independent-repos), each repo needs its own copy of whichever of these apply to it).
 
-**Deploy on push (backend only)** — connects to the VPS over SSH and rebuilds the container, replacing the manual `git pull` + `docker compose up -d --build` from [9](#9-full-separation-independent-backend-frontends-and-deployment):
+**Deploy on push (backend only)** — connects to the VPS over SSH and rebuilds the container, replacing the manual `git pull` + `docker compose up -d --build` from [8](#8-full-separation-independent-backend-frontends-and-deployment):
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -3847,11 +4138,11 @@ Requires a `format:check` script in `package.json` (e.g. `"format:check": "prett
 
 `pnpm/setup@v2` replaces the two separate steps used previously (`actions/setup-node` + `pnpm/action-setup`) — `runtime: node@24` installs the Node.js runtime and `version: 12` the pnpm version, both in a single step.
 
-`audit.yml` and `prettier.yml` are generic enough to copy as-is into any repo that has a `package.json` and a lockfile; `deploy.yml` is specific to whichever repo actually deploys by SSH (the backend, in the full-separation setup from [9](#9-full-separation-independent-backend-frontends-and-deployment) — the frontends deploy via Cloudflare Pages instead, which redeploys on push without needing a workflow file at all).
+`audit.yml` and `prettier.yml` are generic enough to copy as-is into any repo that has a `package.json` and a lockfile; `deploy.yml` is specific to whichever repo actually deploys by SSH (the backend, in the full-separation setup from [8](#8-full-separation-independent-backend-frontends-and-deployment) — the frontends deploy via Cloudflare Pages instead, which redeploys on push without needing a workflow file at all).
 
 ---
 
-## 13. Common HTTP Status Codes
+## 12. Common HTTP Status Codes
 
 Useful when debugging API requests (fetch calls, form submissions, backend responses) across any of the three frameworks.
 
