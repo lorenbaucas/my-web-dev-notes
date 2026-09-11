@@ -1,6 +1,38 @@
 # Developer Notes
 
-Personal reference notes for setting up a web development environment, scaffolding websites with **Astro, Vite + React, and Next.js**, and working with Git/GitHub.
+```mermaid
+flowchart LR
+
+    Code([💻 Code]) --> PR[Pull Request]
+    PR --> CI{CI passes?}
+    CI -- no --> Code
+    CI -- yes --> Main([🔀 main])
+
+    Main --> FE[Build frontend]
+    Main --> BE[Build backend]
+
+    FE --> Pages[(Cloudflare Pages)]
+    BE --> Docker[(Docker on Server<br/>behind Traefik)]
+
+    Pages --> DNS{{DNS}}
+    Docker --> DNS
+
+    DNS --> Prod([🌍 Production])
+    Prod -.-> Code
+
+    %% styles
+    classDef code fill:#1e1b4b,stroke:#818cf8,color:#eef2ff,stroke-width:1.5px
+    classDef gate fill:#422006,stroke:#f59e0b,color:#fffbeb,stroke-width:1.5px
+    classDef build fill:#0c4a6e,stroke:#38bdf8,color:#f0f9ff,stroke-width:1.5px
+    classDef infra fill:#064e3b,stroke:#34d399,color:#ecfdf5,stroke-width:1.5px
+    classDef prod fill:#701a75,stroke:#e879f9,color:#fdf4ff,stroke-width:1.5px
+
+    class Code,PR code
+    class CI,DNS gate
+    class Main,FE,BE build
+    class Pages,Docker infra
+    class Prod prod
+```
 
 ## Index
 
@@ -25,26 +57,23 @@ Personal reference notes for setting up a web development environment, scaffoldi
   - [3.14 `.gitignore` Example](#314-gitignore-example)
 - [4. Astro](#4-astro)
   - [4.1 Project Setup](#41-project-setup)
-  - [4.2 Install Dependencies](#42-install-dependencies)
-  - [4.3 Routing & Client-Side Navigation](#43-routing--client-side-navigation)
-  - [4.4 Main Layout Example](#44-main-layout-example)
-  - [4.5 Project Structure & Architecture](#45-project-structure--architecture)
+  - [4.2 Routing & Client-Side Navigation](#42-routing--client-side-navigation)
+  - [4.3 Main Layout Example](#43-main-layout-example)
+  - [4.4 Project Structure & Architecture](#44-project-structure--architecture)
 - [5. Vite](#5-vite)
-  - [5.1 Scaffolding a New Project](#51-scaffolding-a-new-project)
-  - [5.2 Install Dependencies](#52-install-dependencies)
-  - [5.3 `vite.config.ts` Reference](#53-viteconfigts-reference)
-  - [5.4 Routing & Layouts (React Router DOM)](#54-routing--layouts-react-router-dom)
-  - [5.5 Layout Route with `Outlet`](#55-layout-route-with-outlet)
-  - [5.6 Project Structure & Architecture](#56-project-structure--architecture)
+  - [5.1 Project Setup](#51-project-setup)
+  - [5.2 `vite.config.ts` Reference](#52-viteconfigts-reference)
+  - [5.3 Routing & Layouts (React Router DOM)](#53-routing--layouts-react-router-dom)
+  - [5.4 Layout Route with `Outlet`](#54-layout-route-with-outlet)
+  - [5.5 Project Structure & Architecture](#55-project-structure--architecture)
 - [6. Next.js](#6-nextjs)
-  - [6.1 Create a New Project](#61-create-a-new-project)
-  - [6.2 Install Dependencies](#62-install-dependencies)
-  - [6.3 `next.config.ts` Reference](#63-nextconfigts-reference)
-  - [6.4 Routing & Layouts (App Router)](#64-routing--layouts-app-router)
-  - [6.5 Root Layout](#65-root-layout)
-  - [6.6 Server and Client Components](#66-server-and-client-components)
-  - [6.7 Production Build](#67-production-build)
-  - [6.8 Project Structure & Architecture](#68-project-structure--architecture)
+  - [6.1 Project Setup](#61-project-setup)
+  - [6.2 `next.config.ts` Reference](#62-nextconfigts-reference)
+  - [6.3 Routing & Layouts (App Router)](#63-routing--layouts-app-router)
+  - [6.4 Root Layout](#64-root-layout)
+  - [6.5 Server and Client Components](#65-server-and-client-components)
+  - [6.6 Production Build](#66-production-build)
+  - [6.7 Project Structure & Architecture](#67-project-structure--architecture)
 - [7. Database & Backend: Prisma + PostgreSQL](#7-database--backend-prisma--postgresql)
   - [7.1 Overview: Which Framework Needs a Separate Backend](#71-overview-which-framework-needs-a-separate-backend)
   - [7.2 Backend Project Structure](#72-backend-project-structure)
@@ -243,35 +272,49 @@ export default defineConfig({
 
 ### 3.2 Tailwind Theme & Custom Fonts
 
-The same `@theme` pattern works in all three projects to register custom fonts as Tailwind utilities:
+In `global.css` we keep only the essentials, delegating configuration to `tailwind.config.mjs`:
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
-
-@theme {
-  --font-sans: 'Poppins', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-}
+@config "../../tailwind.config.mjs";
 ```
 
-This exposes `font-sans`, `font-display` and `font-mono` as Tailwind class names, usable directly in markup in any of the three frameworks.
+Fonts are loaded directly in the layout's `<head>` (e.g. `Layout.astro`), using preconnect to optimize loading:
 
-**Astro** — additionally ships smooth page-crossfade CSS tied to its built-in client-side router (see [4.3](#43-routing--client-side-navigation)):
-
-```css
-::view-transition-old(root) {
-  animation: fade-out 0.25s ease forwards;
-}
-::view-transition-new(root) {
-  animation: fade-in 0.25s ease forwards;
-}
-@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+```astro
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
 ```
 
-**Vite / Next.js** — the same crossfade can be added with the browser-native View Transitions API (`document.startViewTransition(...)`) around a route change; it's optional and not wired in by default the way Astro's `ClientRouter` wires it in.
+Basic `tailwind.config.mjs` for **Astro**:
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+Basic `tailwind.config.mjs` for **Vite**:
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
 
 ### 3.3 Open Graph & Metadata
 
@@ -997,18 +1040,13 @@ coverage/
 ```bash
 pnpm create astro@latest
 ```
+```bash
+pnpm exec astro upgrade
+```
 
 The Tailwind CSS setup that follows scaffolding is covered in [3.1](#31-tailwind-css-setup); sitemap in [3.7](#37-sitemap-integration).
 
-### 4.2 Install Dependencies
-
-The Astro CLI installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
-
-```bash
-pnpm install
-```
-
-### 4.3 Routing & Client-Side Navigation
+### 4.2 Routing & Client-Side Navigation
 
 Astro uses **file-based routing**: every file in `src/pages/` becomes a route (see [4.5](#45-project-structure--architecture) for the full mapping).
 
@@ -1023,7 +1061,7 @@ import { ClientRouter } from "astro:transitions";
 </head>
 ```
 
-### 4.4 Main Layout Example
+### 4.3 Main Layout Example
 
 `src/layouts/Layout.astro` is the shared HTML shell: head, meta tags, Open Graph (see [3.3](#33-open-graph--metadata)), `<Navbar />` / `<Footer />`, and `<slot />` for page content — the Astro equivalent of Vite's layout route ([5.5](#55-layout-route-with-outlet)) or Next.js's root layout ([6.5](#65-root-layout)).
 
@@ -1063,7 +1101,7 @@ import Footer from "../components/Footer.astro";
 </html>
 ```
 
-### 4.5 Project Structure & Architecture
+### 4.4 Project Structure & Architecture
 
 ```
 /
@@ -1095,6 +1133,7 @@ import Footer from "../components/Footer.astro";
 │       └── global.css
 ├── astro.config.mjs
 ├── package.json
+├── tailwind.config.mjs
 └── tsconfig.json
 ```
 
@@ -1120,22 +1159,18 @@ import Footer from "../components/Footer.astro";
 
 ## 5. Vite
 
-### 5.1 Scaffolding a New Project
+### 5.1 Project Setup
 
 ```bash
 pnpm create vite@latest project-name --template react-ts
-cd project-name
 ```
-
-### 5.2 Install Dependencies
-
 ```bash
-pnpm install
+pnpm update vite
 ```
 
 The Tailwind CSS setup that follows is covered in [3.1](#31-tailwind-css-setup); sitemap in [3.7](#37-sitemap-integration).
 
-### 5.3 `vite.config.ts` Reference
+### 5.2 `vite.config.ts` Reference
 
 Basic version (React + Tailwind):
 
@@ -1152,25 +1187,7 @@ export default defineConfig({
 });
 ```
 
-Extended version, adding the [React Compiler](https://react.dev/learn/react-compiler) via a Babel plugin:
-
-```typescript
-import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
-import tailwindcss from '@tailwindcss/vite'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    babel({ presets: [reactCompilerPreset()] }),
-    tailwindcss()
-  ],
-})
-```
-
-### 5.4 Routing & Layouts (React Router DOM)
+### 5.3 Routing & Layouts (React Router DOM)
 
 Unlike Astro or Next.js, Vite has no built-in router — routes are declared explicitly with `react-router-dom`.
 
@@ -1239,7 +1256,7 @@ createRoot(document.getElementById('root')!).render(
 
 The two-file split is still the more common convention once routes multiply or `App.tsx` starts holding shared state/providers, since it keeps the DOM-mounting boilerplate separate from anything route- or app-logic related — but for a two-route project, either works.
 
-### 5.5 Layout Route with `Outlet`
+### 5.4 Layout Route with `Outlet`
 
 For a shared shell (navbar + footer on every page — the Vite equivalent of Astro's `Layout.astro` or Next.js's root layout), use a layout route with React Router's `<Outlet />`, which renders whichever child route matched:
 
@@ -1304,7 +1321,7 @@ createRoot(document.getElementById('root')!).render(
 
 > If `<BrowserRouter>` isn't wrapped around `<App />` in `main.tsx` (as in this last example), make sure it's added inside `App.tsx` itself, or swap to `createBrowserRouter` + `<RouterProvider />` for data-loading features (loaders, actions) — see the [React Router docs](https://reactrouter.com/en/main).
 
-### 5.6 Project Structure & Architecture
+### 5.5 Project Structure & Architecture
 
 ```
 /
@@ -1339,6 +1356,7 @@ createRoot(document.getElementById('root')!).render(
 ├── index.html
 ├── vite.config.ts
 ├── package.json
+├── tailwind.config.mjs
 └── tsconfig.json
 ```
 
@@ -1369,11 +1387,13 @@ createRoot(document.getElementById('root')!).render(
 
 Next.js is the third framework covered here. Unlike a static Astro or Vite build, a standard Next.js application runs a Node.js server in production (see [6.7](#67-production-build)).
 
-### 6.1 Create a New Project
+### 6.1 Project Setup
 
 ```bash
 pnpm create next-app@latest my-next-site
-cd my-next-site
+```
+```bash
+pnpm update next
 ```
 
 A typical setup for this README is:
@@ -1383,15 +1403,7 @@ A typical setup for this README is:
 - Tailwind CSS: `Yes`
 - App Router: `Yes`
 
-### 6.2 Install Dependencies
-
-`create-next-app` installs dependencies as part of scaffolding. If they ever need reinstalling (e.g. after cloning the repo):
-
-```bash
-pnpm install
-```
-
-### 6.3 `next.config.ts` Reference
+### 6.2 `next.config.ts` Reference
 
 Basic version — an empty config is valid since Tailwind is already wired in through PostCSS by `create-next-app` (see [3.1](#31-tailwind-css-setup)):
 
@@ -1403,7 +1415,7 @@ const nextConfig: NextConfig = {}
 export default nextConfig
 ```
 
-Extended version, enabling the [React Compiler](https://react.dev/learn/react-compiler) and typed routes — the Next.js equivalent of Vite's extended `vite.config.ts` in [5.3](#53-viteconfigts-reference):
+Extended version, enabling the [React Compiler](https://react.dev/learn/react-compiler) and typed routes — the Next.js equivalent of Vite's extended `vite.config.ts` in [5.2](#52-viteconfigts-reference):
 
 ```typescript
 import type { NextConfig } from 'next'
@@ -1418,9 +1430,9 @@ const nextConfig: NextConfig = {
 export default nextConfig
 ```
 
-### 6.4 Routing & Layouts (App Router)
+### 6.3 Routing & Layouts (App Router)
 
-Like Astro, Next.js uses **file-based routing** — no router library needed, unlike Vite's `react-router-dom` ([5.4](#54-routing--layouts-react-router-dom)). Every folder under `app/` maps to a URL segment, and a `page.tsx` inside it is what actually renders:
+Like Astro, Next.js uses **file-based routing** — no router library needed, unlike Vite's `react-router-dom` ([5.3](#53-routing--layouts-react-router-dom)). Every folder under `app/` maps to a URL segment, and a `page.tsx` inside it is what actually renders:
 
 ```text
 app/page.tsx            → /
@@ -1431,9 +1443,9 @@ app/not-found.tsx       → custom 404 (see 3.8)
 
 Layouts nest automatically: any `layout.tsx` wraps every route below it, so the shared shell (navbar + footer) only needs to be defined once at the root — see [6.5](#65-root-layout) for the equivalent of Astro's `<slot />` or Vite's `<Outlet />`. Nested folders can add their own `layout.tsx` to wrap just that subsection of the site (e.g. a `blog/layout.tsx` shared by every post).
 
-### 6.5 Root Layout
+### 6.4 Root Layout
 
-`app/layout.tsx` is the shared HTML shell — the Next.js equivalent of Astro's `Layout.astro` ([4.4](#44-main-layout-example)) or Vite's `MainLayout.tsx` + `<Outlet />` ([5.5](#55-layout-route-with-outlet)). Instead of `<slot />` or `<Outlet />`, it receives page content as the `children` prop:
+`app/layout.tsx` is the shared HTML shell — the Next.js equivalent of Astro's `Layout.astro` ([4.3](#43-main-layout-example)) or Vite's `MainLayout.tsx` + `<Outlet />` ([5.4](#54-layout-route-with-outlet)). Instead of `<slot />` or `<Outlet />`, it receives page content as the `children` prop:
 
 ```tsx
 import type { Metadata } from 'next'
@@ -1468,7 +1480,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 The Metadata API above is the Next.js equivalent of the hand-written Open Graph `<meta>` tags used in Astro/Vite (see [3.3](#33-open-graph--metadata)).
 
-### 6.6 Server and Client Components
+### 6.5 Server and Client Components
 
 App Router components are Server Components by default — this has no direct equivalent in Vite, and is closer in spirit to Astro components (which are also server-rendered by default, with interactive "islands" opted into separately).
 
@@ -1492,7 +1504,7 @@ export default function Counter() {
 
 This is important for deployment: server-side code stays inside the Node.js container, while client components are sent to the browser.
 
-### 6.7 Production Build
+### 6.6 Production Build
 
 ```bash
 pnpm build
@@ -1510,7 +1522,7 @@ For the Docker deployment in [section 9](#9-linux-server--docker-deployment):
 
 > Next.js can also be configured for static export, but that is a different deployment model. This README treats Next.js as a normal Node.js application running in Docker.
 
-### 6.8 Project Structure & Architecture
+### 6.7 Project Structure & Architecture
 
 ```
 /
@@ -1540,6 +1552,7 @@ For the Docker deployment in [section 9](#9-linux-server--docker-deployment):
 ├── lib/
 ├── package.json
 ├── next.config.ts
+├── tailwind.config.mjs
 └── tsconfig.json
 ```
 
